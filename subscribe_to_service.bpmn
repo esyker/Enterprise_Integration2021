@@ -96,7 +96,7 @@
         <bpmn:targetRef>Property_1x81hjd</bpmn:targetRef>
       </bpmn:dataInputAssociation>
     </bpmn:task>
-    <bpmn:dataStoreReference id="DataStoreReference_0btvzya" />
+    <bpmn:dataStoreReference id="DataStoreReference_0btvzya" name="services database" />
     <bpmn:sendTask id="Activity_0orsws8" name="send to client the available services">
       <bpmn:incoming>Flow_07tjoya</bpmn:incoming>
       <bpmn:outgoing>Flow_0l0u74p</bpmn:outgoing>
@@ -142,7 +142,7 @@
       </bpmn:dataOutputAssociation>
     </bpmn:task>
     <bpmn:sequenceFlow id="Flow_0obs6fp" sourceRef="Activity_0nwbcwz" targetRef="Activity_1ror2ol" />
-    <bpmn:dataStoreReference id="DataStoreReference_0r0l7n5" />
+    <bpmn:dataStoreReference id="DataStoreReference_0r0l7n5" name="services database" />
     <bpmn:endEvent id="Event_1kgsho3">
       <bpmn:incoming>Flow_126ofkq</bpmn:incoming>
     </bpmn:endEvent>
@@ -324,6 +324,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="DataStoreReference_0btvzya_di" bpmnElement="DataStoreReference_0btvzya">
         <dc:Bounds x="845" y="795" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="826" y="852" width="89" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1ijsh8z_di" bpmnElement="Activity_0orsws8">
         <dc:Bounds x="980" y="690" width="100" height="80" />
@@ -351,6 +354,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="DataStoreReference_0r0l7n5_di" bpmnElement="DataStoreReference_0r0l7n5">
         <dc:Bounds x="1645" y="825" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1626" y="882" width="89" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1kgsho3_di" bpmnElement="Event_1kgsho3">
         <dc:Bounds x="1782" y="712" width="36" height="36" />

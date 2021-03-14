@@ -61,6 +61,7 @@
     <bpmn:exclusiveGateway id="Gateway_0f7ah8v" name="intrusion confirmed?">
       <bpmn:incoming>Flow_03vcyrj</bpmn:incoming>
       <bpmn:incoming>Flow_18etz2b</bpmn:incoming>
+      <bpmn:incoming>Flow_03jpdl0</bpmn:incoming>
       <bpmn:outgoing>Flow_16a7jry</bpmn:outgoing>
       <bpmn:outgoing>Flow_0z6kjaj</bpmn:outgoing>
       <bpmn:outgoing>Flow_1x9x45e</bpmn:outgoing>
@@ -72,7 +73,7 @@
       <bpmn:incoming>Flow_11pzp7t</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_11pzp7t" sourceRef="Activity_0os6nh3" targetRef="Event_1s4h5sq" />
-    <bpmn:sendTask id="Activity_0os6nh3" name="Make phone client to police">
+    <bpmn:sendTask id="Activity_0os6nh3" name="Make phone call to police">
       <bpmn:incoming>Flow_16a7jry</bpmn:incoming>
       <bpmn:outgoing>Flow_11pzp7t</bpmn:outgoing>
     </bpmn:sendTask>
@@ -105,7 +106,9 @@
     <bpmn:sequenceFlow id="Flow_05rsvm1" sourceRef="Activity_1whwbj5" targetRef="Activity_0q242mz" />
     <bpmn:receiveTask id="Activity_0q242mz" name="Wait for client decision">
       <bpmn:incoming>Flow_05rsvm1</bpmn:incoming>
+      <bpmn:outgoing>Flow_03jpdl0</bpmn:outgoing>
     </bpmn:receiveTask>
+    <bpmn:sequenceFlow id="Flow_03jpdl0" sourceRef="Activity_0q242mz" targetRef="Gateway_0f7ah8v" />
   </bpmn:process>
   <bpmn:process id="Process_1b5s57k" isExecutable="false">
     <bpmn:intermediateCatchEvent id="Event_0lavu83">
@@ -240,6 +243,12 @@
       <bpmndi:BPMNEdge id="Flow_05rsvm1_di" bpmnElement="Flow_05rsvm1">
         <di:waypoint x="890" y="680" />
         <di:waypoint x="930" y="680" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03jpdl0_di" bpmnElement="Flow_03jpdl0">
+        <di:waypoint x="980" y="720" />
+        <di:waypoint x="980" y="831" />
+        <di:waypoint x="500" y="831" />
+        <di:waypoint x="475" y="780" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_1eealhg_di" bpmnElement="Activity_089ken7">
         <dc:Bounds x="310" y="730" width="100" height="80" />

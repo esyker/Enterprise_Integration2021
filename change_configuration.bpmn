@@ -63,7 +63,6 @@
     </bpmn:startEvent>
   </bpmn:process>
   <bpmn:process id="Process_0t8rlca" isExecutable="false">
-    <bpmn:startEvent id="Event_04yu1el" />
     <bpmn:receiveTask id="Activity_13ekwuf" name="Server receives the request">
       <bpmn:incoming>Flow_1abxm2i</bpmn:incoming>
       <bpmn:outgoing>Flow_07awjcu</bpmn:outgoing>
@@ -305,9 +304,6 @@
         <di:waypoint x="448" y="910" />
         <di:waypoint x="608" y="910" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_04yu1el_di" bpmnElement="Event_04yu1el">
-        <dc:Bounds x="192" y="892" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_038axw7_di" bpmnElement="Activity_13ekwuf">
         <dc:Bounds x="608" y="870" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -405,8 +401,8 @@
       <bpmndi:BPMNEdge id="Flow_08lk3sv_di" bpmnElement="Flow_08lk3sv">
         <di:waypoint x="740" y="360" />
         <di:waypoint x="740" y="390" />
-        <di:waypoint x="680" y="390" />
-        <di:waypoint x="680" y="660" />
+        <di:waypoint x="670" y="390" />
+        <di:waypoint x="670" y="660" />
         <di:waypoint x="740" y="660" />
         <di:waypoint x="740" y="980" />
         <di:waypoint x="790" y="980" />

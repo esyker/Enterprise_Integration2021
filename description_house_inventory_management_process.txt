@@ -1,0 +1,11 @@
+###############################################################################
+There are sensors placed in fridges and shelves on the customer's house.
+Everytime a product is added or removed the sensor sends a message to a server
+which keeps track of each user's inventory. Whenever a product is removed the
+server check for any inventory shortages od that product. If there are any the
+it updates the customer's shopping list. When a product is added it only
+updates the user's inventory. Every ammount of time or at a certain day/hour
+of the week, the server makes an order to a shop/supermarket of the products 
+in the shopping list. The shop then delivers the products to the customers
+house, which then are stored in the shelves/fridge.
+

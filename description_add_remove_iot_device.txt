@@ -1,0 +1,12 @@
+###############################################################################
+The client intends to register a new IoT device in the network. So he makes a
+request to the server with the device information (e.g. serial number, type,
+brand, model). The server then registers the device and associates it with
+the customer. The server ends encryption keys for communicating in the 
+network. The use then decides if he needs help. If he does, he sends an help
+request to the server. The server notifies a technician and the technician is
+scheduled to go to the clients house. If the technician does not come after a
+week the client sends another help request. If the client does not need help
+he will perform the instalation on his own and inform the server that the 
+installation was successfully completed. If some reason during the
+installation the user has problems he will ask the server for help.

@@ -1,0 +1,7 @@
+###############################################################################
+The client accesses the webapp where he can: add/remove an IoT device from the
+network, change an iot device or service onfigurations or leave the webapp. 
+Requesting to add/remove a IoT device from the network will start the 
+add_remove_iot_device process.
+Requesting to change a device/service configuration will result on the 
+configuration parameters being updated on a database.

@@ -1,5 +1,6 @@
 ###############################################################################
-The client accesses the webapp where he can: add/remove an IoT device from the
+The client accesses the webapp (Self-Service CRM) 
+where he can: add/remove an IoT device from the
 network, change an iot device or service onfigurations or leave the webapp. 
 Requesting to add/remove a IoT device from the network will start the 
 add_remove_iot_device process.

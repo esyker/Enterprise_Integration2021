@@ -1,0 +1,57 @@
+//Message sent from the server to the supermarket:
+{
+	orderId: 25,
+	products: [{“PID1”, 5}, {“PID2”, 2}, {“PID3”,1}],
+	customerAddress: 
+	{
+		country: “country”,
+		state: “state”,
+		district: “district”,
+		street: “street name”,
+		doorNum: 37
+	}
+}
+
+//Message sent from client to server when the order arrives
+{
+	orderId: 25,
+	prodcutsReceived: [{“PID1”, 3}, {“PID2”, 2}],
+	arrivalDate: "2021-03-18"
+}
+
+
+//Message sent from a temperature sensor to the server
+{
+	sensorId: 568444,
+	sensorType: "temperature",
+	temperatureMeasurement: 19.5,
+	timestamp: "2021-03-18:14:59:20"
+}
+
+// Message sent from a motion sensor to the server
+{
+	sensorId: 568444,
+	sensorType: "motion",
+	motionDetected: "true",
+	timestamp: "2021-03-18:14:59:20"
+}
+
+
+// IoT device installation assitance scheduling
+{
+	deviceId: 568444,
+	state: "pending",
+	date: "2021-03-18",
+	customerInformation: 
+	{
+		customerId: 254,
+		address: 
+		{
+			country: “country”,
+			state: “state”,
+			district: “district”,
+			street: “street name”,
+			doorNum: 37
+		}
+	}
+}

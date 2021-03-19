@@ -4,8 +4,14 @@ Everytime a product is added or removed the sensor sends a message to a server
 which keeps track of each user's inventory. Whenever a product is removed the
 server check for any inventory shortages od that product. If there are any the
 it updates the customer's shopping list. When a product is added it only
-updates the user's inventory. Every ammount of time or at a certain day/hour
-of the week, the server makes an order to a shop/supermarket of the products 
-in the shopping list. The shop then delivers the products to the customers
-house, which then are stored in the shelves/fridge.
+updates the user's inventory. Peridically some time before a certain day/hour
+of the week, defined by the customer the server makes an order to a 
+shop/supermarket of the products in the shopping list. If the supermarket is
+unable to fullfill the delivery it informs the server, which informs the client.
+If it's able,it also informs the server which inform the client. The client will
+wait for the supermarket to deliver the products if the products aren't there on
+time, the client will inform the server the delay. The server then asks the
+supermarket for the delivery state and the server forwards it to the client.
+The shop eventualy delivers the products to the customer's house, which then are
+stored in the shelves/fridge.
 

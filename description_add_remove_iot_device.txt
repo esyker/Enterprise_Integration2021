@@ -1,8 +1,10 @@
 ###############################################################################
 The client intends to register a new IoT device in the network. So he makes a
 request to the server with the device information (e.g. serial number, type,
-brand, model). The server then registers the device and associates it with
-the customer. The server ends encryption keys for communicating in the 
+brand, model). The server requests a SIM card activation to the telecomunication
+provider. It waits for the successfull activation and informs the client.
+The server then registers the device and associates it with the customer.
+The server sends encryption keys for communicating in the 
 network. The use then decides if he needs help. If he does, he sends an help
 request to the server, with the date the desired date for the installation.
 The server schedules a installation. A technician when the installation date 

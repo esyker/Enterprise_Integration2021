@@ -1,5 +1,0 @@
-###############################################################################
-The user requests the server to unsubscribe to services. The server cancel
-the bank billing by connecting to its services and waits for a confirmation
-from the bank. Then dissociates the user from the services and confirms the 
-unsubscription by sending him a message. And the process finishes.

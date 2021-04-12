@@ -1,4 +1,4 @@
-package ist.meic.ie.kafkaapi;
+package ist.meic.ie.utils;
 
 import kafka.utils.ZKStringSerializer$;
 import org.I0Itec.zkclient.ZkClient;

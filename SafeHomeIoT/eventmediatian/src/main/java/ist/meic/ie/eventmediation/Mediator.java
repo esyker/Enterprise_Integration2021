@@ -1,6 +1,6 @@
-package ist.meic.ie.secondlevelmediation;
+package ist.meic.ie.eventmediation;
 
-import ist.meic.ie.kafkaapi.KafkaConfig;
+import ist.meic.ie.utils.KafkaConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;

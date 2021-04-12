@@ -9,8 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ist.meic.ie.secondlevelmediation</groupId>
-    <artifactId>secondlevelmediation</artifactId>
+    <groupId>ist.meic.ie.eventmediation</groupId>
+    <artifactId>eventmediation</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <packaging>jar</packaging>
@@ -44,7 +44,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>ist.meic.ie.secondlevelmediation.Mediator</mainClass>
+                    <mainClass>ist.meic.ie.eventmediation.Mediator</mainClass>
                 </configuration>
             </plugin>
             <plugin>

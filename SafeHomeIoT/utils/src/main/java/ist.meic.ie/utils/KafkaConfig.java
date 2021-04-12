@@ -1,4 +1,4 @@
-package ist.meic.ie.kafkaapi;
+package ist.meic.ie.utils;
 
 import kafka.admin.AdminUtils;
 import kafka.admin.RackAwareMode;

@@ -35,7 +35,9 @@
     <modules>
 
         <module>utils</module>
-        <module>eventmediatian</module>
+        <module>eventmediation</module>
+        <module>provisioning</module>
+        <module>events</module>
 
     </modules>
 

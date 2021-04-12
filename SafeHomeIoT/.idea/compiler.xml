@@ -6,8 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="provisioning" />
+        <module name="eventmediation" />
         <module name="utils" />
-        <module name="eventmediatian" />
+        <module name="events" />
       </profile>
     </annotationProcessing>
   </component>

@@ -34,7 +34,8 @@
     </dependencies>
     <modules>
 
-        <module>kafkaapi</module>
+        <module>utils</module>
+        <module>secondlevelmediation</module>
 
     </modules>
 

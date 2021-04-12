@@ -23,10 +23,10 @@ public class KafkaConfig {
         ZkConnection zkConnection = zookeeperConfig.connect();
         ZkUtils zkUtils = new ZkUtils(zkClient, zkConnection, isSecureKafkaCluster);
         AdminUtils.createTopic(zkUtils, topicname, numPartitions, numReplicas, topicConfig, RackAwareMode.Enforced$.MODULE$);
-        zookeeperConfig.closeZkClient();
+        zkClient.close();
     }
 
-    public static KafkaConsumer<String, String> getKafkaConsumer(String bootstrapServers, String groupId, List<String> topicsToSubscribe) {
+    public static KafkaConsumer<String, String> createKafkaConsumer(String bootstrapServers, String groupId, List<String> topicsToSubscribe) {
         Properties consumerProperties = new Properties();
         consumerProperties.put("bootstrap.servers", bootstrapServers);
         consumerProperties.put("group.id", groupId);
@@ -37,7 +37,7 @@ public class KafkaConfig {
         return consumer;
     }
 
-    public static KafkaProducer<String, String> getKafkaProducer(String bootstrapServers) {
+    public static KafkaProducer<String, String> createKafkaProducer(String bootstrapServers) {
         Properties producerProperties = new Properties();
         producerProperties.put("bootstrap.servers", bootstrapServers);
         producerProperties.put("key.serializer", KEY_SERIALIZER);

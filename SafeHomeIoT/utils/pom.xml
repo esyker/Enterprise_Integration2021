@@ -8,8 +8,10 @@
         <artifactId>SafeHomeIoT</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <groupId>ist.meic.ie.kafkaapi</groupId>
-    <artifactId>KafkaAPI</artifactId>
+    <groupId>ist.meic.ie.utils</groupId>
+    <artifactId>utils</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+
 
 </project>

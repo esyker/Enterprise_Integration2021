@@ -39,7 +39,7 @@
         <module>provisioning</module>
         <module>events</module>
         <module>eventmediationpre</module>
-
+        <module>IoTaaSSimulator-main</module>
     </modules>
 
 </project>

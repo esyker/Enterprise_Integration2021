@@ -38,6 +38,7 @@
         <module>eventmediation</module>
         <module>provisioning</module>
         <module>events</module>
+        <module>IoTaaSSimulator-main</module>
 
     </modules>
 

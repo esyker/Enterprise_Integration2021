@@ -9,7 +9,7 @@ public class DatabaseConfig {
 
     public DatabaseConfig(String ip, String dbName, String masterUsername, String password) {
         try {
-            this.connection = DriverManager.getConnection("jdbc:mysql://" + ip +" + :3306/" + dbName, masterUsername, password);
+            this.connection = DriverManager.getConnection("jdbc:mysql://" + ip + ":3306/" + dbName, masterUsername, password);
 
         } catch(SQLException e) {
             e.printStackTrace();

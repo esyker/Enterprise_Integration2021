@@ -2,11 +2,15 @@ package ist.meic.ie.events;
 
 import ist.meic.ie.events.exceptions.InvalidEventTypeException;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class EventItem {
     private Event event;
 
-    public EventItem(JSONObject event) throws InvalidEventTypeException {
+    public EventItem(String jsonString) throws InvalidEventTypeException, ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject event = (JSONObject) parser.parse(jsonString);
         String type = (String) event.get("type");
         switch (type) {
             case "temperature" : this.event = new TemperatureEvent(event); break;

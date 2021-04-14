@@ -175,6 +175,13 @@
 }
 
 
+//for testing
+{"deviceId": 568444, "type": "temperature", "measurement": 19.5}
+{"deviceId": 123456, "type": "video", "description": "this is happening"}
+{"deviceId": 471951, "type": "image", "description": "some picture"}
+{"deviceId": 297326, "type": "smoke", "measurement": 47.5}
+{"deviceId": 238798, "type": "motion", "description": "detected movement here"}
+
 
 
 

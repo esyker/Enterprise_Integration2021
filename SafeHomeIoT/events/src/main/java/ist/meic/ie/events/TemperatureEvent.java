@@ -1,18 +1,46 @@
 package ist.meic.ie.events;
 
+import ist.meic.ie.events.exceptions.InvalidEventTypeException;
+import ist.meic.ie.utils.DatabaseConfig;
 import org.json.simple.JSONObject;
 
-public class TemperatureEvent extends Event {
-    private int measurement;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-    public TemperatureEvent (JSONObject event) {
-        super((String) event.get("type"), (int) event.get("deviceId"));
-        this.measurement = (int) event.get("measurement");
+public class TemperatureEvent extends Event {
+    private float measurement;
+
+    public TemperatureEvent (JSONObject event) throws InvalidEventTypeException {
+        super(event);
+        if(event.get("measurement") == null)
+            throw new InvalidEventTypeException(event.toJSONString());
+        this.measurement = ((Double) event.get("measurement")).floatValue();
     }
 
-    public int getMeasurement() {
+    public float getMeasurement() {
         return measurement;
     }
 
+    @Override
+    public void insertToDb(DatabaseConfig config) {
+        try {
+            PreparedStatement stmt = config.getConnection().prepareStatement("insert into temperatureMessage (deviceID, measurement, type) values(?,?,?)");
+            stmt.setLong(1, this.getDeviceId());
+            stmt.setFloat(2, this.getMeasurement());
+            stmt.setString(3, this.getType());
+            stmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "{\n" +
+                "\"type\": \"" + this.getType() + "\",\n" +
+                "\"deviceId\": \"" + this.getDeviceId() + "\",\n" +
+                "\"description\": " + this.getMeasurement() + "\n" +
+                "}";
+    }
 
 }

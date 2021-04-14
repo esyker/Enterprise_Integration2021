@@ -29,6 +29,7 @@ public class VideoEvent extends Event{
             stmt.setString(2, this.getDescription());
             stmt.setString(3, this.getType());
             stmt.execute();
+            stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

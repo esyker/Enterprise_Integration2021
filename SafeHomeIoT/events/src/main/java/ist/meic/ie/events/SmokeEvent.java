@@ -30,6 +30,7 @@ public class SmokeEvent extends Event{
             stmt.setFloat(2, this.getMeasurement());
             stmt.setString(3, this.getType());
             stmt.execute();
+            stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

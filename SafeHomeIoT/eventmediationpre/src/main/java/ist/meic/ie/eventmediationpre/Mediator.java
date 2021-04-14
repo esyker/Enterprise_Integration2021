@@ -1,19 +1,19 @@
-package ist.meic.ie.eventmediation;
+package ist.meic.ie.eventmediationpre;
 
-import ist.meic.ie.events.EventItem;
 import ist.meic.ie.events.exceptions.InvalidEventTypeException;
-import ist.meic.ie.utils.DatabaseConfig;
 import ist.meic.ie.utils.KafkaConfig;
 import org.apache.commons.cli.*;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.json.simple.parser.ParseException;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class Mediator {
@@ -23,23 +23,26 @@ public class Mediator {
         System.out.println(topics);
 
         KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "group-id-test", topics);
-        DatabaseConfig config = new DatabaseConfig("events-2.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "SafeHomeIoTEvents", "pedro", "123456789");
+        KafkaProducer<String, String> producer = KafkaConfig.createKafkaProducer(cmd.getOptionValue("kafkaip"));
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {
                 try {
-                    EventItem eventItem =  new EventItem(record.value(), record.topic());
-                    eventItem.getEvent().insertToDb(config);
-                    System.out.println(eventItem.getEvent());
-                } catch (InvalidEventTypeException | ParseException e) {
+                    System.out.println(record.value());
+                    System.out.println(record.value());
+                    System.out.println(record.value());
+
+                    JSONParser parser = new JSONParser();
+                    JSONObject event = (JSONObject) parser.parse(record.value());
+                    if (event.get("type") == null)
+                        throw new InvalidEventTypeException(event.toJSONString());
+                    else {
+                        ProducerRecord<String, String> producerRecord = new ProducerRecord<>(event.get("type") + "-events", (String)event.get("type"), record.value());
+                        producer.send(producerRecord);
+                    }
+                } catch (InvalidEventTypeException | org.json.simple.parser.ParseException e) {
                     e.printStackTrace();
-                } /*catch (InterruptedException e) {
-                        System.out.println("Terminating");
-                        config.getConnection().close();
-                        consumer.close();
-                    }*/
-                // create specific topics
-                // add user id to the SQL messages
+                }
             }
         }
 

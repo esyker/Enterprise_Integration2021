@@ -11,14 +11,20 @@ public class Provisioner {
 
     }
 
-    public void activateSIMCard(String simcard, String msidn, String subType){//insert into db new SIMCARD
+    public void activateMSISDN(String simcard, String msisdn, String userID){//insert into db new SIMCARD
         PreparedStatement activation;
+        PreparedStatement deleteSuspend;
         try {
-            activation = dbConfig.getConnection().prepareStatement ("insert into activeSubscriber (SIMCARD,MSISDN,subType) values(?,?,?)");
+            deleteSuspend = dbConfig.getConnection().prepareStatement ("delete from suspendedSubscriber where SIMCARD=? and MSISDN=?");
+            deleteSuspend.setString(1,simcard);
+            deleteSuspend.setString(2,msisdn);
+            deleteSuspend.executeUpdate();
+            activation = dbConfig.getConnection().prepareStatement ("insert into activeSubscriber (SIMCARD,MSISDN,userID) values(?,?,?)");
             activation.setString(1,simcard);
-            activation.setString(2,msidn);
-            activation.setString(3,subType);
+            activation.setString(2,msisdn);
+            activation.setString(3,userID);
             activation.executeUpdate();
+            deleteSuspend.close();
             activation.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -26,18 +32,18 @@ public class Provisioner {
 
     }
 
-    public void suspendSIMCard(String simcard, String msidn) {
+    public void suspendMSISDN(String simcard, String msisdn, String userID) {
         PreparedStatement deleteActive;
         PreparedStatement insertSuspend;
         try {
             deleteActive = dbConfig.getConnection().prepareStatement ("delete from activeSubscriber where SIMCARD=? and MSISDN=?");
             deleteActive.setString(1,simcard);
-            deleteActive.setString(2,msidn);
-            insertSuspend = dbConfig.getConnection().prepareStatement ("insert into suspendedSubscriber (SIMCARD,MSISDN,subType) values(?,?,?)");
-            insertSuspend.setString(1,simcard);
-            insertSuspend.setString(2,msidn);
-            //insertSuspend.setString(3,msidn);
+            deleteActive.setString(2,msisdn);
             deleteActive.executeUpdate();
+            insertSuspend = dbConfig.getConnection().prepareStatement ("insert into suspendedSubscriber (SIMCARD,MSISDN,userID) values(?,?,?)");
+            insertSuspend.setString(1,simcard);
+            insertSuspend.setString(2,msisdn);
+            insertSuspend.setString(3,userID);
             insertSuspend.executeUpdate();
             deleteActive.close();
             insertSuspend.close();
@@ -47,19 +53,55 @@ public class Provisioner {
 
     }
 
-    public void deleteSIMCard(String simcard, String msidn) {
+    public void deleteMSISDN(String simcard, String msisdn) {
         PreparedStatement deleteActive;
+        PreparedStatement deleteSuspended;
         try {
+            deleteSuspended = dbConfig.getConnection().prepareStatement ("delete from suspendedSubscriber where SIMCARD=? and MSISDN=?");
+            deleteSuspended.setString(1, simcard);
+            deleteSuspended.setString(2, msisdn);
+            deleteSuspended.executeUpdate();
             deleteActive = dbConfig.getConnection().prepareStatement ("delete from activeSubscriber where SIMCARD=? and MSISDN=?");
             deleteActive.setString(1, simcard);
-            deleteActive.setString(2, msidn);
+            deleteActive.setString(2, msisdn);
+            deleteActive.executeUpdate();
+            deleteSuspended.close();
+            deleteActive.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
 
     }
 
-    public void getStatus(){
+    public void getStatusMSISDN(String simcard, String msisdn){
+        PreparedStatement statusActive;
+        PreparedStatement statusSuspended;
+        ResultSet queryactive;
+        ResultSet querysuspended;
+        try {
+            statusSuspended = dbConfig.getConnection().prepareStatement ("select * from suspendedSubscriber where SIMCARD=? and MSISDN=?");
+            statusSuspended.setString(1, simcard);
+            statusSuspended.setString(2, msisdn);
+            querysuspended=statusSuspended.executeQuery();
+            statusSuspended.close();
+            statusActive = dbConfig.getConnection().prepareStatement ("select * from activeSubscriber where SIMCARD=? and MSISDN=?");
+            statusActive.setString(1, simcard);
+            statusActive.setString(2, msisdn);
+            queryactive=statusActive.executeQuery();
+            statusActive.close();
+            boolean statusact= queryactive.wasNull();
+            boolean statussupend= querysuspended.wasNull();
+            if(statusact){
 
+            }
+            else if(statussupend){
+
+            }
+            else{
+
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }

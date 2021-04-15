@@ -1,12 +1,15 @@
 
 CREATE DATABASE HLR;
-FLUSH PRIVILEGES;
-USE HLR
-CREATE TABLE activeSubscriber (SIMCARD VARCHAR(22), MSISDN VARCHAR(15), deviceType VARCHAR(30));
-INSERT INTO activeSubscriber (SIMCARD , MSISDN) VALUES (173864374,911234567, "temperature");
-INSERT INTO activeSubscriber (SIMCARD , MSISDN) VALUES (273864374,911234568, "motion");
-INSERT INTO activeSubscriber (SIMCARD , MSISDN) VALUES (373864374,911234569, "smoke");
-INSERT INTO activeSubscriber (SIMCARD , MSISDN) VALUES (373864574,911234570, "video"); 
-INSERT INTO activeSubscriber (SIMCARD , MSISDN) VALUES (373964574,911234571, "image"); 
 
-CREATE TABLE suspendedSubscriber (SIMCARD VARCHAR(22), MSISDN VARCHAR(15), deviceType VARCHAR(30));
+USE HLR
+
+
+CREATE TABLE activeSubscriber (SIMCARD VARCHAR(22), MSISDN VARCHAR(15), userID INT, deviceType VARCHAR(30));
+INSERT INTO activeSubscriber (SIMCARD , MSISDN, userID, deviceType) VALUES ("173864374","911234567", 1, "temperature");
+INSERT INTO activeSubscriber (SIMCARD , MSISDN, userID, deviceType) VALUES ("273864374","912234568", 2, "motion");
+INSERT INTO activeSubscriber (SIMCARD , MSISDN, userID, deviceType) VALUES ("383864374","913234569", 3, "video");
+INSERT INTO activeSubscriber (SIMCARD , MSISDN, userID, deviceType) VALUES ("493864574","914234570", 4, "image"); 
+INSERT INTO activeSubscriber (SIMCARD , MSISDN, userID, deviceType) VALUES ("573964574","915234571", 5, "smoke"); 
+
+CREATE TABLE suspendedSubscriber (SIMCARD VARCHAR(22), MSISDN VARCHAR(15), userID INT, deviceType VARCHAR(30));
+INSERT INTO suspendedSubscriber (SIMCARD , MSISDN, userID, deviceType) VALUES ("673964574","916234571", 6, "temperature"); 

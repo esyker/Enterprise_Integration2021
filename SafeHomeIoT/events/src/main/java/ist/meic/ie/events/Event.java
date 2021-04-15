@@ -16,6 +16,11 @@ public abstract class Event {
         this.deviceId = ((Long) event.get("deviceId")).intValue();
     }
 
+    public Event(String type, int deviceId) {
+        this.type = type;
+        this.deviceId = deviceId;
+    }
+
     public String getType() { return type; }
 
     public int getDeviceId() { return deviceId; }

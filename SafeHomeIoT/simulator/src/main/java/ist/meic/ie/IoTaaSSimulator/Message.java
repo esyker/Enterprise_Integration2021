@@ -26,16 +26,6 @@ public class Message {
 		this.equipment = equipment;
 	}
 
-
-
-
-
-
-
-	
-
-
-	
 	public Message()
 	{
 		super();
@@ -52,11 +42,6 @@ public class Message {
 		
 	}
 
-
-
-
-	
-
 	public String getSeqKey() {
 		return seqkey;
 	}
@@ -65,136 +50,61 @@ public class Message {
 		this.seqkey = seqkey;
 	}
 
-
-
-
-
-
 	public String getTimeStamp() {
 		return timeStamp;
 	}
-
-
-
-
-
 
 	public void setTimeStamp(String timeStamp) {
 		this.timeStamp = timeStamp;
 	}
 
-
-
-
-
-
 	public String getSimCard() {
 		return SimCard;
 	}
-
-
-
-
-
 
 	public void setSimCard(String simCard) {
 		SimCard = simCard;
 	}
 
-
-
-
-
-
 	public String getService() {
 		return service;
 	}
-
-
-
-
-
 
 	public void setService(String service) {
 		this.service = service;
 	}
 
-
-
-
-
-
 	public String getTimeduration() {
 		return timeduration;
 	}
-
-
-
-
-
 
 	public void setTimeduration(String timeduration) {
 		this.timeduration = timeduration;
 	}
 
-
-
-
-
-
 	public String getByteusage() {
 		return byteusage;
 	}
-
-
-
-
-
 
 	public void setByteusage(String byteusage) {
 		this.byteusage = byteusage;
 	}
 
-
-
-
-
-
 	public String getLocation() {
 		return location;
 	}
-
-
-
-
-
 
 	public void setLocation(String location) {
 		this.location = location;
 	}
 
-
-
-
-
-
 	public String getEquipment() {
 		return equipment;
 	}
 
-
-
-
-
-
 	public void setEquipment(String equipment) {
 		this.equipment = equipment;
 	}
-
-
-
-
-
 
 	@Override
 	public String toString() {
@@ -203,65 +113,20 @@ public class Message {
 				+ ", equipment=" + equipment + "]";
 	}
 
-
-
-
-
-
-
-
-
-
-
 	public String getAsText() {
 		return AsText;
 	}
-
-
-
-
-
-
-
-
-
-
 
 	public void setAsText(String asText) {
 		AsText = asText;
 	}
 
-
-
-
-
-
-
-
-
-
-
 	public String getDestinationCom() {
 		return destinationCom;
 	}
-
-
-
-
-
-
-
-
-
-
 
 	public void setDestinationCom(String destinationCom) {
 		this.destinationCom = destinationCom;
 	}
 
-
-
-
-	
-	
 }

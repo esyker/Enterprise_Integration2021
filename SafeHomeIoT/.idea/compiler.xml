@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="simulator" />
+        <module name="eventmediation" />
+        <module name="IoTaaSSimulator" />
+        <module name="utils" />
         <module name="provisioning" />
         <module name="eventmediationpre" />
-        <module name="eventmediation" />
-        <module name="utils" />
         <module name="events" />
       </profile>
     </annotationProcessing>

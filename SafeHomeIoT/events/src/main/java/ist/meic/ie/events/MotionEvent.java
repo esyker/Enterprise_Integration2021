@@ -19,6 +19,11 @@ public class MotionEvent extends Event {
         this.description = (String) event.get("description");
     }
 
+    public MotionEvent(String description, int deviceId) {
+        super("motion", deviceId);
+        this.description = description;
+    }
+
     public String getDescription() { return description; }
 
     @Override
@@ -39,7 +44,7 @@ public class MotionEvent extends Event {
     public String toString() {
         return "{\n" +
                 "\"type\": \"" + this.getType() + "\",\n" +
-                "\"deviceId\": \"" + this.getDeviceId() + "\",\n" +
+                "\"deviceId\": " + this.getDeviceId() + ",\n" +
                 "\"description\": \"" + this.getDescription() + "\"\n" +
                 "}";
     }

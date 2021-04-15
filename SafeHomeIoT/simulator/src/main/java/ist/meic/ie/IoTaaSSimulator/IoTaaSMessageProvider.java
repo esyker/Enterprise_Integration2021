@@ -1,26 +1,15 @@
 package ist.meic.ie.IoTaaSSimulator;
 
-import java.util.Properties;
-import java.util.Random;
-import java.util.Set;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import ist.meic.ie.events.Event;
+import ist.meic.ie.events.EventItem;
+import ist.meic.ie.events.exceptions.InvalidEventTypeException;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.json.simple.parser.ParseException;
 
-import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.KafkaProducer; 
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerConfig; 
-import org.apache.kafka.clients.producer.ProducerRecord; 
-import org.apache.kafka.clients.producer.RecordMetadata; 
-import org.apache.kafka.common.serialization.LongSerializer; 
-import org.apache.kafka.common.serialization.StringSerializer;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 
 public class IoTaaSMessageProvider {
 
@@ -37,7 +26,7 @@ public class IoTaaSMessageProvider {
 	static boolean aliens = false;
 	static boolean statusSIMCARD = false;
 	static HashMap <String , String> Subscribers = new HashMap <String , String>();
-	
+
 
 
 	private static String RandomSubscriberAlien() 
@@ -170,12 +159,12 @@ public class IoTaaSMessageProvider {
 	}
 	
 	
-	private static HashMap <String , String> ReadFromDB(HashMap <String , String> oldsubscribers) 
+	private static HashMap <String , String> ReadFromDB(HashMap <String , String> oldsubscribers)
 	{
 		oldsubscribers = null;
 		
 		HashMap <String , String> newsubscribers = new HashMap <String , String>();
-		
+
 		Connection conn = null;
 		
 		try 
@@ -186,7 +175,7 @@ public class IoTaaSMessageProvider {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM " + hlrTable);
 			while (rs.next())
 				newsubscribers.put( rs.getString("SIMCARD") , rs.getString("MSISDN"));
-			conn.close();			
+			conn.close();
 		}
 		catch (SQLException sqle) { System.out.println("SQLException: " + sqle); }
 		catch (ClassNotFoundException e) { e.printStackTrace();}
@@ -194,6 +183,35 @@ public class IoTaaSMessageProvider {
 		System.out.println("Subscriber list updated, with " + newsubscribers.size() + " subscribers.");
 		
 		return newsubscribers;
+	}
+
+	private static List<String> getAllDevices() throws SQLException {
+		Connection conn = null;
+		ResultSet rs = null;
+		List<String> eventsFromDb = new ArrayList<>();
+		try
+		{
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			conn = DriverManager.getConnection("jdbc:mysql://" + hlrServer + "/" + hlrDatabase , hlrUsername , hlrPassword);
+			Statement stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM " + hlrTable);
+			while (rs.next()) {
+				EventItem eventItem = new EventItem(rs.getString("deviceType"), rs.getInt("SIMCARD"));
+				String event = eventItem.getEvent().toString();
+				eventsFromDb.add(event);
+				System.out.println(event);
+
+			}
+
+		}
+		catch (SQLException sqle) { System.out.println("SQLException: " + sqle); }
+		catch (ClassNotFoundException e) { e.printStackTrace();} catch (InvalidEventTypeException e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null)
+				conn.close();
+		}
+		return eventsFromDb;
 	}
 	
 	
@@ -301,6 +319,16 @@ public class IoTaaSMessageProvider {
 		prd.send(record);
 		System.out.println("Sent...");
 	}
+
+	private static void SendMessage( String msg ,  KafkaProducer<String, String> prd , String topicTarget)
+	{
+		System.out.println("This is the message to send = " + msg);
+		String seqkey = new String("");
+		System.out.println("Sending new message to Kafka... with key=" + seqkey);
+		ProducerRecord<String, String> record = new ProducerRecord<>(topicTarget, seqkey, msg);
+		prd.send(record);
+		System.out.println("Sent...");
+	}
 	
 	
 	private static void SendSimpleMessage( String msg ,  KafkaProducer<String, String> prd , String topicTarget , Timestamp mili)
@@ -314,7 +342,7 @@ public class IoTaaSMessageProvider {
 	}
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 
 
 		String usage = "\nThe usage of the Activity Radio Network Simulator for IoTaaS is the following.\n\n" 
@@ -366,30 +394,32 @@ public class IoTaaSMessageProvider {
 				Timestamp miliupdatedStatus = new Timestamp ((long) 0);
 				Timestamp delta = new Timestamp ((long)  1 * 60 * 1000 ); // 1 minute to refresh data from database				
 				Timestamp deltaStatus = new Timestamp ((long)  5 * 60 * 1000 ); // 5 minutes to send new simcard status
-				
+				List<String> devices = null;
+
 				while (true)
 				{
 					try {
 						mili = new Timestamp(System.currentTimeMillis());
-						
-						if (mili.compareTo( new Timestamp ( miliupdated.getTime() + delta.getTime() ) ) > 0 )
-						{
-							Subscribers = ReadFromDB(Subscribers);			
+
+						if (mili.compareTo(new Timestamp(miliupdated.getTime() + delta.getTime())) > 0) {
+							Subscribers = ReadFromDB(Subscribers);
 							miliupdated = mili;
 						}
-						
-						if (statusSIMCARD == true && (mili.compareTo( new Timestamp ( miliupdatedStatus.getTime() + deltaStatus.getTime() ) ) > 0 ))
-						{
-							SendSimpleMessage( CreateStatusMessage(typeMessage , Subscribers) , producerCDR , "StatusSIMCARD" , mili);
+
+						if (statusSIMCARD == true && (mili.compareTo(new Timestamp(miliupdatedStatus.getTime() + deltaStatus.getTime())) > 0)) {
+
+							SendSimpleMessage(CreateStatusMessage(typeMessage, Subscribers), producerCDR, "StatusSIMCARD", mili);
 							miliupdatedStatus = mili;
-						}						
-						
-						if (!Subscribers.isEmpty() )
-						{
-							Message messageToSend =  CreateMessage(typeMessage , RandomSubscriber(Subscribers) , mili );						
-							if (messageToSend != null)	SendMessage( messageToSend , producerCDR , topic );
 						}
-						else System.out.println("Empty list of subscribers. Therefore, no message to send.");
+
+						devices = getAllDevices();
+						if (!devices.isEmpty()) {
+							devices.forEach(e -> SendMessage(e, producerCDR, topic));
+						} else {
+							System.out.println("Empty list of subscribers. Therefore, no message to send.");
+						}
+
+
 						
 						if (aliens == true && (new Random()).nextBoolean() ) 
 						{

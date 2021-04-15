@@ -17,6 +17,11 @@ public class TemperatureEvent extends Event {
         this.measurement = ((Double) event.get("measurement")).floatValue();
     }
 
+    public TemperatureEvent(float measurement, int deviceId) {
+        super("temperature", deviceId);
+        this.measurement = measurement;
+    }
+
     public float getMeasurement() {
         return measurement;
     }
@@ -39,7 +44,7 @@ public class TemperatureEvent extends Event {
     public String toString() {
         return "{\n" +
                 "\"type\": \"" + this.getType() + "\",\n" +
-                "\"deviceId\": \"" + this.getDeviceId() + "\",\n" +
+                "\"deviceId\": " + this.getDeviceId() + ",\n" +
                 "\"description\": " + this.getMeasurement() + "\n" +
                 "}";
     }

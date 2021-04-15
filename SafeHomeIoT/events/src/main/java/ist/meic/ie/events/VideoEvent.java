@@ -17,6 +17,11 @@ public class VideoEvent extends Event{
         this.description = (String) event.get("description");
     }
 
+    public VideoEvent(String description, int deviceId) {
+        super("video", deviceId);
+        this.description = description;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -39,7 +44,7 @@ public class VideoEvent extends Event{
     public String toString() {
         return "{\n" +
                 "\"type\": \"" + this.getType() + "\",\n" +
-                "\"deviceId\": \"" + this.getDeviceId() + "\",\n" +
+                "\"deviceId\": " + this.getDeviceId() + ",\n" +
                 "\"description\": \"" + this.getDescription() + "\"\n" +
                 "}";
     }

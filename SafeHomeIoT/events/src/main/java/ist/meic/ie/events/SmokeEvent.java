@@ -17,6 +17,10 @@ public class SmokeEvent extends Event{
         this.measurement = ((Double) event.get("measurement")).floatValue();
     }
 
+    public SmokeEvent(float measurement, int deviceId) {
+        super("smoke", deviceId);
+        this.measurement = measurement;
+    }
 
     public float getMeasurement() {
         return measurement;
@@ -40,7 +44,7 @@ public class SmokeEvent extends Event{
     public String toString() {
         return "{\n" +
                 "\"type\": \"" + this.getType() + "\",\n" +
-                "\"deviceId\": \"" + this.getDeviceId() + "\",\n" +
+                "\"deviceId\": " + this.getDeviceId() + ",\n" +
                 "\"measurement\": " + this.getMeasurement() + "\n" +
                 "}";
     }

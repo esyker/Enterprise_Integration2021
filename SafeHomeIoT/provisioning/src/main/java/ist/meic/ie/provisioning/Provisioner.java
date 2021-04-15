@@ -1,14 +1,17 @@
 package ist.meic.ie.provisioning;
 
 import ist.meic.ie.utils.DatabaseConfig;
+import ist.meic.ie.utils.KafkaConfig;
+import ist.meic.ie.utils.ZookeeperConfig;
+
 import java.sql.*;
+import java.util.Properties;
 
 public class Provisioner {
     private DatabaseConfig dbConfig;
 
     public Provisioner(){
         this.dbConfig = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");;
-
     }
 
     public void activateSIMCard(String simcard, String msidn, String subType){//insert into db new SIMCARD
@@ -61,5 +64,27 @@ public class Provisioner {
 
     public void getStatus(){
 
+    }
+
+    public void createUser(String name) {
+        int userId = 0;
+        try {
+            PreparedStatement stmt = dbConfig.getConnection().prepareStatement("insert into user (name) values(?)");
+            stmt.setString(1, name);
+            stmt.executeUpdate();
+            stmt.close();
+
+            Statement stmt1 = dbConfig.getConnection().createStatement();
+            ResultSet userIds = stmt1.executeQuery("select * from user where name=\"" + name + "\"");
+            while (userIds.next()) {
+                userId = userIds.getInt("id");
+            }
+            ZookeeperConfig zkConfig = new ZookeeperConfig("34.229.138.203:2181", 10 * 1000, 8 * 1000);
+            KafkaConfig.createTopic(zkConfig, false, "usertopic-" + userId, 1, 1, new Properties());
+            zkConfig.getZkClient().close();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }

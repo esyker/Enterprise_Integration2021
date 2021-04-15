@@ -1,6 +1,7 @@
 package ist.meic.ie.eventmediationpre;
 
 import ist.meic.ie.events.exceptions.InvalidEventTypeException;
+import ist.meic.ie.utils.DatabaseConfig;
 import ist.meic.ie.utils.KafkaConfig;
 import org.apache.commons.cli.*;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -11,18 +12,20 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Mediator {
     public static void main(String[] args) throws SQLException {
         CommandLine cmd = parseArgs(args);
-        List<String> topics = new ArrayList<String>(Arrays.asList(cmd.getOptionValue("topics").split(":")));
-        System.out.println(topics);
 
-        KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "group-id-test", topics);
+        KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "mediator", Collections.singletonList("safehomeiot-events"));
         KafkaProducer<String, String> producer = KafkaConfig.createKafkaProducer(cmd.getOptionValue("kafkaip"));
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(100);
@@ -37,7 +40,7 @@ public class Mediator {
                     if (event.get("type") == null)
                         throw new InvalidEventTypeException(event.toJSONString());
                     else {
-                        ProducerRecord<String, String> producerRecord = new ProducerRecord<>(event.get("type") + "-events", (String)event.get("type"), record.value());
+                        ProducerRecord<String, String> producerRecord = new ProducerRecord<>("usertopic-" + event.get("userId"), record.value());
                         producer.send(producerRecord);
                     }
                 } catch (InvalidEventTypeException | org.json.simple.parser.ParseException e) {
@@ -45,8 +48,9 @@ public class Mediator {
                 }
             }
         }
-
     }
+
+
 
     private static CommandLine parseArgs(String[] args) {
         Options options = new Options();

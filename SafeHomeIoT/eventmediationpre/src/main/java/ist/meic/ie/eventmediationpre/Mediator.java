@@ -31,7 +31,7 @@ public class Mediator {
         CommandLine cmd = parseArgs(args);
         createNewTopics();
 
-        KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "mediator", Collections.singletonList("safehomeiot-events"));
+        KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "mediatorpre", Collections.singletonList("safehomeiot-events"));
         KafkaProducer<String, String> producer = KafkaConfig.createKafkaProducer(cmd.getOptionValue("kafkaip"));
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(100);

@@ -1,6 +1,6 @@
 #Modules
 
-Our project enterprise integration system is divided into 4 modules, which can be found in the SafeHomeIoT project folder:
+Our project enterprise integration system is divided into 5 modules, which can be found in the SafeHomeIoT project folder:
 
 1. simulator
 2. provisioning
@@ -25,7 +25,7 @@ The jar files of the modules that run on virtual machines should run with the fo
 ```mvn exec:java <arguments>```
 
 1. provisioning - AWS Lambda
-   Deployed directly to AWS Lambda.  
+   Deployed directly to AWS Lambda with no arguments.  
 
 2. simulator - Ubuntu Virtual Machine with kafka producer that produces all the messages from the IoT devices to a Kafka Topic named EventsTopic.
    Run the command: 
@@ -37,7 +37,7 @@ The jar files of the modules that run on virtual machines should run with the fo
    1st Layer Mediation
    Ubuntu Virtual machine with a kafka Consumer and a Producer that consume messages from the EventsTopic provisioned by the simulator and write to
    several different topics, based on the client that each IoT device is associated to the events are written to a different topic for each client.
-   Command: ```mvn exec:java -Dexec.args="-kafkaip {KAFKA_BROKER_IP}:9092 -topics safehomeiot-events"```
+   Command: ```mvn exec:java -Dexec.args="-kafkaip \{KAFKA\_BROKER\_IP\}:9092 -topics safehomeiot-events"```
 
 4. events
    This module shouldn't be called directly on any machine. It just contains event class definitions that are used in the eventmediation module.
@@ -47,7 +47,7 @@ The jar files of the modules that run on virtual machines should run with the fo
    Ubuntu Virtual machine with a kafka Consumer that reads messages from the several topics. 
    There is one topic for each client, so events are consumed from several topics each for a different client.
    The events are written to a database and are also available to an upper layer to be consumed.
-   Run the command: ```mvn exec:java -Dexec.args="-kafkaip {KAFKA_BROKER_IP}:9092 -topics temperature-events:motion-events:smoke-events:video-events:image-events"```
+   Run the command: ```mvn clean compile exec:java -Dexec.args="-kafkaip  \{KAFKA\_BROKER\_IP\}:9092""```
  
 
 ##simulator module

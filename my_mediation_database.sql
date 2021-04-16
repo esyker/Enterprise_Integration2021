@@ -13,6 +13,7 @@ CREATE TABLE temperatureMessage (
 	PRIMARY KEY(ID)
 );
 
+DROP TABLE IF EXISTS imageMessage;
 CREATE TABLE imageMessage (
 	ID INT AUTO_INCREMENT, 
 	deviceID INT,
@@ -23,6 +24,7 @@ CREATE TABLE imageMessage (
 	PRIMARY KEY(ID)
 );
 
+DROP TABLE IF EXISTS videoMessage;
 CREATE TABLE videoMessage (
 	ID INT AUTO_INCREMENT, 
 	deviceID INT,
@@ -33,6 +35,7 @@ CREATE TABLE videoMessage (
 	PRIMARY KEY(ID)
 );
 
+DROP TABLE IF EXISTS smokeMessage;
 CREATE TABLE smokeMessage (
 	ID INT AUTO_INCREMENT, 
 	deviceID INT,
@@ -43,7 +46,7 @@ CREATE TABLE smokeMessage (
 	PRIMARY KEY(ID)
 );
 
-
+DROP TABLE IF EXISTS motionMessage;
 CREATE TABLE motionMessage (
 	ID INT AUTO_INCREMENT, 
 	deviceID INT,
@@ -53,10 +56,4 @@ CREATE TABLE motionMessage (
 	userID INT,
 	PRIMARY KEY(ID)
 );
-
-
-
-CREATE TABLE device(ID INT AUTO_INCREMENT, userID INT, deviceType VARCHAR(20), PRIMARY KEY(ID));
-
-CREATE TABLE deviceConfiguration(ID INT AUTO_INCREMENT, userID INT, PRIMARY KEY(ID,userID), description VARCHAR(200));
 

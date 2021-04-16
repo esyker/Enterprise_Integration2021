@@ -25,7 +25,7 @@ public class Mediator {
 
         DatabaseConfig provisionConfig = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");
         Statement stmt = provisionConfig.getConnection().createStatement();
-        ResultSet userIds = stmt.executeQuery("select * from users");
+        ResultSet userIds = stmt.executeQuery("select * from user");
         while (userIds.next()) {
             topics.add("usertopic-" + String.valueOf(userIds.getInt("id")));
         }
@@ -39,7 +39,7 @@ public class Mediator {
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {
                 try {
-                    EventItem eventItem =  new EventItem(record.value(), record.topic());
+                    EventItem eventItem =  new EventItem(record.value());
                     eventItem.getEvent().insertToDb(config);
                     System.out.println(eventItem.getEvent());
                 } catch (InvalidEventTypeException | ParseException e) {

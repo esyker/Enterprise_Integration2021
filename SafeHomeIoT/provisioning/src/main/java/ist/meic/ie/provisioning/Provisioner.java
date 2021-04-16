@@ -5,6 +5,7 @@ import ist.meic.ie.utils.KafkaConfig;
 import ist.meic.ie.utils.ZookeeperConfig;
 
 import java.sql.*;
+import java.util.MissingFormatArgumentException;
 import java.util.Properties;
 
 public class Provisioner {
@@ -17,6 +18,12 @@ public class Provisioner {
     public void activateMSISDN(String simcard, String msisdn, String userID, String deviceType){//insert into db new SIMCARD
         PreparedStatement activation;
         PreparedStatement deleteSuspend;
+
+        if (simcard == null) throw new MissingFormatArgumentException("No SIM Card defined!");
+        if (msisdn == null) throw new MissingFormatArgumentException("No Device Type defined!");
+        if (userID == null) throw new MissingFormatArgumentException("No MSISDN defined!");
+        if (deviceType == null) throw new MissingFormatArgumentException("No Device Type defined!");
+
         try {
             deleteSuspend = dbConfig.getConnection().prepareStatement ("delete from suspendedSubscriber where SIMCARD=? and MSISDN=?");
             deleteSuspend.setString(1,simcard);
@@ -37,6 +44,11 @@ public class Provisioner {
     }
 
     public void suspendMSISDN(String simcard, String msisdn, String userID) {
+
+        if (simcard == null) throw new MissingFormatArgumentException("No SIM Card defined!");
+        if (msisdn == null) throw new MissingFormatArgumentException("No Device Type defined!");
+        if (userID == null) throw new MissingFormatArgumentException("No MSISDN defined!");
+
         PreparedStatement deleteActive;
         PreparedStatement insertSuspend;
         PreparedStatement stmt;
@@ -67,6 +79,10 @@ public class Provisioner {
     }
 
     public void deleteMSISDN(String simcard, String msisdn) {
+
+        if (simcard == null) throw new MissingFormatArgumentException("No SIM Card defined!");
+        if (msisdn == null) throw new MissingFormatArgumentException("No Device Type defined!");
+
         PreparedStatement deleteActive;
         PreparedStatement deleteSuspended;
         try {
@@ -87,6 +103,10 @@ public class Provisioner {
     }
 
     public String getStatusMSISDN(String simcard, String msisdn){
+
+        if (simcard == null) throw new MissingFormatArgumentException("No SIM Card defined!");
+        if (msisdn == null) throw new MissingFormatArgumentException("No Device Type defined!");
+
         PreparedStatement statusActive;
         PreparedStatement statusSuspended;
         ResultSet queryactive;
@@ -128,6 +148,7 @@ public class Provisioner {
     }
 
     public void createUser(String name) {
+        if (name == null) throw new MissingFormatArgumentException("No name defined!");
         int userId = 0;
         ZookeeperConfig zkConfig = null;
         try {
@@ -141,7 +162,8 @@ public class Provisioner {
             while (userIds.next()) {
                 userId = userIds.getInt("id");
             }
-
+            stmt.close();
+            dbConfig.getConnection().close();
             zkConfig = new ZookeeperConfig("34.229.138.203:2181", 10 * 1000, 8 * 1000);
             KafkaConfig.createTopic(zkConfig, false, "usertopic-" + userId, 1, 1, new Properties());
 

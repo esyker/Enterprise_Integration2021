@@ -46,7 +46,7 @@ public class TemperatureEvent extends Event {
         return "{\n" +
                 "\"type\": \"" + this.getType() + "\",\n" +
                 "\"deviceId\": " + this.getDeviceId() + ",\n" +
-                "\"description\": " + this.getMeasurement() + ",\n" +
+                "\"measurement\": " + this.getMeasurement() + ",\n" +
                 "\"userId\": " + this.getUserId() + "\n" +
                 "}";
     }

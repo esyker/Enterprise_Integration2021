@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Date;
 
 public class VideoEvent extends Event{
     private String description;
@@ -17,8 +18,13 @@ public class VideoEvent extends Event{
         this.description = (String) event.get("description");
     }
 
-    public VideoEvent(String description, int deviceId) {
-        super("video", deviceId);
+    public VideoEvent(String description, int deviceId, int userId) {
+        super("video", deviceId, userId);
+        this.description = description;
+    }
+
+    public VideoEvent(String description, int deviceId, int userId, Date ts) {
+        super("video", deviceId, userId, ts);
         this.description = description;
     }
 
@@ -47,7 +53,8 @@ public class VideoEvent extends Event{
                 "\"type\": \"" + this.getType() + "\",\n" +
                 "\"deviceId\": " + this.getDeviceId() + ",\n" +
                 "\"description\": \"" + this.getDescription() + "\",\n" +
-                "\"userId\": " + this.getUserId() + "\n" +
+                "\"userId\": " + this.getUserId() + ",\n" +
+                "\"timestamp\": " + this.getTimestamp() + "\n" +
                 "}";
     }
 }

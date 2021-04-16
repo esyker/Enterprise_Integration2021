@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Date;
 
 public class TemperatureEvent extends Event {
     private float measurement;
@@ -17,8 +18,13 @@ public class TemperatureEvent extends Event {
         this.measurement = ((Double) event.get("measurement")).floatValue();
     }
 
-    public TemperatureEvent(float measurement, int deviceId) {
-        super("temperature", deviceId);
+    public TemperatureEvent(float measurement, int deviceId, int userId) {
+        super("temperature", deviceId, userId);
+        this.measurement = measurement;
+    }
+
+    public TemperatureEvent(float measurement, int deviceId, int userId, Date ts) {
+        super("temperature", deviceId, userId, ts);
         this.measurement = measurement;
     }
 
@@ -47,7 +53,8 @@ public class TemperatureEvent extends Event {
                 "\"type\": \"" + this.getType() + "\",\n" +
                 "\"deviceId\": " + this.getDeviceId() + ",\n" +
                 "\"measurement\": " + this.getMeasurement() + ",\n" +
-                "\"userId\": " + this.getUserId() + "\n" +
+                "\"userId\": " + this.getUserId() + ",\n" +
+                "\"timestamp\": " + this.getTimestamp() + "\n" +
                 "}";
     }
 

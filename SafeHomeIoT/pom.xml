@@ -27,6 +27,7 @@
         <module>eventmediationpre</module>
         <module>IoTaaSSimulator-main</module>
         <module>simulator</module>
+        <module>eventservice</module>
     </modules>
 
 </project>

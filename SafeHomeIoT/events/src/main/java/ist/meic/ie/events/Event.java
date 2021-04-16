@@ -4,10 +4,13 @@ import ist.meic.ie.events.exceptions.InvalidEventTypeException;
 import ist.meic.ie.utils.DatabaseConfig;
 import org.json.simple.JSONObject;
 
+import java.util.Date;
+
 public abstract class Event {
     private String type;
     private int deviceId;
     private int userId;
+    private Date timestamp;
 
 
     public Event(JSONObject event) throws InvalidEventTypeException {
@@ -18,9 +21,18 @@ public abstract class Event {
         this.userId = ((Long) event.get("userId")).intValue();
     }
 
-    public Event(String type, int deviceId) {
+    @Deprecated
+    public Event(String type, int deviceId, int userId) {
         this.type = type;
         this.deviceId = deviceId;
+        this.userId = userId;
+    }
+
+    public Event(String type, int deviceId, int userId, Date timestamp) {
+        this.type = type;
+        this.deviceId = deviceId;
+        this.userId = userId;
+        this.timestamp = timestamp;
     }
 
     public int getUserId() {
@@ -34,6 +46,14 @@ public abstract class Event {
     public String getType() { return type; }
 
     public int getDeviceId() { return deviceId; }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
 
     public abstract void insertToDb(DatabaseConfig config);
 

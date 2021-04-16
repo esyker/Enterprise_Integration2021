@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Date;
 
 public class ImageEvent extends Event{
 
@@ -18,8 +19,13 @@ public class ImageEvent extends Event{
         this.description = (String) event.get("description");
     }
 
-    public ImageEvent(String description, int deviceId) {
-        super("image", deviceId);
+    public ImageEvent(String description, int deviceId, int userId) {
+        super("image", deviceId, userId);
+        this.description = description;
+    }
+
+    public ImageEvent(String description, int deviceId, int userId, Date ts) {
+        super("image", deviceId, userId, ts);
         this.description = description;
     }
 
@@ -48,7 +54,8 @@ public class ImageEvent extends Event{
                 "\"type\": \"" + this.getType() + "\",\n" +
                 "\"deviceId\": " + this.getDeviceId() + ",\n" +
                 "\"description\": \"" + this.getDescription() + "\",\n" +
-                "\"userId\": " + this.getUserId() + "\n" +
+                "\"userId\": " + this.getUserId() + ",\n" +
+                "\"timestamp\": " + this.getTimestamp() + "\n" +
                 "}";
     }
 }

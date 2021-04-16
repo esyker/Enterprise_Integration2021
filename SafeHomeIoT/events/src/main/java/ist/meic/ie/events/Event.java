@@ -15,6 +15,7 @@ public abstract class Event {
             throw new InvalidEventTypeException(event.toJSONString());
         this.type = (String) event.get("type");
         this.deviceId = ((Long) event.get("deviceId")).intValue();
+        this.userId = ((Long) event.get("userId")).intValue();
     }
 
     public Event(String type, int deviceId) {

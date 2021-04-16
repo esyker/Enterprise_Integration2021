@@ -26,6 +26,16 @@ public class KafkaConfig {
         zkClient.close();
     }
 
+    public static boolean topicExists(ZookeeperConfig zookeeperConfig, boolean isSecureKafkaCluster, String topicname) {
+        ZkClient zkClient = zookeeperConfig.openZkClient();
+        ZkConnection zkConnection = zookeeperConfig.connect();
+        ZkUtils zkUtils = new ZkUtils(zkClient, zkConnection, isSecureKafkaCluster);
+        boolean exists = AdminUtils.topicExists(zkUtils, topicname);
+        zkClient.close();
+        return exists;
+    }
+
+
     public static KafkaConsumer<String, String> createKafkaConsumer(String bootstrapServers, String groupId, List<String> topicsToSubscribe) {
         Properties consumerProperties = new Properties();
         consumerProperties.put("bootstrap.servers", bootstrapServers);

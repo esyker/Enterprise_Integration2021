@@ -34,7 +34,6 @@ public class MotionEvent extends Event {
             stmt.setString(2, this.getDescription());
             stmt.setString(3, this.getType());
             stmt.setInt(4, this.getUserId());
-
             stmt.execute();
             stmt.close();
         } catch (SQLException e) {

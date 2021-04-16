@@ -1,7 +1,15 @@
 package ist.meic.ie.eventmediationpre;
 
 import ist.meic.ie.events.exceptions.InvalidEventTypeException;
+import ist.meic.ie.utils.DatabaseConfig;
 import ist.meic.ie.utils.KafkaConfig;
+import ist.meic.ie.utils.ZookeeperConfig;
+import kafka.admin.AdminUtils;
+import kafka.admin.RackAwareMode;
+import kafka.utils.ZKStringSerializer$;
+import kafka.utils.ZkUtils;
+import org.I0Itec.zkclient.ZkClient;
+import org.I0Itec.zkclient.ZkConnection;
 import org.apache.commons.cli.*;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -11,18 +19,19 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.sql.Statement;
+import java.util.*;
 
 public class Mediator {
     public static void main(String[] args) throws SQLException {
         CommandLine cmd = parseArgs(args);
-        List<String> topics = new ArrayList<String>(Arrays.asList(cmd.getOptionValue("topics").split(":")));
-        System.out.println(topics);
+        createNewTopics();
 
-        KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "group-id-test", topics);
+        KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "mediator", Collections.singletonList("safehomeiot-events"));
         KafkaProducer<String, String> producer = KafkaConfig.createKafkaProducer(cmd.getOptionValue("kafkaip"));
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(100);
@@ -34,7 +43,7 @@ public class Mediator {
                     if (event.get("type") == null)
                         throw new InvalidEventTypeException(event.toJSONString());
                     else {
-                        ProducerRecord<String, String> producerRecord = new ProducerRecord<>(event.get("type") + "-events", (String)event.get("type"), record.value());
+                        ProducerRecord<String, String> producerRecord = new ProducerRecord<>("usertopic-" + event.get("userId"), record.value());
                         producer.send(producerRecord);
                     }
                 } catch (InvalidEventTypeException | org.json.simple.parser.ParseException e) {
@@ -42,8 +51,20 @@ public class Mediator {
                 }
             }
         }
-
     }
+
+    private static void createNewTopics() throws SQLException {
+        ZookeeperConfig zkConfig = new ZookeeperConfig("34.229.138.203:2181", 10 * 1000, 8 * 1000);
+        DatabaseConfig provisionConfig = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");
+        Statement stmt = provisionConfig.getConnection().createStatement();
+        ResultSet userIds = stmt.executeQuery("select * from user");
+        while (userIds.next()) {
+            if(!KafkaConfig.topicExists(zkConfig, false, "usertopic-" + userIds.getInt("ID"))) {
+                KafkaConfig.createTopic(zkConfig, false, "usertopic-" + userIds.getInt("ID"), 1, 1, new Properties());
+            }
+        }
+    }
+
 
     private static CommandLine parseArgs(String[] args) {
         Options options = new Options();

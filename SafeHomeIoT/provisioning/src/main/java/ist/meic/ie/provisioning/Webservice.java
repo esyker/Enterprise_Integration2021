@@ -1,16 +1,12 @@
 package ist.meic.ie.provisioning;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import ist.meic.ie.utils.DatabaseConfig;
-import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
-import java.sql.*;
 import java.util.MissingFormatArgumentException;
 
 public class Webservice implements RequestStreamHandler{
@@ -27,42 +23,44 @@ public class Webservice implements RequestStreamHandler{
             String msisdn = "";
             String userID = "";
             String deviceType = "";
-            /*if (event.get("body") == null)
-                throw new MissingFormatArgumentException("No message body defined!");
-            JSONObject bodyjson = (JSONObject) parser.parse((String) event.get("body"));*/
-            if (event.get("action") == null)
-                throw new MissingFormatArgumentException("No Action defined!");
+            String newUserName = "";
+
             action = (String) event.get("action");
-            if (event.get("SIMCARD") == null)
-                throw new MissingFormatArgumentException("No SIM Card defined!");
-            simcard = (String) event.get("SIMCARD");
-            if (event.get("MSISDN") == null)
-                throw new MissingFormatArgumentException("No MSISDN defined!");
-            msisdn = (String) event.get("MSISDN");
-            if (event.get("userID") == null)
-                throw new MissingFormatArgumentException("No User ID defined!");
-            userID = (String) event.get("userID");
-            if (event.get("userID") == null)
-                throw new MissingFormatArgumentException("No Device Type defined!");
-            deviceType = (String) event.get("deviceType");
+            if (action == null) throw new MissingFormatArgumentException("No action defined!");
+
 
             Provisioner provisioner = new Provisioner();
             switch(action)
             {
                 case "activate"://{"action":"activate","MSISDN":"12312312","SIMCARD":"913123123","userID":6}
+                    simcard = (String) event.get("SIMCARD");
+                    msisdn = (String) event.get("MSISDN");
+                    userID = (String) event.get("userID");
+                    deviceType = (String) event.get("deviceType");
                     provisioner.activateMSISDN(simcard, msisdn, userID, deviceType);
                     break;
                 case "suspend"://{"action":"suspend","MSISDN":"12312312","SIMCARD":"913123123","userID":5}
+                    simcard = (String) event.get("SIMCARD");
+                    msisdn = (String) event.get("MSISDN");
+                    userID = (String) event.get("userID");
                     provisioner.suspendMSISDN(simcard,msisdn,userID);
                     break;
                 case "delete"://{"action":"delete",MSISDN:"12312312",SIMCARD:"913123123","userID":4}
+                    simcard = (String) event.get("SIMCARD");
+                    msisdn = (String) event.get("MSISDN");
                     provisioner.deleteMSISDN(simcard,msisdn);
                     break;
                 case "getStatus"://{"action":"getStatus","MSISDN":"12312312","SIMCARD":"913123123","userID":3}
+                    simcard = (String) event.get("SIMCARD");
+                    msisdn = (String) event.get("MSISDN");
                     String status = provisioner.getStatusMSISDN(simcard,msisdn);
                     OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
                     writer.write(status);
                     writer.close();
+                    break;
+                case "createUser":
+                    newUserName = (String)event.get("newUserName");
+                    provisioner.createUser(newUserName);
                     break;
                 default:
                     logger.log("No such action!\n");

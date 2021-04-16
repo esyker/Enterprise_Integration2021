@@ -1,16 +1,15 @@
-imaCREATE TABLE User(ID INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(50), address VARCHAR(50));
-
 ###########SENSORS#################
 CREATE DATABASE IF NOT EXISTS SafeHomeIoTEvents;
 USE SafeHomeIoTEvents;
 
-
+DROP TABLE IF EXISTS temperatureMessage;
 CREATE TABLE temperatureMessage (
 	ID INT AUTO_INCREMENT, 
 	deviceID INT,
 	measurement FLOAT,
 	type VARCHAR(30),
 	ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	userID INT,
 	PRIMARY KEY(ID)
 );
 
@@ -20,6 +19,7 @@ CREATE TABLE imageMessage (
 	description VARCHAR(30),
 	type VARCHAR(30),
 	ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	userID INT,
 	PRIMARY KEY(ID)
 );
 
@@ -29,6 +29,7 @@ CREATE TABLE videoMessage (
 	description VARCHAR(30),
 	type VARCHAR(30),
 	ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	userID INT,
 	PRIMARY KEY(ID)
 );
 
@@ -38,6 +39,7 @@ CREATE TABLE smokeMessage (
 	measurement FLOAT,
 	type VARCHAR(30),
 	ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	userID INT,
 	PRIMARY KEY(ID)
 );
 
@@ -48,6 +50,7 @@ CREATE TABLE motionMessage (
 	description VARCHAR(30),
 	type VARCHAR(30),
 	ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	userID INT,
 	PRIMARY KEY(ID)
 );
 

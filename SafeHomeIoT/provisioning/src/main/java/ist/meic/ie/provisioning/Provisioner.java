@@ -129,6 +129,7 @@ public class Provisioner {
 
     public void createUser(String name) {
         int userId = 0;
+        ZookeeperConfig zkConfig = null;
         try {
             PreparedStatement stmt = dbConfig.getConnection().prepareStatement("insert into user (name) values(?)");
             stmt.setString(1, name);
@@ -140,11 +141,11 @@ public class Provisioner {
             while (userIds.next()) {
                 userId = userIds.getInt("id");
             }
-            ZookeeperConfig zkConfig = new ZookeeperConfig("34.229.138.203:2181", 10 * 1000, 8 * 1000);
-            KafkaConfig.createTopic(zkConfig, false, "usertopic-" + userId, 1, 1, new Properties());
-            zkConfig.getZkClient().close();
 
-        } catch (SQLException throwables) {
+            zkConfig = new ZookeeperConfig("34.229.138.203:2181", 10 * 1000, 8 * 1000);
+            KafkaConfig.createTopic(zkConfig, false, "usertopic-" + userId, 1, 1, new Properties());
+
+        } catch (Exception throwables) {
             throwables.printStackTrace();
         }
     }

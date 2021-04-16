@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
 public abstract class Event {
     private String type;
     private int deviceId;
+    private int userId;
 
 
     public Event(JSONObject event) throws InvalidEventTypeException {
@@ -24,6 +25,10 @@ public abstract class Event {
     public String getType() { return type; }
 
     public int getDeviceId() { return deviceId; }
+
+    public int getUserId() { return userId; }
+
+    public void setUserId(int userId) { this.userId = userId; }
 
     public abstract void insertToDb(DatabaseConfig config);
 

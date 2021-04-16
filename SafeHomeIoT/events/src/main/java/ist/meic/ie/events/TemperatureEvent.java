@@ -29,10 +29,11 @@ public class TemperatureEvent extends Event {
     @Override
     public void insertToDb(DatabaseConfig config) {
         try {
-            PreparedStatement stmt = config.getConnection().prepareStatement("insert into temperatureMessage (deviceID, measurement, type) values(?,?,?)");
+            PreparedStatement stmt = config.getConnection().prepareStatement("insert into temperatureMessage (deviceID, measurement, type, userID) values(?,?,?,?)");
             stmt.setLong(1, this.getDeviceId());
             stmt.setFloat(2, this.getMeasurement());
             stmt.setString(3, this.getType());
+            stmt.setInt(4, this.getUserId());
             stmt.execute();
             stmt.close();
         } catch (SQLException e) {
@@ -45,7 +46,8 @@ public class TemperatureEvent extends Event {
         return "{\n" +
                 "\"type\": \"" + this.getType() + "\",\n" +
                 "\"deviceId\": " + this.getDeviceId() + ",\n" +
-                "\"description\": " + this.getMeasurement() + "\n" +
+                "\"description\": " + this.getMeasurement() + ",\n" +
+                "\"userId\": " + this.getUserId() + "\n" +
                 "}";
     }
 

@@ -1,4 +1,4 @@
-#Modules
+# Modules
 
 Our project enterprise integration system is divided into 4 modules, which can be found in the SafeHomeIoT project folder:
 
@@ -9,14 +9,14 @@ Our project enterprise integration system is divided into 4 modules, which can b
 5. eventmediation
 
 
-###Installation
+### Installation
 
 Install maven.
 Run the command ```mvn clean install``` from the project SafeHomeIoT root folder.
 A jar file will be generated for each module.
 
 
-###Running the project
+### Running the project
 The project should be run on different virtual machines/serverless functions (aws lambda). Each jar file is deployed on each of these different platforms.
 There is a Kafka broker cluster running on AWS EC2. 
 The project modules consume/produce to this kafka broker cluster.
@@ -50,24 +50,24 @@ The jar files of the modules that run on virtual machines should run with the fo
    Run the command: ```mvn exec:java -Dexec.args="-kafkaip {KAFKA_BROKER_IP}:9092 -topics temperature-events:motion-events:smoke-events:video-events:image-events"```
  
 
-##simulator module
+## simulator module
 This module simulates the IoT device network activity. 
 The type of messages simulated are:
 
-1. temperatureMessage:{ "ID":10, "deviceID":3, measurement:28.3, type:"temperature", ts:"2021-01-19 03:14:07"}
+1. temperatureMessage:{ "userID":10, "deviceID":3, measurement:28.3, type:"temperature", ts:"2021-01-19 03:14:07"}
 
-2. imageMessage:{ "ID":10, "deviceID":3, description:"cat", type:"image", ts:"2021-01-19 03:14:07"}
+2. imageMessage:{ "userID":10, "deviceID":3, description:"cat", type:"image", ts:"2021-01-19 03:14:07"}
 
-3. videoMessage:{ "ID":10, "deviceID":3, description:"cat moving", type:"video", ts:"2021-01-19 03:14:07"}
+3. videoMessage:{ "userID":10, "deviceID":3, description:"cat moving", type:"video", ts:"2021-01-19 03:14:07"}
 
-4. smokeMessage:{ "ID":10, "deviceID":3, measurement:0.7, type:"smoke", ts:"2021-01-19 03:14:07"}
+4. smokeMessage:{ "userID":10, "deviceID":3, measurement:0.7, type:"smoke", ts:"2021-01-19 03:14:07"}
  
-5. motionMessage:{ "ID":10, "deviceID":3, measurement:1 , type:"smoke", ts:"2021-01-19 03:14:07"}
+5. motionMessage:{ "userID":10, "deviceID":3, measurement:1 , type:"smoke", ts:"2021-01-19 03:14:07"}
 
 These messages are generated according to the IoT devices registered in a database that is defined in provisioning. The IoT devices are defined in that database that is
 manipulated by the provisioning. The messages are generated according to the data in this database.
 
-##provisioning module
+##p rovisioning module
 This module activates the devices present in the radio network simulator. 
 A database with two is created with the schema described by the following code:
 
@@ -92,15 +92,21 @@ The device identified by SIMCARD and MSISDN is removed both from the activeSubsc
 4. getStatus(SIMCARD,MSISDN) 
 The current status of the device identified by SIMCARD and MSISDN is returned from the database, whether it is active or suspended.
 
-###eventmediationpre module
+### eventmediationpre module
 This module contains the 1st level mediation layer. 
 It consumes the messages from the EventsTopic, that is served by the simulator.
 Then a new topic is chosen to which the messages are produced, based on the client that is the owner of the device, as there is a topic for each different client.
 For example, for a message with the following signature { "ID":10, "deviceID":3, measurement:1 , type:"smoke", ts:"2021-01-19 03:14:07"}, the message would be consumed
-and then the same message would be produced to a new topic in the kafka broker with the name TOPIC_USER10.
+and then the same message would be produced to a new topic in the kafka broker with the name usertopic-10.
 
 
-###eventmediation module
+### eventmediation module
 This module contains the 2nd level mediation layer. 
 It consumes the messages from the clients topics and saves them to a database. 
-It also makes the data available through an API to an upper layer, which will be developed in the next sprint. 
+It also makes the data available through an API to an upper layer, which will be developed in the next sprint.
+
+### eventmservice module
+
+AWS lambda function that implements getNextEvent() by accessing the Event-Database. It receives JSON as input
+with userId, typeEvent and lastReceivedId. It returns the events of the given type, belonging to the given user
+whose id is greater than lastReceivedId.

@@ -28,6 +28,7 @@ public class Mediator {
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {
                 try {
+                    System.out.println(record.value());
                     EventItem eventItem =  new EventItem(record.value(), record.topic());
                     eventItem.getEvent().insertToDb(config);
                     System.out.println(eventItem.getEvent());

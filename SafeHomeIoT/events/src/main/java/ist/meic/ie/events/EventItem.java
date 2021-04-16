@@ -10,6 +10,18 @@ import java.util.Random;
 public class EventItem {
     private Event event;
 
+    public EventItem(String type, int deviceId, int userId, String description, float measurement) throws InvalidEventTypeException {
+        switch (type) {
+            case "temperature" : this.event = new TemperatureEvent(measurement, deviceId); break;
+            case "image" : this.event = new ImageEvent(description, deviceId); break;
+            case "video" : this.event = new VideoEvent(description, deviceId); break;
+            case "smoke" : this.event = new SmokeEvent(measurement, deviceId); break;
+            case "motion" : this.event = new MotionEvent(description, deviceId); break;
+            default: throw new InvalidEventTypeException("Invalid event type");
+        }
+        this.event.setUserId(userId);
+    }
+
     public EventItem(String jsonString, String topicName) throws InvalidEventTypeException, ParseException {
         JSONParser parser = new JSONParser();
         JSONObject event = (JSONObject) parser.parse(jsonString);
@@ -22,9 +34,11 @@ public class EventItem {
             case "motion-events" : this.event = new MotionEvent(event); break;
             default: throw new InvalidEventTypeException("Invalid event type");
         }
+        this.event.setUserId((int)event.get("user"));
     }
 
-    public EventItem(String type, int deviceId) throws InvalidEventTypeException {
+    //Random event
+    public EventItem(String type, int deviceId, int userId) throws InvalidEventTypeException {
         switch (type) {
             case "temperature" : this.event = new TemperatureEvent(-50 + new Random().nextFloat() * (500 - (-50)), deviceId); break;
             case "image" : this.event = new ImageEvent("some image" + deviceId, deviceId); break;
@@ -33,6 +47,7 @@ public class EventItem {
             case "motion" : this.event = new MotionEvent("some movement" + deviceId, deviceId); break;
             default: throw new InvalidEventTypeException("Invalid event type");
         }
+        this.event.setUserId(userId);
     }
 
     public Event getEvent() {

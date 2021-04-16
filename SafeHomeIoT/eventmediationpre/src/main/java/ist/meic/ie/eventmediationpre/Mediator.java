@@ -29,9 +29,6 @@ public class Mediator {
             for (ConsumerRecord<String, String> record : records) {
                 try {
                     System.out.println(record.value());
-                    System.out.println(record.value());
-                    System.out.println(record.value());
-
                     JSONParser parser = new JSONParser();
                     JSONObject event = (JSONObject) parser.parse(record.value());
                     if (event.get("type") == null)

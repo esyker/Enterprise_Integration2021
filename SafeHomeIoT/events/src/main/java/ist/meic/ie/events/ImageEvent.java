@@ -30,10 +30,11 @@ public class ImageEvent extends Event{
     @Override
     public void insertToDb(DatabaseConfig config) {
         try {
-            PreparedStatement stmt = config.getConnection().prepareStatement("insert into imageMessage (deviceID, description, type) values(?,?,?)");
+            PreparedStatement stmt = config.getConnection().prepareStatement("insert into imageMessage (deviceID, description, type, userID) values(?,?,?,?)");
             stmt.setLong(1, this.getDeviceId());
             stmt.setString(2, this.getDescription());
             stmt.setString(3, this.getType());
+            stmt.setInt(4, this.getUserId());
             stmt.execute();
             stmt.close();
         } catch (SQLException e) {
@@ -46,7 +47,8 @@ public class ImageEvent extends Event{
         return "{\n" +
                 "\"type\": \"" + this.getType() + "\",\n" +
                 "\"deviceId\": " + this.getDeviceId() + ",\n" +
-                "\"description\": \"" + this.getDescription() + "\"\n" +
+                "\"description\": \"" + this.getDescription() + "\",\n" +
+                "\"userId\": " + this.getUserId() + "\n" +
                 "}";
     }
 }

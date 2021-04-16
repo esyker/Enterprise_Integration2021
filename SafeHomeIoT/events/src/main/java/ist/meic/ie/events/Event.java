@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
 public abstract class Event {
     private String type;
     private int deviceId;
+    private int userId;
 
 
     public Event(JSONObject event) throws InvalidEventTypeException {
@@ -19,6 +20,14 @@ public abstract class Event {
     public Event(String type, int deviceId) {
         this.type = type;
         this.deviceId = deviceId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getType() { return type; }

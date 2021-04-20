@@ -164,7 +164,7 @@ public class Provisioner {
             }
             stmt.close();
             dbConfig.getConnection().close();
-            zkConfig = new ZookeeperConfig("34.229.138.203:2181", 10 * 1000, 8 * 1000);
+            zkConfig = new ZookeeperConfig("54.226.114.68:2181", 10 * 1000, 8 * 1000);
             KafkaConfig.createTopic(zkConfig, false, "usertopic-" + userId, 1, 1, new Properties());
 
         } catch (Exception throwables) {

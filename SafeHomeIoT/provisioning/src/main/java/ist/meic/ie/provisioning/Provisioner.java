@@ -12,7 +12,7 @@ public class Provisioner {
     private DatabaseConfig dbConfig;
 
     public Provisioner(){
-        this.dbConfig = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");;
+        this.dbConfig = new DatabaseConfig("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "HLR", "storemessages", "enterpriseintegration2021");;
     }
 
     public void activateMSISDN(String simcard, String msisdn, String userID, String deviceType){//insert into db new SIMCARD
@@ -164,7 +164,7 @@ public class Provisioner {
             }
             stmt.close();
             dbConfig.getConnection().close();
-            zkConfig = new ZookeeperConfig("34.229.138.203:2181", 10 * 1000, 8 * 1000);
+            zkConfig = new ZookeeperConfig("54.160.79.199:2181", 10 * 1000, 8 * 1000);
             KafkaConfig.createTopic(zkConfig, false, "usertopic-" + userId, 1, 1, new Properties());
 
         } catch (Exception throwables) {

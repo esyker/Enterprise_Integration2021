@@ -1,7 +1,7 @@
 package ist.meic.ie.events;
 
 import ist.meic.ie.events.exceptions.InvalidEventTypeException;
-import ist.meic.ie.utils.DatabaseConfig;
+import ist.meic.ie.utils.DatabaseConnect;
 import org.json.simple.JSONObject;
 
 import java.util.Date;
@@ -55,7 +55,7 @@ public abstract class Event {
         this.timestamp = timestamp;
     }
 
-    public abstract void insertToDb(DatabaseConfig config);
+    public abstract void insertToDb(DatabaseConnect config);
 
     public abstract String toString();
 }

@@ -3,6 +3,7 @@ package ist.meic.ie.eventmediation;
 import ist.meic.ie.events.EventItem;
 import ist.meic.ie.events.exceptions.InvalidEventTypeException;
 import ist.meic.ie.utils.DatabaseConfig;
+import ist.meic.ie.utils.DatabaseConnect;
 import ist.meic.ie.utils.KafkaConfig;
 import org.apache.commons.cli.*;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -23,7 +24,7 @@ public class Mediator {
         CommandLine cmd = parseArgs(args);
         List<String> topics = new ArrayList<String>();
 
-        DatabaseConfig provisionConfig = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");
+        DatabaseConfig provisionConfig = new DatabaseConfig("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "HLR", "storemessages", "enterpriseintegration2021");
         Statement stmt = provisionConfig.getConnection().createStatement();
         ResultSet userIds = stmt.executeQuery("select * from user");
         while (userIds.next()) {
@@ -33,7 +34,7 @@ public class Mediator {
 
         KafkaConsumer<String, String> userManagerConsumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "user-events", Collections.singletonList("new-user-events"));
         KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "mediator", topics);
-        DatabaseConfig config = new DatabaseConfig("events-2.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "SafeHomeIoTEvents", "pedro", "123456789");
+        DatabaseConnect config = new DatabaseConnect("events-2.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "SafeHomeIoTEvents", "pedro", "123456789");
         while (true) {
             consumer = lookForNewUsers(cmd, topics, userManagerConsumer, consumer);
             ConsumerRecords<String, String> records = consumer.poll(100);

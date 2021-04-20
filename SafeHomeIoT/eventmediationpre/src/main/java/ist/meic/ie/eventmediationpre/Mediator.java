@@ -54,7 +54,7 @@ public class Mediator {
     }
 
     private static void createNewTopics() throws SQLException {
-        ZookeeperConfig zkConfig = new ZookeeperConfig("34.229.138.203:2181", 10 * 1000, 8 * 1000);
+        ZookeeperConfig zkConfig = new ZookeeperConfig("54.160.79.199:2181", 10 * 1000, 8 * 1000);
         DatabaseConfig provisionConfig = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");
         Statement stmt = provisionConfig.getConnection().createStatement();
         ResultSet userIds = stmt.executeQuery("select * from user");

@@ -1,7 +1,7 @@
 package ist.meic.ie.events;
 
 import ist.meic.ie.events.exceptions.InvalidEventTypeException;
-import ist.meic.ie.utils.DatabaseConfig;
+import ist.meic.ie.utils.DatabaseConnect;
 import org.json.simple.JSONObject;
 
 import java.sql.PreparedStatement;
@@ -32,14 +32,31 @@ public class TemperatureEvent extends Event {
         return measurement;
     }
 
-    @Override
-    public void insertToDb(DatabaseConfig config) {
+    public void checkDB(DatabaseConnect config, String userDB){
         try {
-            PreparedStatement stmt = config.getConnection().prepareStatement("insert into temperatureMessage (deviceID, measurement, type, userID) values(?,?,?,?)");
-            stmt.setLong(1, this.getDeviceId());
-            stmt.setFloat(2, this.getMeasurement());
-            stmt.setString(3, this.getType());
-            stmt.setInt(4, this.getUserId());
+            PreparedStatement create_db = config.getConnection().prepareStatement("create database if not exists ?");
+            create_db.setString(1, userDB);
+            create_db.execute();
+            create_db.close();
+            PreparedStatement create_table = config.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS "+userDB+".temperatureMessage (ID INT AUTO_INCREMENT, deviceID INT,measurement FLOAT,type VARCHAR(30), ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, userID INT, PRIMARY KEY(ID));");
+            create_table.execute();
+            create_table.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void insertToDb(DatabaseConnect config) {
+        try {
+            String userDB = "User" + this.getUserId();
+            checkDB(config,userDB);
+            PreparedStatement stmt = config.getConnection().prepareStatement("insert into ?.temperatureMessage (deviceID, measurement, type, userID) values(?,?,?,?)");
+            stmt.setString(1,userDB);
+            stmt.setLong(2, this.getDeviceId());
+            stmt.setFloat(3, this.getMeasurement());
+            stmt.setString(4, this.getType());
+            stmt.setInt(5, this.getUserId());
             stmt.execute();
             stmt.close();
         } catch (SQLException e) {

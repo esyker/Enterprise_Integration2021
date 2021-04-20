@@ -51,12 +51,11 @@ public class SmokeEvent extends Event{
         try {
             String userDB = "User" + this.getUserId();
             checkDB(config,userDB);
-            PreparedStatement stmt = config.getConnection().prepareStatement("insert into ?.smokeMessage (deviceID, measurement, type, userID) values(?,?,?,?)");
-            stmt.setString(1,userDB);
-            stmt.setLong(2, this.getDeviceId());
-            stmt.setFloat(3, this.getMeasurement());
-            stmt.setString(4, this.getType());
-            stmt.setInt(5, this.getUserId());
+            PreparedStatement stmt = config.getConnection().prepareStatement("insert into "+userDB+".smokeMessage (deviceID, measurement, type, userID) values(?,?,?,?)");
+            stmt.setLong(1, this.getDeviceId());
+            stmt.setFloat(2, this.getMeasurement());
+            stmt.setString(3, this.getType());
+            stmt.setInt(4, this.getUserId());
             stmt.execute();
             stmt.close();
         } catch (SQLException e) {

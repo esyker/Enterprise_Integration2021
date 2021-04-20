@@ -152,8 +152,9 @@ public class Provisioner {
         int userId = 0;
         ZookeeperConfig zkConfig = null;
         try {
-            PreparedStatement stmt = dbConfig.getConnection().prepareStatement("insert into user (name) values(?)");
+            PreparedStatement stmt = dbConfig.getConnection().prepareStatement("insert into user (name,id) values(?,?)");
             stmt.setString(1, name);
+            stmt.setString(2, name);
             stmt.executeUpdate();
             stmt.close();
 

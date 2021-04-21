@@ -5,6 +5,7 @@ import ist.meic.ie.utils.DatabaseConnect;
 import org.json.simple.JSONObject;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.SQLException;
 import java.util.Date;
 
@@ -34,12 +35,12 @@ public class TemperatureEvent extends Event {
 
     public void checkDB(DatabaseConnect config, String userDB){
         try {
-            PreparedStatement create_db = config.getConnection().prepareStatement("create database if not exists ?");
-            create_db.setString(1, userDB);
-            create_db.execute();
+            System.out.println(userDB);
+            Statement create_db = config.getConnection().createStatement();
+            create_db.executeUpdate("create database if not exists "+userDB);
             create_db.close();
-            PreparedStatement create_table = config.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS "+userDB+".temperatureMessage (ID INT AUTO_INCREMENT, deviceID INT,measurement FLOAT,type VARCHAR(30), ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, userID INT, PRIMARY KEY(ID));");
-            create_table.execute();
+            Statement create_table = config.getConnection().createStatement();
+            create_table.executeUpdate("CREATE TABLE IF NOT EXISTS "+userDB+".temperatureMessage (ID INT AUTO_INCREMENT, deviceID INT,measurement FLOAT,type VARCHAR(30), ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, userID INT, PRIMARY KEY(ID));");
             create_table.close();
         } catch (SQLException e) {
             e.printStackTrace();

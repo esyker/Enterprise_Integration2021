@@ -9,7 +9,7 @@ public class DatabaseConnect {
 
     public DatabaseConnect(String ip, String dbName, String masterUsername, String password) {
         try {
-            this.connection = DriverManager.getConnection("jdbc:mysql://" + ip + ":3306" , masterUsername, password);
+            this.connection = DriverManager.getConnection("jdbc:mysql://" + ip + ":3306/" , masterUsername, password);
 
         } catch(SQLException e) {
             e.printStackTrace();

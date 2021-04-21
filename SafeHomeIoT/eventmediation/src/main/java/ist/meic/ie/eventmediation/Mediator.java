@@ -34,7 +34,7 @@ public class Mediator {
 
         KafkaConsumer<String, String> userManagerConsumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "user-events", Collections.singletonList("new-user-events"));
         KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "mediator", topics);
-        DatabaseConnect config = new DatabaseConnect("events-2.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "SafeHomeIoTEvents", "pedro", "123456789");
+        DatabaseConnect config = new DatabaseConnect("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "", "storemessages", "enterpriseintegration2021");
         while (true) {
             consumer = lookForNewUsers(cmd, topics, userManagerConsumer, consumer);
             ConsumerRecords<String, String> records = consumer.poll(100);

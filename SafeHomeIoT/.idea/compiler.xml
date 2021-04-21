@@ -7,14 +7,24 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="simulator" />
-        <module name="eventmediation" />
         <module name="IoTaaSSimulator" />
+        <module name="MSISDNactivate" />
+        <module name="MSISDNsuspend" />
+        <module name="MSISDNgetStatus" />
+        <module name="eventmediation" />
         <module name="eventservice" />
         <module name="utils" />
+        <module name="MSISDNdelete" />
         <module name="provisioning" />
         <module name="eventmediationpre" />
         <module name="events" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="activateMSISDN" target="8" />
+      <module name="suspendMSISDN" target="8" />
+      <module name="troll1" target="8" />
+      <module name="troll2" target="8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

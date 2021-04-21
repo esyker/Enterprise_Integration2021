@@ -1,12 +1,14 @@
 package ist.meic.ie.provisioning;
 
 import ist.meic.ie.utils.DatabaseConfig;
+import ist.meic.ie.utils.DatabaseConnect;
 import ist.meic.ie.utils.KafkaConfig;
 import ist.meic.ie.utils.ZookeeperConfig;
 
 import java.sql.*;
 import java.util.MissingFormatArgumentException;
 import java.util.Properties;
+import java.sql.Statement;
 
 public class Provisioner {
     private DatabaseConfig dbConfig;
@@ -147,11 +149,31 @@ public class Provisioner {
         return status;
     }
 
+    public void createDB(String name){
+        try {
+            DatabaseConnect config = new DatabaseConnect("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "", "storemessages", "enterpriseintegration2021");
+            String userDB = "User" + name;
+            Statement create_db = config.getConnection().createStatement();
+            create_db.executeUpdate("create database if not exists " + userDB);
+            create_db.close();
+            Statement create_table = config.getConnection().createStatement();
+            create_table.executeUpdate("CREATE TABLE IF NOT EXISTS " + userDB + ".temperatureMessage (ID INT AUTO_INCREMENT, deviceID INT,measurement FLOAT,type VARCHAR(30), ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, userID INT, PRIMARY KEY(ID));");
+            create_table.executeUpdate("CREATE TABLE IF NOT EXISTS "+userDB+".imageMessage (ID INT AUTO_INCREMENT, deviceID INT, description VARCHAR(30), type VARCHAR(30), ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, userID INT, PRIMARY KEY(ID));");
+            create_table.executeUpdate("CREATE TABLE IF NOT EXISTS "+userDB+".motionMessage (ID INT AUTO_INCREMENT, deviceID INT, description VARCHAR(30),type VARCHAR(30),ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, userID INT,PRIMARY KEY(ID));");
+            create_table.executeUpdate("CREATE TABLE IF NOT EXISTS "+userDB+".smokeMessage (ID INT AUTO_INCREMENT, deviceID INT,measurement FLOAT,type VARCHAR(30),ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,userID INT, PRIMARY KEY(ID));");
+            create_table.executeUpdate("CREATE TABLE IF NOT EXISTS "+userDB+".videoMessage (ID INT AUTO_INCREMENT,deviceID INT, description VARCHAR(30), type VARCHAR(30) ,ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, userID INT, PRIMARY KEY(ID));");
+            create_table.close();
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void createUser(String name) {
         if (name == null) throw new MissingFormatArgumentException("No name defined!");
         int userId = 0;
         ZookeeperConfig zkConfig = null;
         try {
+            createDB(name);
             PreparedStatement stmt = dbConfig.getConnection().prepareStatement("insert into user (name,id) values(?,?)");
             stmt.setString(1, name);
             stmt.setString(2, name);

@@ -33,25 +33,10 @@ public class ImageEvent extends Event{
         return description;
     }
 
-    public void checkDB(DatabaseConnect config, String userDB){
-        try {
-            PreparedStatement create_db = config.getConnection().prepareStatement("create database if not exists ?");
-            create_db.setString(1, userDB);
-            create_db.execute();
-            create_db.close();
-            PreparedStatement create_table = config.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS "+userDB+".imageMessage (ID INT AUTO_INCREMENT, deviceID INT, description VARCHAR(30), type VARCHAR(30), ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, userID INT, PRIMARY KEY(ID));");
-            create_table.execute();
-            create_table.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public void insertToDb(DatabaseConnect config) {
         try {
             String userDB = "User" + this.getUserId();
-            checkDB(config,userDB);
             PreparedStatement stmt = config.getConnection().prepareStatement("insert into "+userDB+".imageMessage (deviceID, description, type, userID) values(?,?,?,?)");
             stmt.setLong(1, this.getDeviceId());
             stmt.setString(2, this.getDescription());

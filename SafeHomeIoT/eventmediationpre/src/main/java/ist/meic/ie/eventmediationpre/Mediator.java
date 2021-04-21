@@ -29,21 +29,23 @@ import java.util.*;
 public class Mediator {
     public static void main(String[] args) throws SQLException {
         CommandLine cmd = parseArgs(args);
-        createNewTopics();
+        List<String> topics = new ArrayList<>(Arrays.asList(cmd.getOptionValue("topics").split(":")));
+        System.out.println(topics);
 
-        KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "mediatorpre", Collections.singletonList("safehomeiot-events"));
+        KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "mediationpre", topics);
         KafkaProducer<String, String> producer = KafkaConfig.createKafkaProducer(cmd.getOptionValue("kafkaip"));
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {
                 try {
                     System.out.println(record.value());
+
                     JSONParser parser = new JSONParser();
                     JSONObject event = (JSONObject) parser.parse(record.value());
                     if (event.get("type") == null)
                         throw new InvalidEventTypeException(event.toJSONString());
                     else {
-                        ProducerRecord<String, String> producerRecord = new ProducerRecord<>("usertopic-" + event.get("userId"), record.value());
+                        ProducerRecord<String, String> producerRecord = new ProducerRecord<>(event.get("type") + "-events", (String)event.get("type"), record.value());
                         producer.send(producerRecord);
                     }
                 } catch (InvalidEventTypeException | org.json.simple.parser.ParseException e) {
@@ -51,6 +53,7 @@ public class Mediator {
                 }
             }
         }
+
     }
 
     private static void createNewTopics() throws SQLException {
@@ -89,7 +92,7 @@ public class Mediator {
         options.addOption(input5);
 
         Option input6 = new Option("topics", "topics", true, "Kafka topics to subscribe to");
-        input5.setRequired(false);
+        input5.setRequired(true);
         options.addOption(input6);
 
         CommandLineParser parser = new DefaultParser();

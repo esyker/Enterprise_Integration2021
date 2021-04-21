@@ -25,24 +25,24 @@ public class EventItem {
         }
     }
 
-    public EventItem(String type, int deviceId, int userId) throws InvalidEventTypeException {
+    public EventItem(String type, int SIMCARD, int MSISDN) throws InvalidEventTypeException {
         switch (type) {
-            case "temperature" : this.event = new TemperatureEvent(-50 + new Random().nextFloat() * (500 - (-50)), deviceId, userId); break;
-            case "image" : this.event = new ImageEvent("some image" + deviceId, deviceId, userId); break;
-            case "video" : this.event = new VideoEvent("some video" + deviceId, deviceId, userId); break;
-            case "smoke" : this.event = new SmokeEvent(-50 + new Random().nextFloat() * (500 - (-50)), deviceId, userId); break;
-            case "motion" : this.event = new MotionEvent("some movement" + deviceId, deviceId, userId); break;
+            case "temperature" : this.event = new TemperatureEvent(-50 + new Random().nextFloat() * (500 - (-50)), SIMCARD, MSISDN); break;
+            case "image" : this.event = new ImageEvent("some image" + SIMCARD, SIMCARD, MSISDN); break;
+            case "video" : this.event = new VideoEvent("some video" + SIMCARD, SIMCARD, MSISDN); break;
+            case "smoke" : this.event = new SmokeEvent(-50 + new Random().nextFloat() * (500 - (-50)), SIMCARD, MSISDN); break;
+            case "motion" : this.event = new MotionEvent("some movement" + SIMCARD, SIMCARD, MSISDN); break;
             default: throw new InvalidEventTypeException("Invalid event type");
         }
     }
 
-    public EventItem(String type, int deviceId, int userId, Date ts, float measurement, String description) throws InvalidEventTypeException {
+    public EventItem(String type, int SIMCARD, int MSISDN, Date ts, float measurement, String description) throws InvalidEventTypeException {
         switch (type) {
-            case "temperature" : this.event = new TemperatureEvent(measurement, deviceId, userId, ts); break;
-            case "image" : this.event = new ImageEvent(description, deviceId, userId, ts); break;
-            case "video" : this.event = new VideoEvent(description, deviceId, userId, ts); break;
-            case "smoke" : this.event = new SmokeEvent(measurement, deviceId, userId, ts); break;
-            case "motion" : this.event = new MotionEvent(description, deviceId, userId, ts); break;
+            case "temperature" : this.event = new TemperatureEvent(measurement, SIMCARD, MSISDN, ts); break;
+            case "image" : this.event = new ImageEvent(description, SIMCARD, MSISDN, ts); break;
+            case "video" : this.event = new VideoEvent(description, SIMCARD, MSISDN, ts); break;
+            case "smoke" : this.event = new SmokeEvent(measurement, SIMCARD, MSISDN, ts); break;
+            case "motion" : this.event = new MotionEvent(description, SIMCARD, MSISDN, ts); break;
             default: throw new InvalidEventTypeException("Invalid event type");
         }
     }

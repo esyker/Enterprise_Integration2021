@@ -18,13 +18,13 @@ public class SmokeEvent extends Event{
         this.measurement = ((Double) event.get("measurement")).floatValue();
     }
 
-    public SmokeEvent(float measurement, int deviceId, int userId) {
-        super("smoke", deviceId, userId);
+    public SmokeEvent(float measurement, int SIMCARD, int MSISDN) {
+        super("smoke", SIMCARD, MSISDN);
         this.measurement = measurement;
     }
 
-    public SmokeEvent(float measurement, int deviceId, int userId, Date ts) {
-        super("smoke", deviceId, userId, ts);
+    public SmokeEvent(float measurement, int SIMCARD, int MSISDN, Date ts) {
+        super("smoke", SIMCARD, MSISDN, ts);
         this.measurement = measurement;
     }
 
@@ -35,11 +35,11 @@ public class SmokeEvent extends Event{
     @Override
     public void insertToDb(DatabaseConfig config) {
         try {
-            PreparedStatement stmt = config.getConnection().prepareStatement("insert into smokeMessage (deviceID, measurement, type, userID) values(?,?,?,?)");
-            stmt.setLong(1, this.getDeviceId());
-            stmt.setFloat(2, this.getMeasurement());
-            stmt.setString(3, this.getType());
-            stmt.setInt(4, this.getUserId());
+            PreparedStatement stmt = config.getConnection().prepareStatement("insert into smokeMessage (SIMCARD, MSISDN, measurement, type) values(?,?,?,?)");
+            stmt.setInt(1, this.getSIMCARD());
+            stmt.setInt(2, this.getMSISDN());
+            stmt.setFloat(3, this.getMeasurement());
+            stmt.setString(4, this.getType());
             stmt.execute();
             stmt.close();
         } catch (SQLException e) {
@@ -51,9 +51,9 @@ public class SmokeEvent extends Event{
     public String toString() {
         return "{\n" +
                 "\"type\": \"" + this.getType() + "\",\n" +
-                "\"deviceId\": " + this.getDeviceId() + ",\n" +
+                "\"SIMCARD\": " + this.getSIMCARD() + ",\n" +
+                "\"MSISDN\": " + this.getMSISDN() + ",\n" +
                 "\"measurement\": " + this.getMeasurement() + ",\n" +
-                "\"userId\": " + this.getUserId() + ",\n" +
                 "\"timestamp\": " + this.getTimestamp() + "\n" +
                 "}";
     }

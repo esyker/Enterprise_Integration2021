@@ -8,44 +8,50 @@ import java.util.Date;
 
 public abstract class Event {
     private String type;
-    private int deviceId;
-    private int userId;
+    private int MSISDN;
+    private int SIMCARD;
     private Date timestamp;
 
 
     public Event(JSONObject event) throws InvalidEventTypeException {
-        if(event.get("type") == null || event.get("deviceId") == null)
+        if(event.get("type") == null || event.get("MSISDN") == null || event.get("SIMCARD") == null)
             throw new InvalidEventTypeException(event.toJSONString());
         this.type = (String) event.get("type");
-        this.deviceId = ((Long) event.get("deviceId")).intValue();
-        this.userId = ((Long) event.get("userId")).intValue();
+        this.MSISDN = ((Long) event.get("MSISDN")).intValue();
+        this.SIMCARD = ((Long) event.get("SIMCARD")).intValue();
     }
 
     @Deprecated
-    public Event(String type, int deviceId, int userId) {
+    public Event(String type, int SIMCARD, int MSISDN) {
         this.type = type;
-        this.deviceId = deviceId;
-        this.userId = userId;
+        this.SIMCARD = SIMCARD;
+        this.MSISDN = MSISDN;
     }
 
-    public Event(String type, int deviceId, int userId, Date timestamp) {
+    public Event(String type, int SIMCARD, int MSISDN, Date timestamp) {
         this.type = type;
-        this.deviceId = deviceId;
-        this.userId = userId;
+        this.SIMCARD = SIMCARD;
+        this.MSISDN = MSISDN;
         this.timestamp = timestamp;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getMSISDN() {
+        return MSISDN;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setMSISDN(int MSISDN) {
+        this.MSISDN = MSISDN;
+    }
+
+    public int getSIMCARD() {
+        return SIMCARD;
+    }
+
+    public void setSIMCARD(int SIMCARD) {
+        this.SIMCARD = SIMCARD;
     }
 
     public String getType() { return type; }
-
-    public int getDeviceId() { return deviceId; }
 
     public Date getTimestamp() {
         return timestamp;

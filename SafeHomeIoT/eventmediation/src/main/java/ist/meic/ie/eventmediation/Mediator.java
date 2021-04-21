@@ -10,9 +10,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.json.simple.parser.ParseException;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,21 +19,12 @@ import java.util.List;
 public class Mediator {
     public static void main(String[] args) throws SQLException {
         CommandLine cmd = parseArgs(args);
-        List<String> topics = new ArrayList<String>();
-
-        DatabaseConfig provisionConfig = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");
-        Statement stmt = provisionConfig.getConnection().createStatement();
-        ResultSet userIds = stmt.executeQuery("select * from user");
-        while (userIds.next()) {
-            topics.add("usertopic-" + String.valueOf(userIds.getInt("id")));
-        }
+        List<String> topics = new ArrayList<String>(Arrays.asList(cmd.getOptionValue("topics").split(":")));
         System.out.println(topics);
 
-        KafkaConsumer<String, String> userManagerConsumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "user-events", Collections.singletonList("new-user-events"));
-        KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "mediator", topics);
+        KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "group-id-test", topics);
         DatabaseConfig config = new DatabaseConfig("events-2.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "SafeHomeIoTEvents", "pedro", "123456789");
         while (true) {
-            consumer = lookForNewUsers(cmd, topics, userManagerConsumer, consumer);
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {
                 try {
@@ -47,20 +36,6 @@ public class Mediator {
                 }
             }
         }
-
-    }
-
-    private static KafkaConsumer<String, String> lookForNewUsers(CommandLine cmd, List<String> topics, KafkaConsumer<String, String> userManagerConsumer, KafkaConsumer<String, String> consumer) {
-        ConsumerRecords<String, String> newUsersRecords = userManagerConsumer.poll(100);
-        if(!newUsersRecords.isEmpty()) {
-            for (ConsumerRecord<String, String> record : newUsersRecords) {
-                // The name of each user topics will be usertopic-{userid}
-                topics.add("usertopic-" + record.value());
-            }
-            consumer.close();
-            consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "group-id-test", topics);
-        }
-        return consumer;
     }
 
     private static CommandLine parseArgs(String[] args) {

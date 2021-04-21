@@ -36,11 +36,11 @@ public class ImageEvent extends Event{
     @Override
     public void insertToDb(DatabaseConfig config) {
         try {
-            PreparedStatement stmt = config.getConnection().prepareStatement("insert into imageMessage (deviceID, description, type, userID) values(?,?,?,?)");
-            stmt.setLong(1, this.getDeviceId());
-            stmt.setString(2, this.getDescription());
-            stmt.setString(3, this.getType());
-            stmt.setInt(4, this.getUserId());
+            PreparedStatement stmt = config.getConnection().prepareStatement("insert into imageMessage (SIMCARD, MSISDN, description, type) values(?,?,?,?)");
+            stmt.setInt(1, this.getSIMCARD());
+            stmt.setInt(2, this.getMSISDN());
+            stmt.setString(3, this.getDescription());
+            stmt.setString(4, this.getType());
             stmt.execute();
             stmt.close();
         } catch (SQLException e) {
@@ -52,9 +52,9 @@ public class ImageEvent extends Event{
     public String toString() {
         return "{\n" +
                 "\"type\": \"" + this.getType() + "\",\n" +
-                "\"deviceId\": " + this.getDeviceId() + ",\n" +
+                "\"SIMCARD\": " + this.getSIMCARD() + ",\n" +
+                "\"MSISDN\": " + this.getMSISDN() + ",\n" +
                 "\"description\": \"" + this.getDescription() + "\",\n" +
-                "\"userId\": " + this.getUserId() + ",\n" +
                 "\"timestamp\": " + this.getTimestamp() + "\n" +
                 "}";
     }

@@ -20,13 +20,13 @@ public class MotionEvent extends Event {
         this.description = (String) event.get("description");
     }
 
-    public MotionEvent(String description, int deviceId, int userId) {
-        super("motion", deviceId, userId);
+    public MotionEvent(String description, int deviceId) {
+        super("motion", deviceId);
         this.description = description;
     }
 
-    public MotionEvent(String description, int deviceId, int userId, Date ts) {
-        super("motion", deviceId, userId, ts);
+    public MotionEvent(String description, int deviceId, Date ts) {
+        super("motion", deviceId, ts);
         this.description = description;
     }
 
@@ -35,11 +35,10 @@ public class MotionEvent extends Event {
     @Override
     public void insertToDb(DatabaseConfig config) {
         try {
-            PreparedStatement stmt = config.getConnection().prepareStatement("insert into motionMessage (deviceID, description, type, userID) values(?,?,?,?)");
+            PreparedStatement stmt = config.getConnection().prepareStatement("insert into motionMessage (deviceID, description, type) values(?,?,?)");
             stmt.setLong(1, this.getDeviceId());
             stmt.setString(2, this.getDescription());
             stmt.setString(3, this.getType());
-            stmt.setInt(4, this.getUserId());
             stmt.execute();
             stmt.close();
         } catch (SQLException e) {
@@ -53,7 +52,6 @@ public class MotionEvent extends Event {
                 "\"type\": \"" + this.getType() + "\",\n" +
                 "\"deviceId\": " + this.getDeviceId() + ",\n" +
                 "\"description\": \"" + this.getDescription() + "\",\n" +
-                "\"userId\": " + this.getUserId() + ",\n" +
                 "\"timestamp\": " + this.getTimestamp() + "\n" +
                 "}";
     }

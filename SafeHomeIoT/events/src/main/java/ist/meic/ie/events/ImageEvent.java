@@ -19,13 +19,13 @@ public class ImageEvent extends Event{
         this.description = (String) event.get("description");
     }
 
-    public ImageEvent(String description, int deviceId, int userId) {
-        super("image", deviceId, userId);
+    public ImageEvent(String description, int deviceId) {
+        super("image", deviceId);
         this.description = description;
     }
 
-    public ImageEvent(String description, int deviceId, int userId, Date ts) {
-        super("image", deviceId, userId, ts);
+    public ImageEvent(String description, int deviceId, Date ts) {
+        super("image", deviceId, ts);
         this.description = description;
     }
 
@@ -36,11 +36,10 @@ public class ImageEvent extends Event{
     @Override
     public void insertToDb(DatabaseConfig config) {
         try {
-            PreparedStatement stmt = config.getConnection().prepareStatement("insert into imageMessage (deviceID, description, type, userID) values(?,?,?,?)");
+            PreparedStatement stmt = config.getConnection().prepareStatement("insert into imageMessage (deviceID, description, type) values(?,?,?)");
             stmt.setLong(1, this.getDeviceId());
             stmt.setString(2, this.getDescription());
             stmt.setString(3, this.getType());
-            stmt.setInt(4, this.getUserId());
             stmt.execute();
             stmt.close();
         } catch (SQLException e) {
@@ -54,7 +53,6 @@ public class ImageEvent extends Event{
                 "\"type\": \"" + this.getType() + "\",\n" +
                 "\"deviceId\": " + this.getDeviceId() + ",\n" +
                 "\"description\": \"" + this.getDescription() + "\",\n" +
-                "\"userId\": " + this.getUserId() + ",\n" +
                 "\"timestamp\": " + this.getTimestamp() + "\n" +
                 "}";
     }

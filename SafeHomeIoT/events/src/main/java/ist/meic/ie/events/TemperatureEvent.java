@@ -18,13 +18,13 @@ public class TemperatureEvent extends Event {
         this.measurement = ((Double) event.get("measurement")).floatValue();
     }
 
-    public TemperatureEvent(float measurement, int deviceId, int userId) {
-        super("temperature", deviceId, userId);
+    public TemperatureEvent(float measurement, int deviceId) {
+        super("temperature", deviceId);
         this.measurement = measurement;
     }
 
-    public TemperatureEvent(float measurement, int deviceId, int userId, Date ts) {
-        super("temperature", deviceId, userId, ts);
+    public TemperatureEvent(float measurement, int deviceId, Date ts) {
+        super("temperature", deviceId, ts);
         this.measurement = measurement;
     }
 
@@ -35,11 +35,10 @@ public class TemperatureEvent extends Event {
     @Override
     public void insertToDb(DatabaseConfig config) {
         try {
-            PreparedStatement stmt = config.getConnection().prepareStatement("insert into temperatureMessage (deviceID, measurement, type, userID) values(?,?,?,?)");
+            PreparedStatement stmt = config.getConnection().prepareStatement("insert into temperatureMessage (deviceID, measurement, type) values(?,?,?)");
             stmt.setLong(1, this.getDeviceId());
             stmt.setFloat(2, this.getMeasurement());
             stmt.setString(3, this.getType());
-            stmt.setInt(4, this.getUserId());
             stmt.execute();
             stmt.close();
         } catch (SQLException e) {
@@ -53,7 +52,6 @@ public class TemperatureEvent extends Event {
                 "\"type\": \"" + this.getType() + "\",\n" +
                 "\"deviceId\": " + this.getDeviceId() + ",\n" +
                 "\"measurement\": " + this.getMeasurement() + ",\n" +
-                "\"userId\": " + this.getUserId() + ",\n" +
                 "\"timestamp\": " + this.getTimestamp() + "\n" +
                 "}";
     }

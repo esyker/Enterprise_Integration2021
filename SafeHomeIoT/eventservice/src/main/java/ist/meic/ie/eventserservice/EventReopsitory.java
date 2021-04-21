@@ -50,7 +50,7 @@ public class EventReopsitory {
                 description = events.getString("description");
             }
 
-            EventItem eventItem = new EventItem(type, deviceId, userID, ts, measurement, description);
+            EventItem eventItem = new EventItem(type, deviceId, ts, measurement, description);
             eventsToReturn.add(eventItem.getEvent());
         }
         return eventsToReturn;

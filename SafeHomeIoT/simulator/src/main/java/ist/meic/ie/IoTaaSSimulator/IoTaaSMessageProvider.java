@@ -196,7 +196,7 @@ public class IoTaaSMessageProvider {
 			Statement stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM " + hlrTable);
 			while (rs.next()) {
-				EventItem eventItem = new EventItem(rs.getString("deviceType"), rs.getInt("SIMCARD"), rs.getInt("userID"));
+				EventItem eventItem = new EventItem(rs.getString("deviceType"), rs.getInt("SIMCARD"));
 				String event = eventItem.getEvent().toString();
 				eventsFromDb.add(event);
 				System.out.println(event);

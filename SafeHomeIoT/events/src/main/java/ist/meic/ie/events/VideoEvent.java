@@ -18,13 +18,13 @@ public class VideoEvent extends Event{
         this.description = (String) event.get("description");
     }
 
-    public VideoEvent(String description, int deviceId, int userId) {
-        super("video", deviceId, userId);
+    public VideoEvent(String description, int deviceId) {
+        super("video", deviceId);
         this.description = description;
     }
 
-    public VideoEvent(String description, int deviceId, int userId, Date ts) {
-        super("video", deviceId, userId, ts);
+    public VideoEvent(String description, int deviceId, Date ts) {
+        super("video", deviceId, ts);
         this.description = description;
     }
 
@@ -39,7 +39,6 @@ public class VideoEvent extends Event{
             stmt.setLong(1, this.getDeviceId());
             stmt.setString(2, this.getDescription());
             stmt.setString(3, this.getType());
-            stmt.setInt(4, this.getUserId());
             stmt.execute();
             stmt.close();
         } catch (SQLException e) {
@@ -53,7 +52,6 @@ public class VideoEvent extends Event{
                 "\"type\": \"" + this.getType() + "\",\n" +
                 "\"deviceId\": " + this.getDeviceId() + ",\n" +
                 "\"description\": \"" + this.getDescription() + "\",\n" +
-                "\"userId\": " + this.getUserId() + ",\n" +
                 "\"timestamp\": " + this.getTimestamp() + "\n" +
                 "}";
     }

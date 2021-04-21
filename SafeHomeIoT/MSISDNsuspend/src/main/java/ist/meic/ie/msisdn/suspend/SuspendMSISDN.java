@@ -46,7 +46,7 @@ public class SuspendMSISDN {
             deleteActive.setString(2, msisdn);
             deleteActive.executeUpdate();
             insertSuspend = dbConfig.getConnection().prepareStatement("insert into suspendedSubscriber (SIMCARD,MSISDN, deviceType) values(?,?,?)");
-            //res.next();
+            res.next();
             insertSuspend.setString(1, res.getString("SIMCARD"));
             insertSuspend.setString(2, res.getString("MSISDN"));
             insertSuspend.setString(3, res.getString("deviceType"));
@@ -76,7 +76,7 @@ public class SuspendMSISDN {
 
             action = (String) event.get("action");
             if (action == null) throw new MissingFormatArgumentException("No action defined!");
-            //"suspend"://{"action":"suspend","MSISDN":"12312312","SIMCARD":"913123123","userID":5}
+            //{"action":"suspend","MSISDN":"12312312","SIMCARD":"913123123"}
             simcard = (String) event.get("SIMCARD");
             msisdn = (String) event.get("MSISDN");
             suspend(simcard, msisdn);

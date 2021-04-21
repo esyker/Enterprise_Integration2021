@@ -71,7 +71,7 @@ public class ActivateMSISDN {
             if (action == null) throw new MissingFormatArgumentException("No action defined!");
 
 
-            //"activate"://{"action":"activate","MSISDN":"12312312","SIMCARD":"913123123","userID":6}
+            //"activate"://{"action":"activate","MSISDN":"12312312","SIMCARD":"913123123","deviceType":"temperature"}
             simcard = (String) event.get("SIMCARD");
             msisdn = (String) event.get("MSISDN");
             deviceType = (String) event.get("deviceType");

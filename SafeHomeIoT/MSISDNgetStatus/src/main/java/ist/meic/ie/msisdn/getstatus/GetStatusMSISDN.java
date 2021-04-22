@@ -24,7 +24,7 @@ public class GetStatusMSISDN {
 
     public GetStatusMSISDN(){
         //this.dbConfig = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");;
-        this.dbConfig = new DatabaseConfig("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "HLR", "storemessages", "enterpriseintegration2021");
+        this.dbConfig = new DatabaseConfig("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "MSISDNStatus", "storemessages", "enterpriseintegration2021");
     }
 
     public String getStatus(String simcard, String msisdn){
@@ -33,38 +33,14 @@ public class GetStatusMSISDN {
         if (msisdn == null) throw new MissingFormatArgumentException("No Device Type defined!");
 
         PreparedStatement statusActive;
-        PreparedStatement statusSuspended;
         ResultSet queryactive;
-        ResultSet querysuspended;
-        int activeCount = 0;
-        int suspendedCount = 0;
-        String status = "";
+        String status =null;
         try {
-            statusSuspended = dbConfig.getConnection().prepareStatement ("select * from suspendedSubscriber where SIMCARD=? and MSISDN=?");
-            statusSuspended.setString(1, simcard);
-            statusSuspended.setString(2, msisdn);
-            querysuspended = statusSuspended.executeQuery();
-            statusActive = dbConfig.getConnection().prepareStatement ("select * from activeSubscriber where SIMCARD=? and MSISDN=?");
+            statusActive = dbConfig.getConnection().prepareStatement ("select status from Status where SIMCARD=?");
             statusActive.setString(1, simcard);
-            statusActive.setString(2, msisdn);
             queryactive = statusActive.executeQuery();
-
-            while(queryactive.next()) {
-                activeCount++;
-            }
-
-            while(querysuspended.next()) {
-                suspendedCount++;
-            }
-
-            if(activeCount > 0){
-                status = "active";
-            } else if (suspendedCount > 0){
-                status = "suspended";
-            } else {
-                status = "null";
-            }
-            statusSuspended.close();
+            queryactive.next();
+            status=queryactive.getString("status");
             statusActive.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();

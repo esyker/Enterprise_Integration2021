@@ -386,7 +386,9 @@ public class IoTaaSMessageProvider {
 				kafkaPropsCDR.put("bootstrap.servers", brokerList); 
 				kafkaPropsCDR.put("key.serializer","org.apache.kafka.common.serialization.StringSerializer"); 
 				kafkaPropsCDR.put("value.serializer","org.apache.kafka.common.serialization.StringSerializer"); 
-				KafkaProducer<String, String> producerCDR = new KafkaProducer<String, String>(kafkaPropsCDR);
+				KafkaProducer<String, String> producerCDR = new KafkaProducer<>(kafkaPropsCDR);
+				kafkaPropsCDR.put("bootstrap.servers", "status-simcard-events");
+				KafkaProducer<String, String> statusProducer = new KafkaProducer<>(kafkaPropsCDR);
 				
 				Timestamp mili;
 				Timestamp miliupdated = new Timestamp ((long) 0);
@@ -407,7 +409,7 @@ public class IoTaaSMessageProvider {
 
 						if (statusSIMCARD == true && (mili.compareTo(new Timestamp(miliupdatedStatus.getTime() + deltaStatus.getTime())) > 0)) {
 
-							SendSimpleMessage(CreateStatusMessage(typeMessage, Subscribers), producerCDR, "StatusSIMCARD", mili);
+							SendSimpleMessage(CreateStatusMessage(typeMessage, Subscribers), statusProducer, "StatusSIMCARD", mili);
 							miliupdatedStatus = mili;
 						}
 

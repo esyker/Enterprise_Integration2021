@@ -17,7 +17,7 @@ public class EventReopsitory {
 
     private static DatabaseConfig dbConfig = new DatabaseConfig("events-2.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "SafeHomeIoTEvents", "pedro", "123456789");
 
-    public static List<Event> getEvents(String eventType, int userId, int lastReceivedId) throws SQLException, InvalidEventTypeException, ParseException {
+    public static List<Event> getEvents(String eventType, int SIMCARD, int lastReceivedId) throws SQLException, InvalidEventTypeException, ParseException {
         String tableName = "";
         List<Event> eventsToReturn = new ArrayList<>();
 
@@ -28,14 +28,13 @@ public class EventReopsitory {
             case "image" : tableName = "imageMessage"; break;
             case "video" : tableName = "videoMessage"; break;
         }
-        System.out.println("select * from " + tableName + " where ID > " + lastReceivedId + " and userID=" + userId);
+        System.out.println("select * from " + tableName + " where ID > " + lastReceivedId + " and SIMCARD=" + SIMCARD);
 
-        PreparedStatement stmt = dbConfig.getConnection().prepareStatement("select * from " + tableName + " where ID > " + lastReceivedId + " and userID=" + userId);
+        PreparedStatement stmt = dbConfig.getConnection().prepareStatement("select * from " + tableName + " where ID > " + lastReceivedId + " and SIMCARD=" + SIMCARD);
         ResultSet events = stmt.executeQuery();
         while (events.next()) {
             String type = events.getString("type");
-            int deviceId = events.getInt("ID");
-            int userID = events.getInt("userID");
+            int MSISDN = events.getInt("MSISDN");
             Date ts = events.getTimestamp("ts");
             float measurement = 0;
             String description = "";
@@ -50,7 +49,7 @@ public class EventReopsitory {
                 description = events.getString("description");
             }
 
-            EventItem eventItem = new EventItem(type, deviceId, userID, ts, measurement, description);
+            EventItem eventItem = new EventItem(type, SIMCARD, MSISDN, ts, measurement, description);
             eventsToReturn.add(eventItem.getEvent());
         }
         return eventsToReturn;

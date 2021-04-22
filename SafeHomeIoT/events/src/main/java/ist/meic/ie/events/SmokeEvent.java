@@ -40,6 +40,7 @@ public class SmokeEvent extends Event{
             stmt.setInt(2, this.getMSISDN());
             stmt.setFloat(3, this.getMeasurement());
             stmt.setString(4, this.getType());
+
             stmt.execute();
             stmt.close();
         } catch (SQLException e) {

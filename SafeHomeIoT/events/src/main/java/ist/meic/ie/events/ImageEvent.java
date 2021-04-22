@@ -19,13 +19,15 @@ public class ImageEvent extends Event{
         this.description = (String) event.get("description");
     }
 
-    public ImageEvent(String description, int deviceId, int userId) {
-        super("image", deviceId, userId);
+
+    public ImageEvent(String description, int SIMCARD, int MSISDN) {
+        super("image", SIMCARD, MSISDN);
         this.description = description;
     }
 
-    public ImageEvent(String description, int deviceId, int userId, Date ts) {
-        super("image", deviceId, userId, ts);
+
+    public ImageEvent(String description, int SIMCARD, int MSISDN, Date ts) {
+        super("image", SIMCARD, MSISDN, ts);
         this.description = description;
     }
 

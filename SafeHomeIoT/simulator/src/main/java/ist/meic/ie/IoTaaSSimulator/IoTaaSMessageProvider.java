@@ -387,14 +387,12 @@ public class IoTaaSMessageProvider {
 				kafkaPropsCDR.put("key.serializer","org.apache.kafka.common.serialization.StringSerializer"); 
 				kafkaPropsCDR.put("value.serializer","org.apache.kafka.common.serialization.StringSerializer"); 
 				KafkaProducer<String, String> producerCDR = new KafkaProducer<>(kafkaPropsCDR);
-				kafkaPropsCDR.put("bootstrap.servers", "status-simcard-events");
-				KafkaProducer<String, String> statusProducer = new KafkaProducer<>(kafkaPropsCDR);
 				
 				Timestamp mili;
 				Timestamp miliupdated = new Timestamp ((long) 0);
 				Timestamp miliupdatedStatus = new Timestamp ((long) 0);
 				Timestamp delta = new Timestamp ((long)  1 * 60 * 1000 ); // 1 minute to refresh data from database				
-				Timestamp deltaStatus = new Timestamp ((long)  5 * 60 * 1000 ); // 5 minutes to send new simcard status
+				Timestamp deltaStatus = new Timestamp ((long)   10 * 1000 ); // 10 seconds to send new simcard status
 				List<String> devices = null;
 
 				while (true)
@@ -409,7 +407,7 @@ public class IoTaaSMessageProvider {
 
 						if (statusSIMCARD == true && (mili.compareTo(new Timestamp(miliupdatedStatus.getTime() + deltaStatus.getTime())) > 0)) {
 
-							SendSimpleMessage(CreateStatusMessage(typeMessage, Subscribers), statusProducer, "StatusSIMCARD", mili);
+							SendSimpleMessage(CreateStatusMessage(typeMessage, Subscribers), producerCDR, "status-simcard-events", mili);
 							miliupdatedStatus = mili;
 						}
 

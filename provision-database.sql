@@ -14,4 +14,3 @@ INSERT INTO activeSubscriber (SIMCARD , MSISDN, deviceType) VALUES ("573964574",
 DROP TABLE IF EXISTS suspendedSubscriber;
 CREATE TABLE suspendedSubscriber (SIMCARD VARCHAR(22), MSISDN VARCHAR(15), deviceType VARCHAR(30), PRIMARY KEY (SIMCARD));
 INSERT INTO suspendedSubscriber (SIMCARD , MSISDN, deviceType) VALUES ("673964574","916234571", "temperature");
-

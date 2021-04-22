@@ -12,7 +12,8 @@ public class Provisioner {
     private DatabaseConfig dbConfig;
 
     public Provisioner(){
-        this.dbConfig = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");;
+        this.dbConfig = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");
+        //this.dbConfig = new DatabaseConfig("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "HLR", "storemessages", "enterpriseintegration2021");
     }
 
     public void activateMSISDN(String simcard, String msisdn, String userID, String deviceType){//insert into db new SIMCARD

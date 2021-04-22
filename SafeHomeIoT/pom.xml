@@ -28,6 +28,11 @@
         <module>IoTaaSSimulator-main</module>
         <module>simulator</module>
         <module>eventservice</module>
+        <module>MSISDNactivate</module>
+        <module>MSISDNsuspend</module>
+        <module>MSISDNgetStatus</module>
+        <module>MSISDNdelete</module>
+        <module>statusmediation</module>
     </modules>
 
 </project>

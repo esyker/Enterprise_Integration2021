@@ -23,8 +23,8 @@ public class VideoEvent extends Event{
         this.description = description;
     }
 
-    public VideoEvent(String description, int deviceId, int userId, Date ts) {
-        super("video", deviceId, userId, ts);
+    public VideoEvent(String description, int SIMCARD, int MSISDN, Date ts) {
+        super("video", SIMCARD, MSISDN, ts);
         this.description = description;
     }
 

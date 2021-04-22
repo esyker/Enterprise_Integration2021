@@ -32,6 +32,7 @@
         <module>MSISDNsuspend</module>
         <module>MSISDNgetStatus</module>
         <module>MSISDNdelete</module>
+        <module>statusmediation</module>
     </modules>
 
 </project>

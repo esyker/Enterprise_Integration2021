@@ -17,6 +17,7 @@
         <module name="MSISDNdelete" />
         <module name="provisioning" />
         <module name="eventmediationpre" />
+        <module name="statusmediation" />
         <module name="events" />
       </profile>
     </annotationProcessing>

@@ -392,7 +392,7 @@ public class IoTaaSMessageProvider {
 				Timestamp miliupdated = new Timestamp ((long) 0);
 				Timestamp miliupdatedStatus = new Timestamp ((long) 0);
 				Timestamp delta = new Timestamp ((long)  1 * 60 * 1000 ); // 1 minute to refresh data from database				
-				Timestamp deltaStatus = new Timestamp ((long)  5 * 60 * 1000 ); // 5 minutes to send new simcard status
+				Timestamp deltaStatus = new Timestamp ((long)   10 * 1000 ); // 10 seconds to send new simcard status
 				List<String> devices = null;
 
 				while (true)

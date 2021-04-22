@@ -33,7 +33,7 @@ public class Mediator {
         DatabaseConfig statusDBConfig = new DatabaseConfig(cmd.getOptionValue("awsip"), cmd.getOptionValue("dbname"),
                 cmd.getOptionValue("username"), cmd.getOptionValue("password"));
 
-        KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "statusmediator", Collections.singletonList("statusSIMCARD"));
+        KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "statusmediator", Collections.singletonList("StatusSIMCARD"));
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {

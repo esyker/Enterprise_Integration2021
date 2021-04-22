@@ -20,36 +20,7 @@ import java.util.MissingFormatArgumentException;
 import java.util.Properties;
 
 public class DeleteMSISDN {
-    private DatabaseConfig dbConfig;
 
-    public DeleteMSISDN(){
-        //this.dbConfig = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");;
-        this.dbConfig = new DatabaseConfig("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "HLR", "storemessages", "enterpriseintegration2021");
-    }
-
-    public void delete(String simcard, String msisdn) {
-
-        if (simcard == null) throw new MissingFormatArgumentException("No SIM Card defined!");
-        if (msisdn == null) throw new MissingFormatArgumentException("No Device Type defined!");
-
-        PreparedStatement deleteActive;
-        PreparedStatement deleteSuspended;
-        try {
-            deleteSuspended = dbConfig.getConnection().prepareStatement ("delete from suspendedSubscriber where SIMCARD=? and MSISDN=?");
-            deleteSuspended.setString(1, simcard);
-            deleteSuspended.setString(2, msisdn);
-            deleteSuspended.executeUpdate();
-            deleteActive = dbConfig.getConnection().prepareStatement ("delete from activeSubscriber where SIMCARD=? and MSISDN=?");
-            deleteActive.setString(1, simcard);
-            deleteActive.setString(2, msisdn);
-            deleteActive.executeUpdate();
-            deleteSuspended.close();
-            deleteActive.close();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-
-    }
 
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) {
         LambdaLogger logger = context.getLogger();
@@ -58,23 +29,32 @@ public class DeleteMSISDN {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             JSONObject event = (JSONObject) parser.parse(reader);
             logger.log("input:" + (String) event.toString()+"\n");
-            String action = "";
-            String simcard = "";
-            String msisdn = "";
-            String userID = "";
-            String deviceType = "";
-            String newUserName = "";
+            int simcard;
+            if (event.get("SIMCARD") == null) throw new MissingFormatArgumentException("No SIM Card defined!");
+            simcard = ((Long) event.get("SIMCARD")).intValue();
 
-            action = (String) event.get("action");
-            if (action == null) throw new MissingFormatArgumentException("No action defined!");
-
-            //"delete"://{"action":"delete",MSISDN:"12312312",SIMCARD:"913123123","userID":4}
-            simcard = (String) event.get("SIMCARD");
-            msisdn = (String) event.get("MSISDN");
-            delete(simcard,msisdn);
+            //"delete"://{SIMCARD:"913123123"}
+            delete(simcard);
 
         } catch (Exception e) {
             logger.log("Error" + e);
         }
+    }
+
+    public void delete(int simcard) {
+        DatabaseConfig dbConfig = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");;
+        //DatabaseConfig dbConfig = new DatabaseConfig("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "HLR", "storemessages", "enterpriseintegration2021");
+
+        PreparedStatement delete;
+        try {
+            delete = dbConfig.getConnection().prepareStatement ("delete from Subscriber where SIMCARD=?");
+            delete.setInt(1, simcard);
+            delete.executeUpdate();
+            delete.close();
+            dbConfig.getConnection().close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
     }
 }

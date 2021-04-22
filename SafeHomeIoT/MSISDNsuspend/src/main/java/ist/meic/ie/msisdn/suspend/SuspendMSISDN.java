@@ -2,86 +2,62 @@ package ist.meic.ie.msisdn.suspend;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
+import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import ist.meic.ie.utils.DatabaseConfig;
-import ist.meic.ie.utils.KafkaConfig;
-import ist.meic.ie.utils.ZookeeperConfig;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.io.*;
-import java.sql.*;
-import java.util.MissingFormatArgumentException;
-import java.util.Properties;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.MissingFormatArgumentException;
-import java.util.Properties;
 
-public class SuspendMSISDN {
-    private DatabaseConfig dbConfig;
+public class SuspendMSISDN  implements RequestStreamHandler {
+    public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context){
+        LambdaLogger logger = context.getLogger();
 
-    public SuspendMSISDN() {
-        //this.dbConfig = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");
-        this.dbConfig = new DatabaseConfig("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "HLR", "storemessages", "enterpriseintegration2021");
+        try {
+            JSONParser parser = new JSONParser();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            JSONObject event = (JSONObject) parser.parse(reader);
+            logger.log("input:" + (String) event.toString() + "\n");
+            int simcard;
+            //int msisdn;
+
+            if (event.get("SIMCARD") == null) throw new MissingFormatArgumentException("No SIM Card defined!");
+            //if (event.get("MSISDN") == null) throw new MissingFormatArgumentException("No MSISDN defined!");
+            //{"MSISDN":"12312312","SIMCARD":"913123123"}
+            simcard = ((Long) event.get("SIMCARD")).intValue();
+            //msisdn = ((Long) event.get("MSISDN")).intValue();
+            suspend(simcard);
+        } catch (Exception e) {
+            logger.log("Error" + e);
+        }
     }
 
-    public void suspend(String simcard, String msisdn) {
-
-        if (simcard == null) throw new MissingFormatArgumentException("No SIM Card defined!");
-        if (msisdn == null) throw new MissingFormatArgumentException("No Device Type defined!");
-
-        PreparedStatement deleteActive;
-        PreparedStatement insertSuspend;
-        PreparedStatement stmt;
+    public void suspend(int simcard) {
+        //DatabaseConfig dbConfig = new DatabaseConfig("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "HLR", "storemessages", "enterpriseintegration2021");
+        DatabaseConfig dbConfig  = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");
         try {
-            stmt = dbConfig.getConnection().prepareStatement("select * from activeSubscriber where SIMCARD=? and MSISDN=?");
-            stmt.setString(1, simcard);
-            stmt.setString(2, msisdn);
-            ResultSet res = stmt.executeQuery();
-
-            deleteActive = dbConfig.getConnection().prepareStatement("delete from activeSubscriber where SIMCARD=? and MSISDN=?");
-            deleteActive.setString(1, simcard);
-            deleteActive.setString(2, msisdn);
-            deleteActive.executeUpdate();
-            insertSuspend = dbConfig.getConnection().prepareStatement("insert into suspendedSubscriber (SIMCARD,MSISDN, deviceType) values(?,?,?)");
-            res.next();
-            insertSuspend.setString(1, res.getString("SIMCARD"));
-            insertSuspend.setString(2, res.getString("MSISDN"));
-            insertSuspend.setString(3, res.getString("deviceType"));
-            insertSuspend.executeUpdate();
-            stmt.close();
-            deleteActive.close();
-            insertSuspend.close();
+            Statement select = dbConfig.getConnection().createStatement();
+            ResultSet rs = select.executeQuery("SELECT * FROM Subscriber WHERE SIMCARD = " + simcard);
+            if(rs.next()) {
+                PreparedStatement update = dbConfig.getConnection().prepareStatement("UPDATE Subscriber SET state = ? WHERE SIMCARD = " + simcard);
+                update.setString(1, "SUSPENDED");
+                update.executeUpdate();
+                update.close();
+            }
+            dbConfig.getConnection().close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
 
     }
 
-    public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) {
-        LambdaLogger logger = context.getLogger();
-        try {
-            JSONParser parser = new JSONParser();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            JSONObject event = (JSONObject) parser.parse(reader);
-            logger.log("input:" + (String) event.toString() + "\n");
-            String action = "";
-            String simcard = "";
-            String msisdn = "";
-            String userID = "";
-            String deviceType = "";
-            String newUserName = "";
 
-            action = (String) event.get("action");
-            if (action == null) throw new MissingFormatArgumentException("No action defined!");
-            //{"action":"suspend","MSISDN":"12312312","SIMCARD":"913123123"}
-            simcard = (String) event.get("SIMCARD");
-            msisdn = (String) event.get("MSISDN");
-            suspend(simcard, msisdn);
-        } catch (Exception e) {
-            logger.log("Error" + e);
-        }
-    }
 }

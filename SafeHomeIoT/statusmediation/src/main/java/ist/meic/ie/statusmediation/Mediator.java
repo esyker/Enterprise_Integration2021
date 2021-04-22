@@ -58,7 +58,7 @@ public class Mediator {
                         insert_status.executeUpdate();
                         insert_status.close();
                     }
-
+                    statusDBConfig.getConnection().close();
                 } catch (org.json.simple.parser.ParseException e) {
                     e.printStackTrace();
                 }

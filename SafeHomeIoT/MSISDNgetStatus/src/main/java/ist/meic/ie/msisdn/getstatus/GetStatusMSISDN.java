@@ -27,6 +27,35 @@ public class GetStatusMSISDN {
         this.dbConfig = new DatabaseConfig("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "MSISDNStatus", "storemessages", "enterpriseintegration2021");
     }
 
+    public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) {
+        LambdaLogger logger = context.getLogger();
+        try {
+            JSONParser parser = new JSONParser();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            JSONObject event = (JSONObject) parser.parse(reader);
+            logger.log("input:" + (String) event.toString()+"\n");
+            String action = "";
+            String simcard = "";
+            String msisdn = "";
+
+
+            action = (String) event.get("action");
+            if (action == null) throw new MissingFormatArgumentException("No action defined!");
+
+
+            //"getStatus"://{"action":"getStatus","MSISDN":"12312312","SIMCARD":"913123123","userID":3}
+            simcard = (String) event.get("SIMCARD");
+            msisdn = (String) event.get("MSISDN");
+            String status = getStatus(simcard,msisdn);
+            OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
+            writer.write(status);
+            writer.close();
+
+        } catch (Exception e) {
+            logger.log("Error" + e);
+        }
+    }
+
     public String getStatus(String simcard, String msisdn){
 
         if (simcard == null) throw new MissingFormatArgumentException("No SIM Card defined!");
@@ -46,36 +75,5 @@ public class GetStatusMSISDN {
             throwables.printStackTrace();
         }
         return status;
-    }
-
-    public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) {
-        LambdaLogger logger = context.getLogger();
-        try {
-            JSONParser parser = new JSONParser();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            JSONObject event = (JSONObject) parser.parse(reader);
-            logger.log("input:" + (String) event.toString()+"\n");
-            String action = "";
-            String simcard = "";
-            String msisdn = "";
-            String userID = "";
-            String deviceType = "";
-            String newUserName = "";
-
-            action = (String) event.get("action");
-            if (action == null) throw new MissingFormatArgumentException("No action defined!");
-
-
-            //"getStatus"://{"action":"getStatus","MSISDN":"12312312","SIMCARD":"913123123","userID":3}
-            simcard = (String) event.get("SIMCARD");
-            msisdn = (String) event.get("MSISDN");
-            String status = getStatus(simcard,msisdn);
-            OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
-            writer.write(status);
-            writer.close();
-
-        } catch (Exception e) {
-            logger.log("Error" + e);
-        }
     }
 }

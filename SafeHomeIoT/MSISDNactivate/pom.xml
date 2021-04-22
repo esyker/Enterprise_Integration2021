@@ -12,7 +12,25 @@
     <packaging>jar</packaging>
     <artifactId>MSISDNactivate</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>ist.meic.ie.msisdn.activate.Main</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <dependencies>
         <dependency>
             <groupId>ist.meic.ie.utils</groupId>

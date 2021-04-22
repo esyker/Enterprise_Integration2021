@@ -172,7 +172,7 @@ public class IoTaaSMessageProvider {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			conn = DriverManager.getConnection("jdbc:mysql://" + hlrServer + "/" + hlrDatabase , hlrUsername , hlrPassword);
 			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM " + hlrTable);
+			ResultSet rs = stmt.executeQuery("SELECT * FROM "+ hlrTable + " WHERE state  = \"ACTIVE\"");
 			while (rs.next())
 				newsubscribers.put( rs.getString("SIMCARD") , rs.getString("MSISDN"));
 			conn.close();
@@ -194,7 +194,7 @@ public class IoTaaSMessageProvider {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			conn = DriverManager.getConnection("jdbc:mysql://" + hlrServer + "/" + hlrDatabase , hlrUsername , hlrPassword);
 			Statement stmt = conn.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM " + hlrTable);
+			rs = stmt.executeQuery("SELECT * FROM "+ hlrTable + " WHERE state  = \"ACTIVE\"");
 			while (rs.next()) {
 				EventItem eventItem = new EventItem(rs.getString("deviceType"), rs.getInt("SIMCARD"), rs.getInt("MSISDN"));
 				String event = eventItem.getEvent().toString();

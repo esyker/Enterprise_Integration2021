@@ -41,22 +41,24 @@ public class Mediator {
                     System.out.println(record.value());
                     JSONParser parser = new JSONParser();
                     JSONObject event = (JSONObject) parser.parse(record.value());
-                    Set<Map.Entry<String,String>> entries = event.entrySet();
-                    Iterator<Map.Entry<String, String>> it = entries.iterator();
-                    String simcard;
-                    String status;
-                    PreparedStatement insert_status;
-                    for (int idx = 0; idx < entries.size(); idx++) {
-                        Map.Entry<String,String> pair = (Map.Entry<String,String>)it.next();
-                        simcard =  pair.getKey();
-                        status = pair.getValue();
-                        insert_status = statusDBConfig.getConnection().prepareStatement ("insert into Status" +
+                    JSONObject statussimcard= (JSONObject) event.get("StatusSIMCARD");
+                    JSONObject SIMCARD = (JSONObject) statussimcard.get("SIMCARD");
+
+                    for(Iterator iterator = SIMCARD.entrySet().iterator(); iterator.hasNext();) {
+                        Map.Entry<String,String> pair = (Map.Entry<String,String>)iterator.next();
+                        System.out.println(pair.getKey());
+                        System.out.println(pair.getValue());
+                        String simcard =  (String) pair.getKey();
+                        String status = (String) pair.getValue();
+                        PreparedStatement insert_status;
+                        insert_status = statusDBConfig.getConnection().prepareStatement ("replace into Status" +
                                 " (SIMCARD, Status) values(?,?)");
                         insert_status.setString(1,simcard);
                         insert_status.setString(2,status);
                         insert_status.executeUpdate();
                         insert_status.close();
                     }
+
                 } catch (org.json.simple.parser.ParseException e) {
                     e.printStackTrace();
                 }

@@ -24,14 +24,14 @@ public class EventService implements RequestStreamHandler {
             JSONObject obj = (JSONObject) parser.parse(reader);
 
             if (obj.get("eventType") == null) throw new MissingFormatArgumentException("No event type provided!");
-            if (obj.get("userId") == null) throw new MissingFormatArgumentException("No userId provided!");
+            if (obj.get("SIMCARD") == null) throw new MissingFormatArgumentException("No SIMCARD provided!");
             if (obj.get("lastReceivedId") == null) throw new MissingFormatArgumentException("No last received provided!");
 
             String eventType = (String) obj.get("eventType");
-            int userId = ((Long) obj.get("userId")).intValue();
+            int SIMCARD = ((Long) obj.get("SIMCARD")).intValue();
             int lastReceived = ((Long) obj.get("lastReceivedId")).intValue();
 
-            List<Event> events = EventReopsitory.getEvents(eventType, userId, lastReceived);
+            List<Event> events = EventReopsitory.getEvents(eventType, SIMCARD, lastReceived);
             List<String> stringEvents = events.stream()
                     .map(Event::toString)
                     .collect(Collectors.toList());

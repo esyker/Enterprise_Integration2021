@@ -55,7 +55,7 @@ public class SmokeEvent extends Event{
                 "\"SIMCARD\": " + this.getSIMCARD() + ",\n" +
                 "\"MSISDN\": " + this.getMSISDN() + ",\n" +
                 "\"measurement\": " + this.getMeasurement() + ",\n" +
-                "\"timestamp\": " + this.getTimestamp() + "\n" +
+                "\"timestamp\": \"" + this.getTimestamp() + "\"\n" +
                 "}";
     }
 

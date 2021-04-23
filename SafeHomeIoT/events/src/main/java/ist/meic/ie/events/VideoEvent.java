@@ -54,7 +54,7 @@ public class VideoEvent extends Event{
                 "\"SIMCARD\": " + this.getSIMCARD() + ",\n" +
                 "\"MSISDN\": " + this.getMSISDN() + ",\n" +
                 "\"description\": \"" + this.getDescription() + "\",\n" +
-                "\"timestamp\": " + this.getTimestamp() + "\n" +
+                "\"timestamp\": \"" + this.getTimestamp() + "\"\n" +
                 "}";
     }
 }

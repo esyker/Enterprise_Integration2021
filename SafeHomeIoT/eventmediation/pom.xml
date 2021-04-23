@@ -80,7 +80,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>ist.meic.ie.eventmediation.Mediator</mainClass>
+                    <mainClass>ist.meic.ie.eventmediation.ist.meic.ie.statusmediation.Mediator</mainClass>
                 </configuration>
             </plugin>
             <plugin>

@@ -2,30 +2,19 @@ package ist.meic.ie.msisdn.getstatus;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
+import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import ist.meic.ie.utils.DatabaseConfig;
-import ist.meic.ie.utils.KafkaConfig;
-import ist.meic.ie.utils.ZookeeperConfig;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
-import java.sql.*;
-import java.util.MissingFormatArgumentException;
-import java.util.Properties;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.Date;
 import java.util.MissingFormatArgumentException;
-import java.util.Properties;
 
-public class GetStatusMSISDN {
-    private DatabaseConfig dbConfig;
-
-    public GetStatusMSISDN(){
-        //this.dbConfig = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");;
-        this.dbConfig = new DatabaseConfig("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "MSISDNStatus", "storemessages", "enterpriseintegration2021");
-    }
+public class GetStatusMSISDN implements RequestStreamHandler {
 
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) {
         LambdaLogger logger = context.getLogger();
@@ -34,19 +23,13 @@ public class GetStatusMSISDN {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             JSONObject event = (JSONObject) parser.parse(reader);
             logger.log("input:" + (String) event.toString()+"\n");
-            String action = "";
-            String simcard = "";
-            String msisdn = "";
+            int simcard;
 
+            if (event.get("SIMCARD") == null) throw new MissingFormatArgumentException("No SIM Card defined!");
 
-            action = (String) event.get("action");
-            if (action == null) throw new MissingFormatArgumentException("No action defined!");
-
-
-            //"getStatus"://{"action":"getStatus","MSISDN":"12312312","SIMCARD":"913123123","userID":3}
-            simcard = (String) event.get("SIMCARD");
-            msisdn = (String) event.get("MSISDN");
-            String status = getStatus(simcard,msisdn);
+            //"getStatus"://{"SIMCARD":913123123}
+            simcard = ((Long) event.get("SIMCARD")).intValue();
+            String status = getStatus(simcard, logger);
             OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
             writer.write(status);
             writer.close();
@@ -56,21 +39,34 @@ public class GetStatusMSISDN {
         }
     }
 
-    public String getStatus(String simcard, String msisdn){
+    public String getStatus(int simcard, LambdaLogger logger){
 
-        if (simcard == null) throw new MissingFormatArgumentException("No SIM Card defined!");
-        if (msisdn == null) throw new MissingFormatArgumentException("No Device Type defined!");
+        DatabaseConfig dbConfig = new DatabaseConfig("events-2.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "MSISDNStatus", "pedro", "123456789");;
+        //DatabaseConfig dbConfig = new DatabaseConfig("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "MSISDNStatus", "storemessages", "enterpriseintegration2021");
 
         PreparedStatement statusActive;
         ResultSet queryactive;
-        String status =null;
+        String status = "NOT FOUND";
         try {
-            statusActive = dbConfig.getConnection().prepareStatement ("select status from Status where SIMCARD=?");
-            statusActive.setString(1, simcard);
+            statusActive = dbConfig.getConnection().prepareStatement ("select * from Status where SIMCARD = ? having ts >= all (select ts from Status where SIMCARD = ?)");
+            statusActive.setInt(1, simcard);
+            statusActive.setInt(2, simcard);
             queryactive = statusActive.executeQuery();
-            queryactive.next();
-            status=queryactive.getString("status");
+
+            if (queryactive.next()) {
+                Date ts = queryactive.getTimestamp("ts");
+                //Dates are stored in a different timezone. Therefore we substract 1 hour to compensate
+                Date fiveMinutesAgo =  new Date(System.currentTimeMillis() - 60000 * 5 - 60000 * 60);
+                logger.log(ts.toString() + "\n");
+                logger.log(fiveMinutesAgo.toString() + "\n");
+                if (ts.before(fiveMinutesAgo)) {
+                    status = "UNKNWON";
+                } else {
+                    status = queryactive.getString("status").equals("1") ? "UP" : "DOWN";
+                }
+            }
             statusActive.close();
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

@@ -407,7 +407,7 @@ public class IoTaaSMessageProvider {
 
 						if (statusSIMCARD == true && (mili.compareTo(new Timestamp(miliupdatedStatus.getTime() + deltaStatus.getTime())) > 0)) {
 
-							SendSimpleMessage(CreateStatusMessage(typeMessage, Subscribers), producerCDR, "status-simcard-events", mili);
+							SendSimpleMessage(CreateStatusMessage(typeMessage, Subscribers), producerCDR, "StatusSIMCARD", mili);
 							miliupdatedStatus = mili;
 						}
 

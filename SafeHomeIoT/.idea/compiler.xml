@@ -23,6 +23,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="activateMSISDN" target="8" />
+      <module name="simcardstatusmediation" target="1.8" />
       <module name="suspendMSISDN" target="8" />
       <module name="troll1" target="8" />
       <module name="troll2" target="8" />

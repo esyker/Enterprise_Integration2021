@@ -1,37 +1,25 @@
 package ist.meic.ie.statusmediation;
 
-import ist.meic.ie.events.exceptions.InvalidEventTypeException;
 import ist.meic.ie.utils.DatabaseConfig;
 import ist.meic.ie.utils.KafkaConfig;
-import ist.meic.ie.utils.ZookeeperConfig;
-import kafka.admin.AdminUtils;
-import kafka.admin.RackAwareMode;
-import kafka.utils.ZKStringSerializer$;
-import kafka.utils.ZkUtils;
-import org.I0Itec.zkclient.ZkClient;
-import org.I0Itec.zkclient.ZkConnection;
 import org.apache.commons.cli.*;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
 
 public class Mediator {
     public static void main(String[] args) throws SQLException {
         CommandLine cmd = parseArgs(args);
         //dbname=MSISDNStatus
-        DatabaseConfig statusDBConfig = new DatabaseConfig(cmd.getOptionValue("awsip"), cmd.getOptionValue("dbname"),
-                cmd.getOptionValue("username"), cmd.getOptionValue("password"));
+        DatabaseConfig statusDBConfig = new DatabaseConfig(cmd.getOptionValue("awsip"), cmd.getOptionValue("dbname"), cmd.getOptionValue("username"), cmd.getOptionValue("password"));
 
         KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "statusmediator", Collections.singletonList("StatusSIMCARD"));
         while (true) {
@@ -48,17 +36,15 @@ public class Mediator {
                         Map.Entry<String,String> pair = (Map.Entry<String,String>)iterator.next();
                         System.out.println(pair.getKey());
                         System.out.println(pair.getValue());
-                        String simcard =  (String) pair.getKey();
-                        String status = (String) pair.getValue();
-                        PreparedStatement insert_status;
-                        insert_status = statusDBConfig.getConnection().prepareStatement ("replace into Status" +
-                                " (SIMCARD, Status) values(?,?)");
-                        insert_status.setString(1,simcard);
-                        insert_status.setString(2,status);
-                        insert_status.executeUpdate();
-                        insert_status.close();
+                        int simcard = Integer.parseInt(pair.getKey());
+                        int status = Integer.parseInt(pair.getValue());
+                        PreparedStatement insertStatus;
+                        insertStatus = statusDBConfig.getConnection().prepareStatement ("insert into Status" + " (SIMCARD, Status) values(?,?)");
+                        insertStatus.setInt(1,simcard);
+                        insertStatus.setInt(2,status);
+                        insertStatus.executeUpdate();
+                        insertStatus.close();
                     }
-                    statusDBConfig.getConnection().close();
                 } catch (org.json.simple.parser.ParseException e) {
                     e.printStackTrace();
                 }

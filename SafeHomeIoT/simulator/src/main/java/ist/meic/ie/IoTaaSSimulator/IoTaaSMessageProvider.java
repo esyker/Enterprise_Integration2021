@@ -394,12 +394,14 @@ public class IoTaaSMessageProvider {
 				Timestamp delta = new Timestamp ((long)  1 * 60 * 1000 ); // 1 minute to refresh data from database				
 				Timestamp deltaStatus = new Timestamp ((long)   10 * 1000 ); // 10 seconds to send new simcard status
 				List<String> devices = null;
+				int counter = 0;
+				//devices = getAllDevices();
 
 				while (true)
 				{
 					try {
 						mili = new Timestamp(System.currentTimeMillis());
-
+						System.out.println("here0");
 						if (mili.compareTo(new Timestamp(miliupdated.getTime() + delta.getTime())) > 0) {
 							Subscribers = ReadFromDB(Subscribers);
 							miliupdated = mili;
@@ -411,9 +413,14 @@ public class IoTaaSMessageProvider {
 							miliupdatedStatus = mili;
 						}
 
+
 						devices = getAllDevices();
 						if (!devices.isEmpty()) {
-							devices.forEach(e -> SendMessage(e, producerCDR, topic));
+							for (String e: devices) {
+								SendMessage(e, producerCDR, topic);
+								counter++;
+							}
+
 						} else {
 							System.out.println("Empty list of subscribers. Therefore, no message to send.");
 						}
@@ -427,14 +434,18 @@ public class IoTaaSMessageProvider {
 							SendMessage (  alienmsg ,  producerCDR , topic ) ;
 							System.out.println("Alien message sent...");							
 						}
-					
+
+
 						Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 						System.out.println("Waiting..." + timestamp );
 						Thread.sleep(60000/throughput);
+
 					}
 					catch (Exception e) { e.printStackTrace();}
 					
 					System.out.println("Fire-and-forget stopped.");
+					System.out.println("Messages sent: "  + counter);
+
 				}
 			}
 			else System.out.println("Application Arguments bad usage.\n\nPlease check syntax.\n\n" + usage);

@@ -34,6 +34,7 @@ public class Mediator {
 
         KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "mediationpre", topics);
         KafkaProducer<String, String> producer = KafkaConfig.createKafkaProducer(cmd.getOptionValue("kafkaip"));
+        int counter = 0;
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {
@@ -51,7 +52,10 @@ public class Mediator {
                 } catch (InvalidEventTypeException | org.json.simple.parser.ParseException e) {
                     e.printStackTrace();
                 }
+                counter++;
             }
+            System.out.println("Messages received: "  + counter);
+
         }
 
     }

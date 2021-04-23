@@ -46,7 +46,7 @@ public class GetStatusMSISDN implements RequestStreamHandler {
 
         PreparedStatement statusActive;
         ResultSet queryactive;
-        String status = "NOT FOUND";
+        String status = "{ \"status\": \"NOT FOUND\"}";
         try {
             statusActive = dbConfig.getConnection().prepareStatement ("select * from Status where SIMCARD = ? having ts >= all (select ts from Status where SIMCARD = ?)");
             statusActive.setInt(1, simcard);
@@ -56,13 +56,13 @@ public class GetStatusMSISDN implements RequestStreamHandler {
             if (queryactive.next()) {
                 Date ts = queryactive.getTimestamp("ts");
                 //Dates are stored in a different timezone. Therefore we substract 1 hour to compensate
-                Date fiveMinutesAgo =  new Date(System.currentTimeMillis() - 60000 * 5 - 60000 * 60);
+                Date fiveMinutesAgo =  new Date(System.currentTimeMillis() - 60000 * 5);
                 logger.log(ts.toString() + "\n");
                 logger.log(fiveMinutesAgo.toString() + "\n");
                 if (ts.before(fiveMinutesAgo)) {
-                    status = "UNKNWON";
+                    status = "{ \"status\": \"UNKNOWN\"}";
                 } else {
-                    status = queryactive.getString("status").equals("1") ? "UP" : "DOWN";
+                    status = queryactive.getString("status").equals("1") ? "{ \"status\": \"UP\"}" : "{ \"status\": \"DOWN\"}";
                 }
             }
             statusActive.close();

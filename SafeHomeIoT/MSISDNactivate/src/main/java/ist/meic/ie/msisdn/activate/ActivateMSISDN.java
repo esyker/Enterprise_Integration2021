@@ -7,6 +7,7 @@ import com.sun.org.apache.xml.internal.serializer.ToTextStream;
 import ist.meic.ie.utils.DatabaseConfig;
 import ist.meic.ie.utils.KafkaConfig;
 import ist.meic.ie.utils.ZookeeperConfig;
+import kafka.utils.Json;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -30,13 +31,18 @@ public class ActivateMSISDN implements RequestStreamHandler {
         try {
             JSONParser parser = new JSONParser();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            JSONObject event = (JSONObject) parser.parse(reader);
-            logger.log("input:" + (String) event.toString()+"\n");
+            JSONObject msg = (JSONObject) parser.parse(reader);
+            if (msg.get("body") == null) {
+                throw new MissingFormatArgumentException("Missing body field");
+            }
+            logger.log("input:" + msg.toString());
+            JSONObject event = (JSONObject) parser.parse(msg.get("body").toString());
+            logger.log(event.toString());
+
             int simcard;
             int msisdn;
             String deviceType = "";
-
-
+            
             //"activate"://{"MSISDN":"12312312","SIMCARD":"913123123","deviceType":"temperature"}
             if (event.get("SIMCARD") == null) throw new MissingFormatArgumentException("No SIM Card defined!");
             if (event.get("MSISDN") == null) throw new MissingFormatArgumentException("No MSISDN defined!");
@@ -48,6 +54,18 @@ public class ActivateMSISDN implements RequestStreamHandler {
             deviceType = (String) event.get("deviceType");
             activate(dbConfig, simcard, msisdn, deviceType, logger);
 
+            JSONObject responseBody = new JSONObject();
+            JSONObject responseJson = new JSONObject();
+            JSONObject headerJson = new JSONObject();
+            responseBody.put("message","New SIMCARD: " + simcard + " inserted");
+            headerJson.put("x-custom-header", "my custom header value");
+            responseJson.put("statusCode", 200);
+            responseJson.put("headers", headerJson);
+            responseJson.put("body", responseBody.toString());
+
+            OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
+            writer.write(responseJson.toString());
+            writer.close();
         } catch (Exception e) {
             logger.log("Error" + e);
         }

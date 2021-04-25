@@ -21,23 +21,38 @@ public class EventService implements RequestStreamHandler {
         try {
             JSONParser parser = new JSONParser();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            JSONObject obj = (JSONObject) parser.parse(reader);
+            JSONObject msg = (JSONObject) parser.parse(reader);
+            if (msg.get("body") == null) {
+                throw new MissingFormatArgumentException("Missing body field");
+            }
+            logger.log("input:" + msg.toString());
+            JSONObject event = (JSONObject) parser.parse(msg.get("body").toString());
+            logger.log(event.toString());
 
-            if (obj.get("eventType") == null) throw new MissingFormatArgumentException("No event type provided!");
-            if (obj.get("SIMCARD") == null) throw new MissingFormatArgumentException("No SIMCARD provided!");
-            if (obj.get("lastReceivedId") == null) throw new MissingFormatArgumentException("No last received provided!");
+            if (event.get("eventType") == null) throw new MissingFormatArgumentException("No event type provided!");
+            if (event.get("SIMCARD") == null) throw new MissingFormatArgumentException("No SIMCARD provided!");
+            if (event.get("lastReceivedId") == null) throw new MissingFormatArgumentException("No last received provided!");
 
-            String eventType = (String) obj.get("eventType");
-            int SIMCARD = ((Long) obj.get("SIMCARD")).intValue();
-            int lastReceived = ((Long) obj.get("lastReceivedId")).intValue();
+            String eventType = (String) event.get("eventType");
+            int SIMCARD = ((Long) event.get("SIMCARD")).intValue();
+            int lastReceived = ((Long) event.get("lastReceivedId")).intValue();
 
             List<Event> events = EventReopsitory.getEvents(eventType, SIMCARD, lastReceived);
             List<String> stringEvents = events.stream()
                     .map(Event::toString)
                     .collect(Collectors.toList());
 
+            JSONObject responseBody = new JSONObject();
+            JSONObject responseJson = new JSONObject();
+            JSONObject headerJson = new JSONObject();
+            responseBody.put("message", stringEvents.toString());
+            headerJson.put("x-custom-header", "my custom header value");
+            responseJson.put("statusCode", 200);
+            responseJson.put("headers", headerJson);
+            responseJson.put("body", responseBody.toString());
+
             OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
-            writer.write(stringEvents.toString());
+            writer.write(responseJson.toString());
             writer.close();
 
         } catch (Exception e) {

@@ -7,10 +7,7 @@ import ist.meic.ie.utils.DatabaseConfig;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,25 +21,45 @@ public class SuspendMSISDN  implements RequestStreamHandler {
         try {
             JSONParser parser = new JSONParser();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            JSONObject event = (JSONObject) parser.parse(reader);
-            logger.log("input:" + (String) event.toString() + "\n");
+            JSONObject msg = (JSONObject) parser.parse(reader);
+            if (msg.get("body") == null) {
+                throw new MissingFormatArgumentException("Missing body field");
+            }
+            logger.log("input:" + msg.toString());
+            JSONObject event = (JSONObject) parser.parse(msg.get("body").toString());
+            logger.log(event.toString());
             int simcard;
-            //int msisdn;
 
             if (event.get("SIMCARD") == null) throw new MissingFormatArgumentException("No SIM Card defined!");
-            //if (event.get("MSISDN") == null) throw new MissingFormatArgumentException("No MSISDN defined!");
-            //{"MSISDN":"12312312","SIMCARD":"913123123"}
             simcard = ((Long) event.get("SIMCARD")).intValue();
-            //msisdn = ((Long) event.get("MSISDN")).intValue();
-            suspend(simcard);
+            boolean suspended = suspend(simcard);
+
+            JSONObject responseBody = new JSONObject();
+            JSONObject responseJson = new JSONObject();
+            JSONObject headerJson = new JSONObject();
+            if (suspended) {
+                responseBody.put("message","SIMCARD " + simcard + " suspended");
+                responseJson.put("statusCode", 200);
+            } else {
+                responseBody.put("message","No SIMCARD " + simcard + " exists");
+                responseJson.put("statusCode", 500);
+            }
+
+            responseJson.put("headers", headerJson);
+            responseJson.put("body", responseBody.toString());
+
+            OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
+            writer.write(responseJson.toString());
+            writer.close();
         } catch (Exception e) {
             logger.log("Error" + e);
         }
     }
 
-    public void suspend(int simcard) {
+    public boolean suspend(int simcard) {
         //DatabaseConfig dbConfig = new DatabaseConfig("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "HLR", "storemessages", "enterpriseintegration2021");
         DatabaseConfig dbConfig  = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");
+        boolean suspended = false;
         try {
             Statement select = dbConfig.getConnection().createStatement();
             ResultSet rs = select.executeQuery("SELECT * FROM Subscriber WHERE SIMCARD = " + simcard);
@@ -51,13 +68,12 @@ public class SuspendMSISDN  implements RequestStreamHandler {
                 update.setString(1, "SUSPENDED");
                 update.executeUpdate();
                 update.close();
+                suspended = true;
             }
             dbConfig.getConnection().close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
+        return suspended;
     }
-
-
 }

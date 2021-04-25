@@ -42,7 +42,7 @@ public class ActivateMSISDN implements RequestStreamHandler {
             int simcard;
             int msisdn;
             String deviceType = "";
-            
+
             //"activate"://{"MSISDN":"12312312","SIMCARD":"913123123","deviceType":"temperature"}
             if (event.get("SIMCARD") == null) throw new MissingFormatArgumentException("No SIM Card defined!");
             if (event.get("MSISDN") == null) throw new MissingFormatArgumentException("No MSISDN defined!");
@@ -52,12 +52,12 @@ public class ActivateMSISDN implements RequestStreamHandler {
             simcard = ((Long) event.get("SIMCARD")).intValue();
             msisdn = ((Long) event.get("MSISDN")).intValue();
             deviceType = (String) event.get("deviceType");
-            activate(dbConfig, simcard, msisdn, deviceType, logger);
+            String action = activate(dbConfig, simcard, msisdn, deviceType, logger);
 
             JSONObject responseBody = new JSONObject();
             JSONObject responseJson = new JSONObject();
             JSONObject headerJson = new JSONObject();
-            responseBody.put("message","New SIMCARD: " + simcard + " inserted");
+            responseBody.put("message","New SIMCARD " + simcard + " " + action);
             headerJson.put("x-custom-header", "my custom header value");
             responseJson.put("statusCode", 200);
             responseJson.put("headers", headerJson);
@@ -71,7 +71,8 @@ public class ActivateMSISDN implements RequestStreamHandler {
         }
     }
 
-    public void activate(DatabaseConfig dbConfig, int simcard, int msisdn, String deviceType, LambdaLogger logger) throws SQLException {//insert into db new SIMCARD
+    public String activate(DatabaseConfig dbConfig, int simcard, int msisdn, String deviceType, LambdaLogger logger) throws SQLException {
+        String action = "inserted";
         try {
             Statement stmt = dbConfig.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM Subscriber WHERE SIMCARD = " + simcard);
@@ -83,16 +84,19 @@ public class ActivateMSISDN implements RequestStreamHandler {
                 insert.setString(4, "ACTIVE");
                 insert.executeUpdate();
                 insert.close();
+                action = "inserted";
             } else {
                 PreparedStatement update = dbConfig.getConnection().prepareStatement ("UPDATE Subscriber SET state = ? WHERE SIMCARD = " + simcard);
                 update.setString(1,"ACTIVE");
                 update.executeUpdate();
                 update.close();
+                action = "updated";
             }
             dbConfig.getConnection().close();
 
         } catch (SQLException e) {
             logger.log("Error" + e);
         }
+        return action;
     }
 }

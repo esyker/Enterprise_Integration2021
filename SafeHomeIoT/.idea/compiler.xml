@@ -7,7 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="simulator" />
-        <module name="IoTaaSSimulator" />
+        <module name="customerhandling" />
         <module name="MSISDNactivate" />
         <module name="MSISDNsuspend" />
         <module name="MSISDNgetStatus" />
@@ -23,6 +23,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="activateMSISDN" target="8" />
+      <module name="IoTaaSSimulator" target="1.8" />
       <module name="simcardstatusmediation" target="1.8" />
       <module name="suspendMSISDN" target="8" />
       <module name="troll1" target="8" />

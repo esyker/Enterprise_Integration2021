@@ -33,6 +33,7 @@
         <module>MSISDNgetStatus</module>
         <module>MSISDNdelete</module>
         <module>statusmediation</module>
+        <module>customerhandling</module>
     </modules>
 
 </project>

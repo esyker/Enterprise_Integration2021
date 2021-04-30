@@ -1,11 +1,14 @@
+DROP DATABASE IF EXISTS CustomerHandling;
+CREATE DATABASE CustomerHandling;
 USE CustomerHandling;
 
 DROP TABLE IF EXISTS Client;
 CREATE TABLE Client (
-    id INT,
+    id INT AUTO_INCREMENT,
     firstName VARCHAR(30),
     lastName VARCHAR(30),
     address VARCHAR(100),
+    birthDate TIMESTAMP,
     PRIMARY KEY(ID)
 );
 

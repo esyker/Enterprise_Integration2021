@@ -48,7 +48,7 @@ public class AddIoTDevice {
                         LOGGER.info("Missing parameters!");
                         externalTaskService.complete(externalTask);
                     }
-                    int userId = ((Long) externalTask.getVariable("userId")).intValue();
+                    int customerId = ((Long) externalTask.getVariable("userId")).intValue();
                     int SIMCARD = ((Long) externalTask.getVariable("SIMCARD")).intValue();
                     int MSISDN = ((Long) externalTask.getVariable("MSISDN")).intValue();
                     String deviceType = (String) externalTask.getVariable("deviceType");
@@ -57,11 +57,11 @@ public class AddIoTDevice {
                     Connection conn = new DatabaseConfig("customerhandler2.cjw7eyupyncl.us-east-1.rds.amazonaws.com", "CustomerHandling","pedro", "123456789").getConnection();
                     try {
                         conn.setAutoCommit(false);
-                        stmt = conn.prepareStatement ("select * from Client WHERE id = ?");
-                        stmt.setInt(1, userId);
+                        stmt = conn.prepareStatement ("select * from Customer WHERE id = ?");
+                        stmt.setInt(1, customerId);
                         rs = stmt.executeQuery();
                         if(!rs.next()) {
-                            LOGGER.info("User with userId " + userId + " does not exist!");
+                            LOGGER.info("User with userId " + customerId + " does not exist!");
                             conn.rollback();
                             return;
                         }
@@ -88,12 +88,7 @@ public class AddIoTDevice {
                         int deviceTypeId = rs2.getInt("id");
                         stmt.close();
 
-                        stmt = conn.prepareStatement("INSERT INTO Device (SIMCARD, MSISDN, userId, deviceTypeId) VALUES (?,?,?,?)");
-                        stmt.setInt(1, SIMCARD);
-                        stmt.setInt(2, MSISDN);
-                        stmt.setInt(3, userId);
-                        stmt.setInt(4, deviceTypeId);
-                        stmt.executeUpdate();
+
 
                         // REMOTE CALL TO KONG EXPOSING PROVISION SERVICES
                         DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -118,6 +113,14 @@ public class AddIoTDevice {
                             LOGGER.info("Finished with HTTP error code : " + statusCode + "\n" + response.toString());
                             HttpEntity responseEntity = response.getEntity();
                             if(responseEntity!=null) LOGGER.info("response body = " + EntityUtils.toString(responseEntity));
+
+                            // Insert Device
+                            stmt = conn.prepareStatement("INSERT INTO Device (SIMCARD, MSISDN, customerId, deviceTypeId) VALUES (?,?,?,?)");
+                            stmt.setInt(1, SIMCARD);
+                            stmt.setInt(2, MSISDN);
+                            stmt.setInt(3, customerId);
+                            stmt.setInt(4, deviceTypeId);
+                            stmt.executeUpdate();
                         } catch (ClientProtocolException e) {
                             e.printStackTrace();
                         } catch (IOException e) {

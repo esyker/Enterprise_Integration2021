@@ -70,7 +70,7 @@ public class CreateCostumer {
                     String address = (String) externalTask.getVariable("address");
                     Date birthDate = ((Date) externalTask.getVariable("birthDate"));
                     try {
-                        PreparedStatement insert = config.getConnection().prepareStatement ("INSERT INTO  Client (firstname, lastname, address, birthdate) VALUES (?,?,?,?)");
+                        PreparedStatement insert = config.getConnection().prepareStatement ("INSERT INTO  Customer (firstname, lastname, address, birthdate) VALUES (?,?,?,?)");
                         insert.setString(1,firstName);
                         insert.setString(2,lastName);
                         insert.setString(3, address);

@@ -25,7 +25,6 @@
         <module>provisioning</module>
         <module>events</module>
         <module>eventmediationpre</module>
-        <module>IoTaaSSimulator-main</module>
         <module>simulator</module>
         <module>eventservice</module>
         <module>MSISDNactivate</module>
@@ -34,6 +33,7 @@
         <module>MSISDNdelete</module>
         <module>statusmediation</module>
         <module>customerhandling</module>
+        <module>constants</module>
     </modules>
 
 </project>

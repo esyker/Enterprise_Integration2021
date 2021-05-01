@@ -22,6 +22,8 @@ public class CreateCostumer {
         String camundaEndpoint = args[0];
         validateDataForm(camundaEndpoint);
         createCustomer(camundaEndpoint);
+        AddIoTDevice.addIoTDevice(camundaEndpoint);
+
     }
 
     private static void validateDataForm(String camundaEndpoint) {

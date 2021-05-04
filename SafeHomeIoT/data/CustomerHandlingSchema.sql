@@ -2,6 +2,15 @@ DROP DATABASE IF EXISTS CustomerHandling;
 CREATE DATABASE CustomerHandling;
 USE CustomerHandling;
 
+DROP TABLE IF EXISTS Subscription;
+CREATE TABLE Subscription (
+    id INT AUTO_INCREMENT,
+    note varchar(50),
+    startDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(id)
+    /*FOREIGN KEY (customerId) REFERENCES Customer(id)*/
+);
+
 DROP TABLE IF EXISTS Customer;
 CREATE TABLE Customer (
     id INT AUTO_INCREMENT,
@@ -26,6 +35,7 @@ CREATE TABLE Device (
     MSISDN INT,
     customerId INT,
     deviceTypeId INT,
+    status VARCHAR(30),
     PRIMARY KEY (SIMCARD),
     FOREIGN KEY (customerId) REFERENCES Customer(id),
     FOREIGN KEY (deviceTypeId) REFERENCES  DeviceType(id)
@@ -39,39 +49,31 @@ CREATE TABLE Service (
       PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS ServiceDeviceType;
-/*CREATE TABLE ServiceDeviceType (
-    serviceId INT,
-    deviceTypeId INT,
-    PRIMARY KEY(serviceId, deviceTypeId),
-    FOREIGN KEY(serviceId) REFERENCES Service(id),
-    FOREIGN KEY(deviceTypeId) REFERENCES DeviceType(id)
-);*/
-
-DROP TABLE IF EXISTS Subscription;
-CREATE TABLE Subscription (
-    id INT AUTO_INCREMENT,
-    customerId INT,
-    PRIMARY KEY(id),
-    FOREIGN KEY (customerId) REFERENCES Customer(id)
-);
-
-DROP TABLE IF EXISTS SubscriptionDevices;
-CREATE TABLE SubscriptionDevices (
-    subscriptionId INT,
-    SIMCARD INT,
-    PRIMARY KEY(subscriptionId, SIMCARD),
-    FOREIGN KEY (subscriptionId) REFERENCES Subscription(id),
-    FOREIGN KEY (SIMCARD) REFERENCES Device(SIMCARD)
-);
-
-DROP TABLE IF EXISTS SubscriptionDevices;
+DROP TABLE IF EXISTS SubscriptionServices;
 CREATE TABLE SubscriptionServices (
      subscriptionId INT,
      serviceId INT,
      PRIMARY KEY(subscriptionId, serviceId),
      FOREIGN KEY (subscriptionId) REFERENCES Subscription(id),
      FOREIGN KEY (serviceId) REFERENCES Service(id)
+);
+
+DROP TABLE IF EXISTS SubscriptionServices;
+CREATE TABLE SubscriptionServices (
+      subscriptionId INT,
+      serviceId INT,
+      PRIMARY KEY(subscriptionId, serviceId),
+      FOREIGN KEY (subscriptionId) REFERENCES Subscription(id),
+      FOREIGN KEY (serviceId) REFERENCES Service(id)
+);
+
+DROP TABLE  IF EXISTS  CustomerSubscriptions;
+CREATE TABLE CustomerSubscriptions (
+    customerId INT,
+    subscriptionId INT,
+    PRIMARY KEY (customerId),
+    FOREIGN KEY (customerId) REFERENCES Customer(id),
+    FOREIGN KEY (subscriptionId) REFERENCES Subscription(id)
 );
 
 INSERT INTO Service (name, cost) VALUES ('House Security', 30);

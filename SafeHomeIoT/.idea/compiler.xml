@@ -12,6 +12,7 @@
         <module name="MSISDNactivate" />
         <module name="MSISDNsuspend" />
         <module name="MSISDNgetStatus" />
+        <module name="Lambda-cancelsubscription" />
         <module name="eventmediation" />
         <module name="eventservice" />
         <module name="utils" />
@@ -19,13 +20,16 @@
         <module name="provisioning" />
         <module name="eventmediationpre" />
         <module name="statusmediation" />
+        <module name="Lambda-subscribetoservices" />
         <module name="events" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="activateMSISDN" target="8" />
+      <module name="cancelsubscription" target="1.8" />
       <module name="constants" target="8" />
       <module name="IoTaaSSimulator" target="1.8" />
+      <module name="Lambda-subscribetoservices" target="1.8" />
       <module name="simcardstatusmediation" target="1.8" />
       <module name="suspendMSISDN" target="8" />
       <module name="troll1" target="8" />

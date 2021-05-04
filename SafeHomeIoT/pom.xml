@@ -34,7 +34,8 @@
         <module>statusmediation</module>
         <module>customerhandling</module>
         <module>constants</module>
-        <module>subscribetoservices</module>
+        <module>Lambda-subscribetoservices</module>
+        <module>Lambda-cancelsubscription</module>
     </modules>
 
 </project>

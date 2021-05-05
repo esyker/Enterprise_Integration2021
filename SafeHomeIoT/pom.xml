@@ -36,6 +36,8 @@
         <module>constants</module>
         <module>Lambda-subscribetoservices</module>
         <module>Lambda-cancelsubscription</module>
+        <module>Lambda-createcustomer</module>
+        <module>Lambda-addiotdevice</module>
     </modules>
 
 </project>

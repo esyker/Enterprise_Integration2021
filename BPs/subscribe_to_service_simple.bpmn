@@ -3,7 +3,7 @@
   <bpmn:collaboration id="Collaboration_0a0ywfq">
     <bpmn:participant id="Participant_1owfxv1" name="BPM IoT" processRef="susbcribe-to-services" />
     <bpmn:participant id="Participant_01mpje0" name="Customer" processRef="choose-services" />
-    <bpmn:messageFlow id="Flow_0nrmu6a" sourceRef="Event_0alhinx" targetRef="Event_16fvuor" />
+    <bpmn:messageFlow id="Flow_08nh1aq" sourceRef="Participant_01mpje0" targetRef="Event_16fvuor" />
   </bpmn:collaboration>
   <bpmn:process id="susbcribe-to-services" name="Subscribe To Services" isExecutable="true">
     <bpmn:endEvent id="Event_0oemaj9">
@@ -13,98 +13,46 @@
       <bpmn:incoming>Flow_180zywl</bpmn:incoming>
       <bpmn:outgoing>Flow_10w5h91</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_10w5h91" sourceRef="Activity_0qzu4r4" targetRef="Event_0oemaj9" />
-    <bpmn:sequenceFlow id="Flow_180zywl" sourceRef="Event_16fvuor" targetRef="Activity_0qzu4r4" />
     <bpmn:startEvent id="Event_16fvuor" name="Receive Chosen Services">
       <bpmn:outgoing>Flow_180zywl</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_04dxw4n" messageRef="Message_1i9wf22" />
     </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_10w5h91" sourceRef="Activity_0qzu4r4" targetRef="Event_0oemaj9" />
+    <bpmn:sequenceFlow id="Flow_180zywl" sourceRef="Event_16fvuor" targetRef="Activity_0qzu4r4" />
   </bpmn:process>
-  <bpmn:process id="choose-services" name="Choose Services" isExecutable="true">
-    <bpmn:startEvent id="Event_0eqmkcu">
-      <bpmn:outgoing>Flow_0b7axk5</bpmn:outgoing>
-    </bpmn:startEvent>
-    <bpmn:userTask id="Activity_191u1rs" name="Chooses Services to Subscribe" camunda:assignee="demo">
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="homeSecurity" label="Home Security Service" type="boolean" />
-          <camunda:formField id="homeInventoryManagement" label="Home Inventory Management Service" type="boolean" />
-        </camunda:formData>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0b7axk5</bpmn:incoming>
-      <bpmn:outgoing>Flow_0w5nya3</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:intermediateThrowEvent id="Event_0alhinx" name="Send chosen services">
-      <bpmn:incoming>Flow_0w5nya3</bpmn:incoming>
-      <bpmn:outgoing>Flow_1r7lj4x</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_030zar1" messageRef="Message_1i9wf22" camunda:expression="${execution.getProcessEngineServices().getRuntimeService().createMessageCorrelation(&#34;services-message&#34;).setVariable(&#34;customerId&#34;, customerId).setVariable(&#34;homeSecurity&#34;, homeSecurity).setVariable(&#34;homeInventoryManagement&#34;, homeInventoryManagement).correlateWithResult()}&#39;" />
-    </bpmn:intermediateThrowEvent>
-    <bpmn:endEvent id="Event_1weorhq">
-      <bpmn:incoming>Flow_1r7lj4x</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0b7axk5" sourceRef="Event_0eqmkcu" targetRef="Activity_191u1rs" />
-    <bpmn:sequenceFlow id="Flow_0w5nya3" sourceRef="Activity_191u1rs" targetRef="Event_0alhinx" />
-    <bpmn:sequenceFlow id="Flow_1r7lj4x" sourceRef="Event_0alhinx" targetRef="Event_1weorhq" />
-  </bpmn:process>
+  <bpmn:process id="choose-services" name="Choose Services" isExecutable="true" />
   <bpmn:message id="Message_1i9wf22" name="services-message" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0a0ywfq">
       <bpmndi:BPMNShape id="Participant_1owfxv1_di" bpmnElement="Participant_1owfxv1" isHorizontal="true">
-        <dc:Bounds x="129" y="402" width="771" height="250" />
+        <dc:Bounds x="129" y="402" width="491" height="250" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_10w5h91_di" bpmnElement="Flow_10w5h91">
-        <di:waypoint x="700" y="527" />
-        <di:waypoint x="822" y="527" />
+        <di:waypoint x="440" y="527" />
+        <di:waypoint x="562" y="527" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_180zywl_di" bpmnElement="Flow_180zywl">
-        <di:waypoint x="488" y="527" />
-        <di:waypoint x="600" y="527" />
+        <di:waypoint x="228" y="527" />
+        <di:waypoint x="340" y="527" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0oemaj9_di" bpmnElement="Event_0oemaj9">
-        <dc:Bounds x="822" y="509" width="36" height="36" />
+        <dc:Bounds x="562" y="509" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0kk0yxt_di" bpmnElement="Activity_0qzu4r4">
-        <dc:Bounds x="600" y="487" width="100" height="80" />
+        <dc:Bounds x="340" y="487" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1tddh2d_di" bpmnElement="Event_16fvuor">
-        <dc:Bounds x="452" y="509" width="36" height="36" />
+        <dc:Bounds x="192" y="509" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="430" y="552" width="81" height="27" />
+          <dc:Bounds x="170" y="552" width="81" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_01mpje0_di" bpmnElement="Participant_01mpje0" isHorizontal="true">
         <dc:Bounds x="129" y="80" width="849" height="190" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0b7axk5_di" bpmnElement="Flow_0b7axk5">
-        <di:waypoint x="218" y="170" />
-        <di:waypoint x="270" y="170" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0w5nya3_di" bpmnElement="Flow_0w5nya3">
-        <di:waypoint x="370" y="170" />
-        <di:waypoint x="452" y="170" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1r7lj4x_di" bpmnElement="Flow_1r7lj4x">
-        <di:waypoint x="488" y="170" />
-        <di:waypoint x="572" y="170" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_0eqmkcu_di" bpmnElement="Event_0eqmkcu">
-        <dc:Bounds x="182" y="152" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_09yqf1g_di" bpmnElement="Activity_191u1rs">
-        <dc:Bounds x="270" y="130" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0a83oxz_di" bpmnElement="Event_0alhinx">
-        <dc:Bounds x="452" y="152" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="437" y="114.5" width="65" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1weorhq_di" bpmnElement="Event_1weorhq">
-        <dc:Bounds x="572" y="152" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0nrmu6a_di" bpmnElement="Flow_0nrmu6a">
-        <di:waypoint x="470" y="188" />
-        <di:waypoint x="470" y="509" />
+      <bpmndi:BPMNEdge id="Flow_08nh1aq_di" bpmnElement="Flow_08nh1aq">
+        <di:waypoint x="210" y="270" />
+        <di:waypoint x="210" y="509" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

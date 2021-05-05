@@ -5,7 +5,8 @@ USE CustomerHandling;
 DROP TABLE IF EXISTS Subscription;
 CREATE TABLE Subscription (
     id INT AUTO_INCREMENT,
-    note varchar(50),
+    note VARCHAR(50),
+    status VARCHAR(30),
     startDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(id)
     /*FOREIGN KEY (customerId) REFERENCES Customer(id)*/

@@ -9,6 +9,7 @@
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/LambaServices/pom.xml" />
         <option value="$PROJECT_DIR$/activateMSISDN/pom.xml" />
         <option value="$PROJECT_DIR$/constants/pom.xml" />
         <option value="$PROJECT_DIR$/simcardstatusmediation/pom.xml" />

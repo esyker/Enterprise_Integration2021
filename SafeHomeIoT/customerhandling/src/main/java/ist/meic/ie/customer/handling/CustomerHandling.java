@@ -217,7 +217,6 @@ public class CustomerHandling {
         client.subscribe("subscribe-to-services")
                 .lockDuration(10) // the default lock duration is 20 seconds, but you can override this
                 .handler((externalTask, externalTaskService) -> {
-                    DatabaseConfig config = new DatabaseConfig("customerhandler2.cjw7eyupyncl.us-east-1.rds.amazonaws.com", "CustomerHandling","pedro", "123456789");
                     int customerId = ((Long) externalTask.getVariable("customerId")).intValue();
                     boolean homeSecurity = (boolean) externalTask.getVariable("homeSecurity");
                     boolean homeInventoryManagement = (boolean) externalTask.getVariable("homeInventoryManagement");

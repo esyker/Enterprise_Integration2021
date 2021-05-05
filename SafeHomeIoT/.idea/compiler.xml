@@ -15,12 +15,13 @@
         <module name="Lambda-cancelsubscription" />
         <module name="eventmediation" />
         <module name="eventservice" />
+        <module name="Lambda-createcustomer" />
         <module name="utils" />
         <module name="MSISDNdelete" />
         <module name="provisioning" />
         <module name="eventmediationpre" />
         <module name="statusmediation" />
-        <module name="Lambda-subscribetoservices" />
+        <module name="Lambda-addiotdevice" />
         <module name="events" />
       </profile>
     </annotationProcessing>
@@ -29,6 +30,7 @@
       <module name="cancelsubscription" target="1.8" />
       <module name="constants" target="8" />
       <module name="IoTaaSSimulator" target="1.8" />
+      <module name="LambaServices" target="8" />
       <module name="Lambda-subscribetoservices" target="1.8" />
       <module name="simcardstatusmediation" target="1.8" />
       <module name="suspendMSISDN" target="8" />

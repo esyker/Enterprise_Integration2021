@@ -4,6 +4,8 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import ist.meic.ie.utils.DatabaseConfig;
+import ist.meic.ie.utils.HTTPMessages;
+import ist.meic.ie.utils.LambdaUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -23,25 +25,29 @@ import static ist.meic.ie.utils.Constants.KONG_ENDPOINT;
 
 public class SubscribeToService implements RequestStreamHandler {
 
-    public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) {
+    public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException {
         LambdaLogger logger = context.getLogger();
         String responseMsg = "Subscription Activated";
         int statusCode = 200;
         JSONObject event = null;
-        event = parseInput(inputStream, logger);
+        event = LambdaUtils.parseInput(inputStream, logger);
+
+        if (verifyArgs(outputStream, event)) return;
+
         Connection conn = new DatabaseConfig("customerhandler2.cjw7eyupyncl.us-east-1.rds.amazonaws.com", "CustomerHandling","pedro", "123456789").getConnection();
 
         try {
             conn.setAutoCommit(false);
 
             int customerId = ((Long) event.get("customerId")).intValue();
+            String subscriptionNote = (String) event.get("note");
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM CustomerSubscriptions WHERE customerId = ?");
             stmt.setInt(1, customerId);
             ResultSet customer = stmt.executeQuery();
             if (customer.next()) {
                 logger.log("Customer already has subscription");
                 conn.rollback();
-                buildResponse(outputStream, "Customer with id " + customerId + " already has subscription", 500);
+                LambdaUtils.buildResponse(outputStream, "Customer with id " + customerId + " already has subscription", 500);
                 return;
             }
 
@@ -60,13 +66,13 @@ public class SubscribeToService implements RequestStreamHandler {
                     statusCode = 500;
                 }
             }
-            subscribeCustomerToServices(logger, conn, customerId, servicesIds, "Some Note");
+            subscribeCustomerToServices(logger, conn, customerId, servicesIds, subscriptionNote);
             activateAllCustomerDevices(logger, conn, customerId);
 
             conn.commit();
             logger.log("Message: " + responseMsg + "\n");
             logger.log("Status Code:" + statusCode + "\n");
-            buildResponse(outputStream, responseMsg, statusCode);
+            LambdaUtils.buildResponse(outputStream, responseMsg, statusCode);
         } catch(Exception e) {
             logger.log(e.toString());
         } finally {
@@ -79,6 +85,23 @@ public class SubscribeToService implements RequestStreamHandler {
         }
     }
 
+    private boolean verifyArgs(OutputStream outputStream, JSONObject event) throws IOException {
+        if (event.get("customerId") == null) {
+            LambdaUtils.buildResponse(outputStream, "No customer id provided!", 500);
+            return true;
+        }
+        if (event.get("services") == null || ((JSONArray) event.get("services")).size() == 0) {
+            LambdaUtils.buildResponse(outputStream, "No services provided!", 500);
+            return true;
+        }
+
+        if (event.get("note") == null) {
+            LambdaUtils.buildResponse(outputStream, "No note provided!", 500);
+            return true;
+        }
+        return false;
+    }
+
     private void activateAllCustomerDevices(LambdaLogger logger, Connection conn, int customerId) throws SQLException {
         PreparedStatement stmt;
         stmt = conn.prepareStatement("SELECT * FROM Device WHERE customerId = ?");
@@ -89,7 +112,7 @@ public class SubscribeToService implements RequestStreamHandler {
             obj.put("SIMCARD", rs.getInt("SIMCARD"));
             obj.put("MSISDN", rs.getInt("MSISDN"));
             obj.put("deviceType", "");
-            postMsg(obj, "application/json", "activatesimcard.com", logger);
+            HTTPMessages.postMsg(obj, "application/json", "activatesimcard.com", logger);
         }
         rs.close();
         stmt.close();
@@ -103,8 +126,9 @@ public class SubscribeToService implements RequestStreamHandler {
 
     private void subscribeCustomerToServices(LambdaLogger logger, Connection conn, int customerId, List<Integer> servicesIds, String note) throws SQLException {
         PreparedStatement stmt;
-        stmt = conn.prepareStatement("INSERT INTO Subscription (note) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+        stmt = conn.prepareStatement("INSERT INTO Subscription (note, status) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
         stmt.setString(1, note);
+        stmt.setString(2, "SUSPENDED");
         stmt.executeUpdate();
         ResultSet insertionRes = stmt.getGeneratedKeys();
         int subId = 0;
@@ -141,60 +165,5 @@ public class SubscribeToService implements RequestStreamHandler {
         return storedServiceIds;
     }
 
-    private void buildResponse(OutputStream outputStream, String responseMsg, int statusCode) throws IOException {
-        JSONObject responseBody = new JSONObject();
-        JSONObject responseJson = new JSONObject();
-        JSONObject headerJson = new JSONObject();
-        responseBody.put("message", responseMsg);
-        responseJson.put("statusCode", statusCode);
 
-        responseJson.put("headers", headerJson);
-        responseJson.put("body", responseBody.toString());
-
-        OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
-        writer.write(responseJson.toString());
-        writer.close();
-    }
-
-    private JSONObject parseInput(InputStream inputStream, LambdaLogger logger) {
-        JSONObject event = null;
-        try {
-            JSONParser parser = new JSONParser();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            JSONObject msg = (JSONObject) parser.parse(reader);
-            if (msg.get("body") == null) {
-                throw new MissingFormatArgumentException("Missing body field");
-            }
-            logger.log("input:" + msg.toString());
-            event = (JSONObject) parser.parse(msg.get("body").toString());
-            logger.log(event.toString());
-
-            if (event.get("customerId") == null) throw new MissingFormatArgumentException("No customerId defined!");
-            if (event.get("services") == null || ((JSONArray) event.get("services")).size() == 0) throw new MissingFormatArgumentException("No services defined!");
-        } catch (Exception e) {
-            logger.log(e.toString());
-        }
-        return event;
-    }
-
-    private static void postMsg(JSONObject jsonObject, String contentType, String host, LambdaLogger logger) {
-        try {
-            HttpPost postRequest = new HttpPost(KONG_ENDPOINT);
-            postRequest.addHeader("content-type", contentType);
-            postRequest.addHeader("Host", host);
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            StringEntity Entity = null;
-            Entity = new StringEntity(jsonObject.toJSONString());
-            postRequest.setEntity(Entity);
-            HttpEntity base = postRequest.getEntity();
-            HttpResponse response = null;
-            response = httpClient.execute(postRequest);
-            int statusCode = response.getStatusLine().getStatusCode();
-            logger.log("Finished with HTTP error code : " + statusCode + "\n" + response.toString());
-            HttpEntity responseEntity = response.getEntity();
-            if (responseEntity != null) logger.log("response body = " + EntityUtils.toString(responseEntity));
-        } catch (Exception e) {
-            logger.log(e.toString() + "\n");
-        }
-    }
 }

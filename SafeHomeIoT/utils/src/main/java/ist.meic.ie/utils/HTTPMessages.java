@@ -12,7 +12,8 @@ import org.json.simple.JSONObject;
 import static ist.meic.ie.utils.Constants.KONG_ENDPOINT;
 
 public class HTTPMessages {
-    public static void postMsg(JSONObject jsonObject, String contentType, String host, LambdaLogger logger) {
+    public static int postMsg(JSONObject jsonObject, String contentType, String host, LambdaLogger logger) {
+        int statusCode = 0;
         try {
             HttpPost postRequest = new HttpPost(KONG_ENDPOINT);
             postRequest.addHeader("content-type", contentType);
@@ -24,12 +25,13 @@ public class HTTPMessages {
             HttpEntity base = postRequest.getEntity();
             HttpResponse response = null;
             response = httpClient.execute(postRequest);
-            int statusCode = response.getStatusLine().getStatusCode();
+            statusCode = response.getStatusLine().getStatusCode();
             logger.log("Finished with HTTP error code : " + statusCode + "\n" + response.toString());
             HttpEntity responseEntity = response.getEntity();
             if (responseEntity != null) logger.log("response body = " + EntityUtils.toString(responseEntity));
         } catch (Exception e) {
             logger.log(e.toString() + "\n");
         }
+        return statusCode;
     }
 }

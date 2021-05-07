@@ -38,6 +38,7 @@
         <module>Lambda-cancelsubscription</module>
         <module>Lambda-createcustomer</module>
         <module>Lambda-addiotdevice</module>
+        <module>Lambda-deleteiotdevice</module>
     </modules>
 
 </project>

@@ -13,6 +13,7 @@
         <module name="MSISDNsuspend" />
         <module name="MSISDNgetStatus" />
         <module name="Lambda-cancelsubscription" />
+        <module name="Lambda-deleteiotdevice" />
         <module name="eventmediation" />
         <module name="eventservice" />
         <module name="Lambda-createcustomer" />

@@ -26,8 +26,8 @@ public class ImageEvent extends Event{
     }
 
 
-    public ImageEvent(String description, int SIMCARD, int MSISDN, Date ts) {
-        super("image", SIMCARD, MSISDN, ts);
+    public ImageEvent(int id, String description, int SIMCARD, int MSISDN, Date ts) {
+        super(id, "image", SIMCARD, MSISDN, ts);
         this.description = description;
     }
 

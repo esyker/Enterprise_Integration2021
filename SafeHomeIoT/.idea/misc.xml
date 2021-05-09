@@ -12,6 +12,7 @@
         <option value="$PROJECT_DIR$/LambaServices/pom.xml" />
         <option value="$PROJECT_DIR$/activateMSISDN/pom.xml" />
         <option value="$PROJECT_DIR$/constants/pom.xml" />
+        <option value="$PROJECT_DIR$/provisioning/pom.xml" />
         <option value="$PROJECT_DIR$/simcardstatusmediation/pom.xml" />
         <option value="$PROJECT_DIR$/suspendMSISDN/pom.xml" />
         <option value="$PROJECT_DIR$/troll1/pom.xml" />

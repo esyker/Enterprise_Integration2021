@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
 import java.util.Date;
 
 public abstract class Event {
+    private int id;
     private String type;
     private int MSISDN;
     private int SIMCARD;
@@ -28,7 +29,8 @@ public abstract class Event {
         this.MSISDN = MSISDN;
     }
 
-    public Event(String type, int SIMCARD, int MSISDN, Date timestamp) {
+    public Event(int id, String type, int SIMCARD, int MSISDN, Date timestamp) {
+        this.id = id;
         this.type = type;
         this.SIMCARD = SIMCARD;
         this.MSISDN = MSISDN;

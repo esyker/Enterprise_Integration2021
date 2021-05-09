@@ -3,28 +3,21 @@ package ist.meic.ie.msisdn.activate;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
-import com.sun.org.apache.xml.internal.serializer.ToTextStream;
+import ist.meic.ie.utils.Constants;
 import ist.meic.ie.utils.DatabaseConfig;
-import ist.meic.ie.utils.KafkaConfig;
-import ist.meic.ie.utils.ZookeeperConfig;
-import kafka.utils.Json;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
-import java.sql.*;
-import java.util.MissingFormatArgumentException;
-import java.util.Properties;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.MissingFormatArgumentException;
-import java.util.Properties;
 
 public class ActivateMSISDN implements RequestStreamHandler {
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) {
-        DatabaseConfig dbConfig = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");
+        DatabaseConfig dbConfig = new DatabaseConfig(Constants.PROVISION_DB, "HLR", Constants.PROVISION_DB_USER, Constants.PROVISION_DB_PASSWORD);
         // DatabaseConfig dbConfig = new DatabaseConfig("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "HLR", "storemessages", "enterpriseintegration2021");
 
         LambdaLogger logger = context.getLogger();

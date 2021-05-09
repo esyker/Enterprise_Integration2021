@@ -3,6 +3,7 @@ package ist.meic.ie.msisdn.getstatus;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import ist.meic.ie.utils.Constants;
 import ist.meic.ie.utils.DatabaseConfig;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -54,7 +55,7 @@ public class GetStatusMSISDN implements RequestStreamHandler {
 
     public String getStatus(int simcard, LambdaLogger logger){
 
-        DatabaseConfig dbConfig = new DatabaseConfig("events-2.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "MSISDNStatus", "pedro", "123456789");
+        DatabaseConfig dbConfig = new DatabaseConfig(Constants.MEDIATION_DB, "MSISDNStatus", Constants.MEDIATION_DB_USER, Constants.MEDIATION_DB_PASSWORD);
         //DatabaseConfig dbConfig = new DatabaseConfig("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "MSISDNStatus", "storemessages", "enterpriseintegration2021");
 
         PreparedStatement statusActive;

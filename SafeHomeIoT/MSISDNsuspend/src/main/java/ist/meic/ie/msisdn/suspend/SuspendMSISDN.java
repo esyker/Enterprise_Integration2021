@@ -3,6 +3,7 @@ package ist.meic.ie.msisdn.suspend;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import ist.meic.ie.utils.Constants;
 import ist.meic.ie.utils.DatabaseConfig;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -58,7 +59,7 @@ public class SuspendMSISDN  implements RequestStreamHandler {
 
     public boolean suspend(int simcard) {
         //DatabaseConfig dbConfig = new DatabaseConfig("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "HLR", "storemessages", "enterpriseintegration2021");
-        DatabaseConfig dbConfig  = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");
+        DatabaseConfig dbConfig  = new DatabaseConfig(Constants.PROVISION_DB, "HLR", Constants.PROVISION_DB_USER, Constants.PROVISION_DB_PASSWORD);
         boolean suspended = false;
         try {
             Statement select = dbConfig.getConnection().createStatement();

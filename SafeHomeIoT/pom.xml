@@ -22,7 +22,6 @@
 
         <module>utils</module>
         <module>eventmediation</module>
-        <module>provisioning</module>
         <module>events</module>
         <module>eventmediationpre</module>
         <module>simulator</module>

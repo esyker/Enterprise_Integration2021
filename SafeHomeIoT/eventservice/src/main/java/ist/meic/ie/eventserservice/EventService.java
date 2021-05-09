@@ -30,7 +30,7 @@ public class EventService implements RequestStreamHandler {
             logger.log(event.toString());
 
             if (event.get("eventType") == null) throw new MissingFormatArgumentException("No event type provided!");
-            if (event.get("SIMCARD") == null) throw new MissingFormatArgumentException("No SIMCARD provided!");
+            //if (event.get("SIMCARD") == null) throw new MissingFormatArgumentException("No SIMCARD provided!");
             if (event.get("lastReceivedId") == null) throw new MissingFormatArgumentException("No last received provided!");
 
             String eventType = (String) event.get("eventType");

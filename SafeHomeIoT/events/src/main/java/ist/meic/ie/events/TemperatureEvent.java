@@ -23,8 +23,8 @@ public class TemperatureEvent extends Event {
         this.measurement = measurement;
     }
 
-    public TemperatureEvent(float measurement, int SIMCARD, int MSISDN, Date ts) {
-        super("temperature", SIMCARD, MSISDN, ts);
+    public TemperatureEvent(int id, float measurement, int SIMCARD, int MSISDN, Date ts) {
+        super(id, "temperature", SIMCARD, MSISDN, ts);
         this.measurement = measurement;
     }
 

@@ -25,8 +25,8 @@ public class MotionEvent extends Event {
         this.description = description;
     }
 
-    public MotionEvent(String description, int SIMCARD, int MSISDN, Date ts) {
-        super("motion", SIMCARD, MSISDN, ts);
+    public MotionEvent(int id, String description, int SIMCARD, int MSISDN, Date ts) {
+        super(id, "motion", SIMCARD, MSISDN, ts);
         this.description = description;
     }
 

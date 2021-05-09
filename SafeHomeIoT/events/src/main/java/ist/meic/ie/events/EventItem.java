@@ -35,7 +35,7 @@ public class EventItem {
             default: throw new InvalidEventTypeException("Invalid event type");
         }
     }
-
+    /*
     public EventItem(String type, int SIMCARD, int MSISDN, Date ts, float measurement, String description) throws InvalidEventTypeException {
         switch (type) {
             case "temperature" : this.event = new TemperatureEvent(measurement, SIMCARD, MSISDN, ts); break;
@@ -43,6 +43,17 @@ public class EventItem {
             case "video" : this.event = new VideoEvent(description, SIMCARD, MSISDN, ts); break;
             case "smoke" : this.event = new SmokeEvent(measurement, SIMCARD, MSISDN, ts); break;
             case "motion" : this.event = new MotionEvent(description, SIMCARD, MSISDN, ts); break;
+            default: throw new InvalidEventTypeException("Invalid event type");
+        }
+    }
+*/
+    public EventItem(int id, String type, int SIMCARD, int MSISDN, Date ts, float measurement, String description) throws InvalidEventTypeException {
+        switch (type) {
+            case "temperature" : this.event = new TemperatureEvent(id, measurement, SIMCARD, MSISDN, ts); break;
+            case "image" : this.event = new ImageEvent(id, description, SIMCARD, MSISDN, ts); break;
+            case "video" : this.event = new VideoEvent(id, description, SIMCARD, MSISDN, ts); break;
+            case "smoke" : this.event = new SmokeEvent(id, measurement, SIMCARD, MSISDN, ts); break;
+            case "motion" : this.event = new MotionEvent(id, description, SIMCARD, MSISDN, ts); break;
             default: throw new InvalidEventTypeException("Invalid event type");
         }
     }

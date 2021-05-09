@@ -2,6 +2,7 @@ package ist.meic.ie.eventmediation;
 
 import ist.meic.ie.events.EventItem;
 import ist.meic.ie.events.exceptions.InvalidEventTypeException;
+import ist.meic.ie.utils.Constants;
 import ist.meic.ie.utils.DatabaseConfig;
 import ist.meic.ie.utils.KafkaConfig;
 import org.apache.commons.cli.*;
@@ -23,7 +24,7 @@ public class Mediator {
         System.out.println(topics);
 
         KafkaConsumer<String, String> consumer = KafkaConfig.createKafkaConsumer(cmd.getOptionValue("kafkaip"), "group-id-test", topics);
-        DatabaseConfig config = new DatabaseConfig("events-2.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "SafeHomeIoTEvents", "pedro", "123456789");
+        DatabaseConfig config = new DatabaseConfig(Constants.MEDIATION_DB, "SafeHomeIoTEvents", Constants.MEDIATION_DB_USER, Constants.MEDIATION_DB_PASSWORD);
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {

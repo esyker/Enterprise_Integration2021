@@ -3,6 +3,7 @@ package ist.meic.ie.eventserservice;
 import ist.meic.ie.events.Event;
 import ist.meic.ie.events.EventItem;
 import ist.meic.ie.events.exceptions.InvalidEventTypeException;
+import ist.meic.ie.utils.Constants;
 import ist.meic.ie.utils.DatabaseConfig;
 import org.json.simple.parser.ParseException;
 
@@ -14,8 +15,6 @@ import java.util.Date;
 import java.util.List;
 
 public class EventReopsitory {
-
-    private static DatabaseConfig dbConfig = new DatabaseConfig("events-2.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "SafeHomeIoTEvents", "pedro", "123456789");
 
     public static List<Event> getEvents(String eventType, int SIMCARD, int lastReceivedId) throws SQLException, InvalidEventTypeException, ParseException {
         String tableName = "";
@@ -29,10 +28,11 @@ public class EventReopsitory {
             case "video" : tableName = "videoMessage"; break;
         }
         System.out.println("select * from " + tableName + " where ID > " + lastReceivedId + " and SIMCARD=" + SIMCARD);
-
-        PreparedStatement stmt = dbConfig.getConnection().prepareStatement("select * from " + tableName + " where ID > " + lastReceivedId + " and SIMCARD=" + SIMCARD);
+        DatabaseConfig dbConfig = new DatabaseConfig(Constants.MEDIATION_DB, "SafeHomeIoTEvents", Constants.PROVISION_DB_USER, Constants.PROVISION_DB_PASSWORD);
+        PreparedStatement stmt = dbConfig.getConnection().prepareStatement("SELECT * FROM " + tableName + " WHERE ID > " + lastReceivedId);
         ResultSet events = stmt.executeQuery();
         while (events.next()) {
+            int id = events.getInt("id");
             String type = events.getString("type");
             int MSISDN = events.getInt("MSISDN");
             Date ts = events.getTimestamp("ts");
@@ -49,9 +49,11 @@ public class EventReopsitory {
                 description = events.getString("description");
             }
 
-            EventItem eventItem = new EventItem(type, SIMCARD, MSISDN, ts, measurement, description);
+            EventItem eventItem = new EventItem(id, type, SIMCARD, MSISDN, ts, measurement, description);
             eventsToReturn.add(eventItem.getEvent());
         }
+        events.close();
+        stmt.close();
         return eventsToReturn;
     }
 }

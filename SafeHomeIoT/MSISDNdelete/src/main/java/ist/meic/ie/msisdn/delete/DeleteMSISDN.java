@@ -2,6 +2,7 @@ package ist.meic.ie.msisdn.delete;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
+import ist.meic.ie.utils.Constants;
 import ist.meic.ie.utils.DatabaseConfig;
 import ist.meic.ie.utils.KafkaConfig;
 import ist.meic.ie.utils.ZookeeperConfig;
@@ -64,7 +65,7 @@ public class DeleteMSISDN {
     }
 
     public boolean delete(int simcard) {
-        DatabaseConfig dbConfig = new DatabaseConfig("provision-database.cq2nyt0kviyb.us-east-1.rds.amazonaws.com", "HLR", "pedro", "123456789");;
+        DatabaseConfig dbConfig = new DatabaseConfig(Constants.PROVISION_DB, "HLR", Constants.PROVISION_DB_USER, Constants.PROVISION_DB_PASSWORD);
         //DatabaseConfig dbConfig = new DatabaseConfig("mytestdb2.cwoffguoxxn0.us-east-1.rds.amazonaws.com", "HLR", "storemessages", "enterpriseintegration2021");
         PreparedStatement delete;
         boolean deleted = false;

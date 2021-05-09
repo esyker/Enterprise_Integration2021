@@ -23,8 +23,8 @@ public class SmokeEvent extends Event{
         this.measurement = measurement;
     }
 
-    public SmokeEvent(float measurement, int SIMCARD, int MSISDN, Date ts) {
-        super("smoke", SIMCARD, MSISDN, ts);
+    public SmokeEvent(int id, float measurement, int SIMCARD, int MSISDN, Date ts) {
+        super(id, "smoke", SIMCARD, MSISDN, ts);
         this.measurement = measurement;
     }
 

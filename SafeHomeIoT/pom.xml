@@ -38,6 +38,7 @@
         <module>Lambda-createcustomer</module>
         <module>Lambda-addiotdevice</module>
         <module>Lambda-deleteiotdevice</module>
+        <module>eventsReader</module>
     </modules>
 
 </project>

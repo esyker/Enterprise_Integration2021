@@ -41,22 +41,27 @@ public class EventReader {
                 JSONObject response = (JSONObject) HTTPMessages.getMsg(event,"application/json","getnextevent.com");
                 if(response==null)
                     continue;
+                JSONObject message =null;
+                try {
+                    message = (JSONObject) parser.parse(response.get("message").toString());
+                }catch (ParseException e){
+                    e.printStackTrace();
+                }
                 switch (eventType)
                 {
-                    case "temperature" : insertTemperatureEvent(response); break;
-                    case "motion" : insertMotionEvent(response); break;
-                    case "smoke" : insertSmokeEvent(response); break;
-                    case "image" : insertImageEvent(response); break;
-                    case "video" : insertVideoEvent(response); break;
+                    case "temperature" : insertTemperatureEvent(message); break;
+                    case "motion" : insertMotionEvent(message); break;
+                    case "smoke" : insertSmokeEvent(message); break;
+                    case "image" : insertImageEvent(message); break;
+                    case "video" : insertVideoEvent(message); break;
                 }
-                HTTPMessages.postMsg(response,"application/json","analytics.com");
+                HTTPMessages.postMsg(response,"application/json","alarm.com");
             }
         }
     }
 
-    public void insertImageEvent(JSONObject response) {
+    public void insertImageEvent(JSONObject message) {
         try {
-            JSONObject message = (JSONObject) parser.parse("message");
             int SIMCARD = (int) message.get("SIMCARD");
             int MSISDN = (int) message.get("MSISDN");
             String timestamp = (String) message.get("timestamp");
@@ -71,14 +76,11 @@ public class EventReader {
             stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        }catch (ParseException e){
-            e.printStackTrace();
         }
     }
 
-    public void insertMotionEvent(JSONObject response){
+    public void insertMotionEvent(JSONObject message){
         try {
-            JSONObject message = (JSONObject) parser.parse("message");
             int SIMCARD = (int) message.get("SIMCARD");
             int MSISDN = (int) message.get("MSISDN");
             String timestamp = (String) message.get("timestamp");
@@ -93,14 +95,11 @@ public class EventReader {
             stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        }catch (ParseException e){
-            e.printStackTrace();
         }
     }
 
-    public void insertSmokeEvent(JSONObject response){
+    public void insertSmokeEvent(JSONObject message){
         try {
-            JSONObject message = (JSONObject) parser.parse("message");
             int SIMCARD = (int) message.get("SIMCARD");
             int MSISDN = (int) message.get("MSISDN");
             String timestamp = (String) message.get("timestamp");
@@ -115,14 +114,11 @@ public class EventReader {
             stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        }catch (ParseException e){
-            e.printStackTrace();
         }
     }
 
-    public void insertTemperatureEvent(JSONObject response) {
+    public void insertTemperatureEvent(JSONObject message) {
         try {
-            JSONObject message = (JSONObject) parser.parse("message");
             int SIMCARD = (int) message.get("SIMCARD");
             int MSISDN = (int) message.get("MSISDN");
             String timestamp = (String) message.get("timestamp");
@@ -137,14 +133,11 @@ public class EventReader {
             stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        }catch (ParseException e){
-            e.printStackTrace();
         }
     }
 
-    public void insertVideoEvent(JSONObject response){
+    public void insertVideoEvent(JSONObject message){
         try {
-            JSONObject message = (JSONObject) parser.parse("message");
             int SIMCARD = (int) message.get("SIMCARD");
             int MSISDN = (int) message.get("MSISDN");
             String timestamp = (String) message.get("timestamp");
@@ -158,8 +151,6 @@ public class EventReader {
             stmt.execute();
             stmt.close();
         } catch (SQLException e) {
-            e.printStackTrace();
-        }catch (ParseException e){
             e.printStackTrace();
         }
     }

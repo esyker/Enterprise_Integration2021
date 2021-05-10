@@ -1,34 +1,27 @@
 package ist.meic.ie.eventsreader;
 
-import com.sun.deploy.net.HttpResponse;
 import ist.meic.ie.utils.DatabaseConfig;
 import ist.meic.ie.utils.HTTPMessages;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.lang.Exception.*;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import scala.util.parsing.json.JSON;
 
 
 public class EventReader {
-    private int lastReceivedID;
     private DatabaseConfig databaseConfig;
     private String eventTypes []= {"temperature","motion","smoke","image","video"};
     private int lastReceivedIDs [] ={0,0,0,0,0};
     private static JSONParser parser = new JSONParser();
 
     public EventReader(){
-        lastReceivedID=0;
         databaseConfig= new DatabaseConfig("ip","dbName","masterUser","password");
     }
 
-    public void receiveEvents() throws SQLException {
+    public void receiveEvents(){
         String eventType;
         int lastReceivedID;
         while (true) {
@@ -41,6 +34,7 @@ public class EventReader {
                 JSONObject response = (JSONObject) HTTPMessages.getMsg(event,"application/json","getnextevent.com");
                 if(response==null)
                     continue;
+                lastReceivedIDs[i]++;
                 JSONObject message =null;
                 try {
                     message = (JSONObject) parser.parse(response.get("message").toString());

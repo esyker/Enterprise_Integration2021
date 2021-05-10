@@ -1,5 +1,38 @@
 package ist.meic.ie.alarm;
 
-public class Alarm {
+import java.util.*;
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.activation.*;
 
+public class Alarm {
+    public Alarm(){
+    }
+
+    public void sendEmail(String to, String from, String subject){
+        // Assuming you are sending email from localhost
+        String host = "localhost";
+        // Get system properties
+        Properties properties = System.getProperties();
+        // Setup mail server
+        properties.setProperty("mail.smtp.host", host);
+        // Get the default Session object.
+        Session session = Session.getDefaultInstance(properties);
+        try {
+            // Create a default MimeMessage object.
+            MimeMessage message = new MimeMessage(session);
+            // Set From: header field of the header.
+            message.setFrom(new InternetAddress(from));
+            // Set To: header field of the header.
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            message.setSubject("This is the Subject Line!");
+            message.setText("This is actual message");
+            // Send message
+            Transport.send(message);
+            System.out.println("Sent message successfully....");
+        } catch (MessagingException mex) {
+            mex.printStackTrace();
+        }
+    }
 }
+

@@ -39,7 +39,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>ist.meic.ie.eventsreader.EventReader</mainClass>
+                    <mainClass>ist.meic.ie.eventsreader.EventsReaderService</mainClass>
                 </configuration>
             </plugin>
             <plugin>

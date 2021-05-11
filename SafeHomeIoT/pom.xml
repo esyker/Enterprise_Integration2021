@@ -42,6 +42,9 @@
         <module>Lambda-deletecustomer</module>
         <module>Lambda-getdeviceinfo</module>
         <module>Lambda-paysubscription</module>
+        <module>eventsReader</module>
+        <module>Lambda-analytics</module>
+        <module>Lambda-alarm</module>
     </modules>
 
 </project>

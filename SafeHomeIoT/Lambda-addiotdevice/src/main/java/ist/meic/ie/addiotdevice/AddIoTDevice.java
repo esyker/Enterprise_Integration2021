@@ -1,8 +1,9 @@
-package ist.meic.ie.deleteiotdevice;
+package ist.meic.ie.addiotdevice;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import ist.meic.ie.utils.Constants;
 import ist.meic.ie.utils.DatabaseConfig;
 import ist.meic.ie.utils.HTTPMessages;
 import ist.meic.ie.utils.LambdaUtils;
@@ -26,9 +27,11 @@ public class AddIoTDevice implements RequestStreamHandler {
         int customerId = ((Long) newDevice.get("customerId")).intValue();
         int SIMCARD = ((Long) newDevice.get("SIMCARD")).intValue();
         int MSISDN = ((Long) newDevice.get("MSISDN")).intValue();
+        int subId = 0;
+        String subState = "";
         String deviceType = ((String) newDevice.get("deviceType"));
 
-        Connection conn = new DatabaseConfig("customerhandler2.cjw7eyupyncl.us-east-1.rds.amazonaws.com", "CustomerHandling","pedro", "123456789").getConnection();
+        Connection conn = new DatabaseConfig(Constants.CUSTOMER_HANDLING_DB, "CustomerHandling", Constants.CUSTOMER_HANDLING_DB_USER, Constants.CUSTOMER_HANDLING_DB_PASSWORD).getConnection();
         try {
             conn.setAutoCommit(false);
             if (verifyCustomer(outputStream, logger, customerId, conn)) return;
@@ -42,6 +45,8 @@ public class AddIoTDevice implements RequestStreamHandler {
             deviceJson.put("MSISDN", MSISDN);
             deviceJson.put("deviceType", deviceType);
             HTTPMessages.postMsg(deviceJson, "application/json", "activatesimcard.com", logger);
+
+            if (suspendIoTDevice(outputStream, logger, customerId, SIMCARD, subId, subState, conn)) return;
 
             // Insert Device
             insertDevice(customerId, SIMCARD, MSISDN, conn, deviceTypeId);
@@ -61,6 +66,39 @@ public class AddIoTDevice implements RequestStreamHandler {
                 throwables.printStackTrace();
             }
         }
+    }
+
+    private boolean suspendIoTDevice(OutputStream outputStream, LambdaLogger logger, int customerId, int SIMCARD, int subId, String subState, Connection conn) throws SQLException, IOException {
+        PreparedStatement stmt;
+        ResultSet rs;
+
+        stmt = conn.prepareStatement("SELECT * FROM CustomerSubscriptions WHERE customerId = ?");
+        stmt.setInt(1, customerId);
+        rs = stmt.executeQuery();
+        if (rs.next()) {
+            subId = rs.getInt("subscriptionId");
+        }
+        rs.close();
+        stmt.close();
+
+        stmt = conn.prepareStatement("SELECT * FROM Subscription WHERE id = ?");
+        stmt.setInt(1, subId);
+        rs = stmt.executeQuery();
+        if (rs.next()) {
+            subState = rs.getString("status");
+        }
+        rs.close();
+        stmt.close();
+
+        if(subId == 0 || subState.equals("") || subState.equals("SUSPENDED")) {
+            JSONObject simcardObj = new JSONObject();
+            simcardObj.put("SIMCARD", SIMCARD);
+            if(HTTPMessages.postMsg(simcardObj, "application/json", "suspendsimcard.com", logger) != 200) {
+                LambdaUtils.buildResponse(outputStream, "Could not suspend SIMCARD " + SIMCARD, 500);
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean verifyArgs(OutputStream outputStream, JSONObject newDevice) throws IOException {

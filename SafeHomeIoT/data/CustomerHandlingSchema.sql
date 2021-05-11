@@ -50,20 +50,12 @@ CREATE TABLE Service (
       PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS SubscriptionServices;
-CREATE TABLE SubscriptionServices (
-     subscriptionId INT,
-     serviceId INT,
-     PRIMARY KEY(subscriptionId, serviceId),
-     FOREIGN KEY (subscriptionId) REFERENCES Subscription(id),
-     FOREIGN KEY (serviceId) REFERENCES Service(id)
-);
 
 DROP TABLE IF EXISTS SubscriptionServices;
 CREATE TABLE SubscriptionServices (
       subscriptionId INT,
       serviceId INT,
-      PRIMARY KEY(subscriptionId, serviceId),
+      PRIMARY KEY (subscriptionId, serviceId),
       FOREIGN KEY (subscriptionId) REFERENCES Subscription(id),
       FOREIGN KEY (serviceId) REFERENCES Service(id)
 );

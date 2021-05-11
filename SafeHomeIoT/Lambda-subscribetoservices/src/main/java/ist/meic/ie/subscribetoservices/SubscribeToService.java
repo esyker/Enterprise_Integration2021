@@ -67,7 +67,7 @@ public class SubscribeToService implements RequestStreamHandler {
                 }
             }
             subscribeCustomerToServices(logger, conn, customerId, servicesIds, subscriptionNote);
-            activateAllCustomerDevices(logger, conn, customerId);
+            //activateAllCustomerDevices(logger, conn, customerId);
 
             conn.commit();
             logger.log("Message: " + responseMsg + "\n");

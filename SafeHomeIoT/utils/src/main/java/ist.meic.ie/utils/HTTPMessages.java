@@ -78,6 +78,8 @@ public class HTTPMessages {
             HttpResponse response = null;
             response = httpClient.execute(postRequest);
             statusCode = response.getStatusLine().getStatusCode();
+            if(statusCode!=200)
+                return null;
             logger.log("Finished with HTTP error code : " + statusCode + "\n" + response.toString());
             HttpEntity responseEntity = response.getEntity();
             if (responseEntity != null) logger.log("response body = " + EntityUtils.toString(responseEntity));
@@ -104,13 +106,10 @@ public class HTTPMessages {
             HttpResponse response = null;
             response = httpClient.execute(postRequest);
             statusCode = response.getStatusLine().getStatusCode();
-            if(statusCode!=200)
-                return null;
             System.out.println("Finished with HTTP error code : " + statusCode + "\n" + response.toString());
             HttpEntity responseEntity = response.getEntity();
             if (responseEntity != null) System.out.println("response body = " + EntityUtils.toString(responseEntity));
-            InputStream instream = responseEntity.getContent();
-            JSONObject res = (JSONObject)jsonParser.parse(new InputStreamReader(instream, "UTF-8"));
+            JSONObject res = (JSONObject) jsonParser.parse(EntityUtils.toString(responseEntity));
             return res;
         } catch (Exception e) {
             e.printStackTrace();

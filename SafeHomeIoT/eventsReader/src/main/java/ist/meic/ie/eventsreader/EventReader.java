@@ -18,7 +18,7 @@ public class EventReader {
     private static JSONParser parser = new JSONParser();
 
     public EventReader(){
-        databaseConfig= new DatabaseConfig("ip","dbName","masterUser","password");
+        databaseConfig= new DatabaseConfig("safehomeiot-eventhandling.chtz2szhizbk.us-east-1.rds.amazonaws.com","EventReader","pedro","123456789");
     }
 
     public void receiveEvents(){
@@ -31,7 +31,9 @@ public class EventReader {
                 JSONObject event = new JSONObject();
                 event.put("eventType",eventType);
                 event.put("lastReceivedId",lastReceivedID);
+                int aux = HTTPMessages.postMsg(event,"application/json","getnextevent.com");
                 JSONObject response = (JSONObject) HTTPMessages.getMsg(event,"application/json","getnextevent.com");
+                System.out.println("Response:\n\n"+response.toString());
                 if(response==null)
                     continue;
                 lastReceivedIDs[i]++;
@@ -49,7 +51,7 @@ public class EventReader {
                     case "image" : insertImageEvent(message); break;
                     case "video" : insertVideoEvent(message); break;
                 }
-                HTTPMessages.postMsg(response,"application/json","alarm.com");
+                //HTTPMessages.postMsg(response,"application/json","alarm.com");
             }
         }
     }

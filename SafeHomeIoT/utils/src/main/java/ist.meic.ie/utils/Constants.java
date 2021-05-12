@@ -15,4 +15,8 @@ public class Constants {
     public static final String CUSTOMER_HANDLING_DB_USER = "pedro";
     public static final String CUSTOMER_HANDLING_DB_PASSWORD = "123456789";
 
+    public static final String COMPANY_EVENTS_DB="safehomeiot-eventhandling.chtz2szhizbk.us-east-1.rds.amazonaws.com";
+    public static final String COMPANY_EVENTS_DB_USER="pedro";
+    public static final String COMPANY_EVENTS_PASSWORD="123456789";
+
 }

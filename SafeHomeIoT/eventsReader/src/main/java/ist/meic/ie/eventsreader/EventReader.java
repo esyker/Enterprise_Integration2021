@@ -31,7 +31,7 @@ public class EventReader {
                 JSONObject event = new JSONObject();
                 event.put("eventType",eventType);
                 event.put("lastReceivedId",lastReceivedID);
-                int aux = HTTPMessages.postMsg(event,"application/json","getnextevent.com");
+                //int aux = HTTPMessages.postMsg(event,"application/json","getnextevent.com");
                 JSONObject response = (JSONObject) HTTPMessages.getMsg(event,"application/json","getnextevent.com");
                 System.out.println("Response:\n\n"+response.toString());
                 if(response==null)

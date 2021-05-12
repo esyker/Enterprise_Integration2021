@@ -56,5 +56,3 @@ CREATE TABLE motionMessage (
 	ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY(ID)
 );
-
-select * from temperatureMessage;

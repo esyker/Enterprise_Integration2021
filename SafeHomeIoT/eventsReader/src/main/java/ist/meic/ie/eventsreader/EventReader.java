@@ -36,6 +36,10 @@ public class EventReader {
                 event.put("lastReceivedId",lastReceivedID);
                 event.put("SIMCARD",0);
                 JSONObject response = HTTPMessages.getMsg(event,"application/json","getnextevent.com");
+                if(response==null) {
+                    System.out.println("\nHTTP Message does not have code 200!");
+                    continue;
+                }
                 try {
                     JSONArray eventMessages = (JSONArray) parser.parse(response.get("message").toString());
                     lastReceivedIDs[i]+=eventMessages.size();

@@ -81,12 +81,9 @@ public class HTTPMessages {
             if(statusCode!=200)
                 return null;
             logger.log("Finished with HTTP error code : " + statusCode + "\n" + response.toString());
-            HttpEntity responseEntity = response.getEntity();
-            JSONObject res=null;
-            if (responseEntity != null) {
-                logger.log("response body = " + EntityUtils.toString(responseEntity));
-                InputStream instream = responseEntity.getContent();
-                res = (JSONObject) jsonParser.parse(new InputStreamReader(instream, "UTF-8"));
+            JSONObject res =null;
+            if (response != null) {
+                res = (JSONObject) jsonParser.parse(EntityUtils.toString(response.getEntity()));
             }
             return res;
         } catch (Exception e) {
@@ -109,11 +106,12 @@ public class HTTPMessages {
             HttpResponse response = null;
             response = httpClient.execute(postRequest);
             statusCode = response.getStatusLine().getStatusCode();
-            //System.out.println("Finished with HTTP error code : " + statusCode + "\n" + response.toString());
+            System.out.println("Finished with HTTP error code : " + statusCode + "\n" + response.toString());
+            if(statusCode!=200)
+                return null;
             JSONObject res =null;
             if (response != null) {
                 res = (JSONObject) jsonParser.parse(EntityUtils.toString(response.getEntity()));
-                System.out.println(res);
             }
             return res;
         } catch (Exception e) {

@@ -5,10 +5,13 @@ import ist.meic.ie.utils.HTTPMessages;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Iterator;
 
 import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import scala.Array;
 
 
 public class EventReader {
@@ -18,31 +21,43 @@ public class EventReader {
     private static JSONParser parser = new JSONParser();
 
     public EventReader(){
-        databaseConfig= new DatabaseConfig("safehomeiot-eventhandling.chtz2szhizbk.us-east-1.rds.amazonaws.com","EventReader","pedro","123456789");
+        //databaseConfig= new DatabaseConfig("safehomeiot-eventhandling.chtz2szhizbk.us-east-1.rds.amazonaws.com","EventReader","pedro","123456789");
+        System.out.println("Initializer");
     }
 
     public void receiveEvents(){
         String eventType;
         int lastReceivedID;
+        // event = new JSONObject();
+        //lastReceivedID=0;
+        //eventType="image";
+        //event.put("eventType",eventType);
+        //event.put("lastReceivedId",lastReceivedID);
+        //event.put("SIMCARD",0);
+        //int aux = HTTPMessages.postMsg(event,"application/json","getnextevent.com");
+        //JSONObject response = (JSONObject) HTTPMessages.getMsg(event,"application/json","getnextevent.com");
+        //System.out.println(response);
         while (true) {
             for(int i=0;i<5;i++){
                 eventType=eventTypes[i];
-                lastReceivedID=lastReceivedIDs[i];
+                lastReceivedID=0;//lastReceivedIDs[i];
                 JSONObject event = new JSONObject();
                 event.put("eventType",eventType);
                 event.put("lastReceivedId",lastReceivedID);
-                //int aux = HTTPMessages.postMsg(event,"application/json","getnextevent.com");
-                JSONObject response = (JSONObject) HTTPMessages.getMsg(event,"application/json","getnextevent.com");
-                System.out.println("Response:\n\n"+response.toString());
-                if(response==null)
-                    continue;
-                lastReceivedIDs[i]++;
-                JSONObject message =null;
+                event.put("SIMCARD",0);
+                JSONObject response = HTTPMessages.getMsg(event,"application/json","getnextevent.com");
                 try {
-                    message = (JSONObject) parser.parse(response.get("message").toString());
+                    JSONArray eventMessages = (JSONArray) parser.parse(response.get("message").toString());
+                    Iterator<JSONObject> it= eventMessages.iterator();
+                    while(it.hasNext()){
+                        JSONObject eventMessage=it.next();
+                        lastReceivedIDs[i]=eventMessage.get();
+                        System.out.println("\n\n"+eventMessage+"\n\n");
+                    }
                 }catch (ParseException e){
-                    e.printStackTrace();
+                    System.out.println("\n \"message\" field not found in JSONObject!\n\n");
                 }
+                /*
                 switch (eventType)
                 {
                     case "temperature" : insertTemperatureEvent(message); break;
@@ -50,10 +65,13 @@ public class EventReader {
                     case "smoke" : insertSmokeEvent(message); break;
                     case "image" : insertImageEvent(message); break;
                     case "video" : insertVideoEvent(message); break;
-                }
+                }*/
                 //HTTPMessages.postMsg(response,"application/json","alarm.com");
+                break;
             }
+            break;
         }
+
     }
 
     public void insertImageEvent(JSONObject message) {

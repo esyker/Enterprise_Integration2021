@@ -1,4 +1,4 @@
-package ist.meic.ie.deleteiotdevice;
+package ist.meic.ie.addiotdevice;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;

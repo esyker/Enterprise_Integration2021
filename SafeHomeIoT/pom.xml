@@ -38,6 +38,10 @@
         <module>Lambda-createcustomer</module>
         <module>Lambda-addiotdevice</module>
         <module>Lambda-deleteiotdevice</module>
+        <module>Lambda-getCustomerInfo</module>
+        <module>Lambda-deletecustomer</module>
+        <module>Lambda-getdeviceinfo</module>
+        <module>Lambda-paysubscription</module>
         <module>eventsReader</module>
         <module>Lambda-analytics</module>
         <module>Lambda-alarm</module>

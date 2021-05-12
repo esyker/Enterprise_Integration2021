@@ -5,6 +5,7 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import ist.meic.ie.utils.Constants;
 import ist.meic.ie.utils.DatabaseConfig;
+import ist.meic.ie.utils.LambdaUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -36,17 +37,7 @@ public class GetStatusMSISDN implements RequestStreamHandler {
             //"getStatus"://{"SIMCARD":913123123}
             simcard = ((Long) event.get("SIMCARD")).intValue();
             String status = getStatus(simcard, logger);
-            JSONObject responseBody = new JSONObject();
-            JSONObject responseJson = new JSONObject();
-            JSONObject headerJson = new JSONObject();
-            responseBody.put("message","SIMCARD " + simcard + " status: " + status);
-            responseJson.put("statusCode", 200);
-            responseJson.put("headers", headerJson);
-            responseJson.put("body", responseBody.toString());
-
-            OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
-            writer.write(responseJson.toString());
-            writer.close();
+            LambdaUtils.buildResponse(outputStream, status, 200);
 
         } catch (Exception e) {
             logger.log("Error" + e);

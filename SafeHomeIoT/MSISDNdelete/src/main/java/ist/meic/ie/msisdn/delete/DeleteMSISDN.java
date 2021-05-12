@@ -49,7 +49,7 @@ public class DeleteMSISDN {
                 responseJson.put("statusCode", 200);
             } else {
                 responseBody.put("message","No SIMCARD " + simcard + " exists");
-                responseJson.put("statusCode", 500);
+                responseJson.put("statusCode", 200);
             }
 
             responseJson.put("headers", headerJson);

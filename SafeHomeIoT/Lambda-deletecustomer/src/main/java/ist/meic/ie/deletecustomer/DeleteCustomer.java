@@ -53,7 +53,7 @@ public class DeleteCustomer implements RequestStreamHandler {
 
             LambdaUtils.buildResponse(outputStream, "Customer " + customerId + "deleted!",200);
         } catch(Exception e) {
-
+            logger.log(e.toString());
         } finally {
             try {
                 conn.close();

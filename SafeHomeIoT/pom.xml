@@ -45,6 +45,8 @@
         <module>eventsReader</module>
         <module>Lambda-analytics</module>
         <module>Lambda-alarm</module>
+        <module>Lambda-suspendall</module>
+        <module>Lambda-catalogue</module>
     </modules>
 
 </project>

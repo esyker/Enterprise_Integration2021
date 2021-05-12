@@ -6,30 +6,32 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="subscribetoservices" />
-        <module name="simulator" />
-        <module name="Lambda-getCustomerInfo" />
-        <module name="customerhandling" />
+        <module name="Lambda-catalogue" />
         <module name="Lambda-alarm" />
-        <module name="MSISDNactivate" />
         <module name="MSISDNsuspend" />
         <module name="Lambda-paysubscription" />
-        <module name="MSISDNgetStatus" />
         <module name="Lambda-cancelsubscription" />
         <module name="Lambda-deleteiotdevice" />
-        <module name="Lambda-analytics" />
-        <module name="eventmediation" />
-        <module name="eventservice" />
         <module name="Lambda-createcustomer" />
         <module name="Lambda-getdeviceinfo" />
         <module name="utils" />
         <module name="Lambda-deletecustomer" />
         <module name="MSISDNdelete" />
-        <module name="eventmediationpre" />
         <module name="statusmediation" />
         <module name="Lambda-addiotdevice" />
-        <module name="eventsReader" />
         <module name="events" />
+        <module name="subscribetoservices" />
+        <module name="simulator" />
+        <module name="Lambda-getCustomerInfo" />
+        <module name="customerhandling" />
+        <module name="MSISDNactivate" />
+        <module name="MSISDNgetStatus" />
+        <module name="Lambda-analytics" />
+        <module name="eventmediation" />
+        <module name="eventservice" />
+        <module name="eventmediationpre" />
+        <module name="eventsReader" />
+        <module name="Lambda-suspendall" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

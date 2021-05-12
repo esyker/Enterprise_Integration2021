@@ -76,8 +76,10 @@ public class GetDeviceInfo implements RequestStreamHandler {
 
             JSONObject simcardObj = new JSONObject();
             simcardObj.put("SIMCARD", SIMCARD);
-            HttpResponse response = postMsg(simcardObj, "application/json", "", logger);
+            HttpResponse response = postMsg(simcardObj, "application/json", "getsimcardstatus.com", logger);
+            logger.log("1");
             int statusCode = response.getStatusLine().getStatusCode();
+            logger.log("2");
             if (statusCode != 200) {
                 LambdaUtils.buildResponse(outputStream, "Could not retrieve simcard status!", 500);
                 return;
@@ -133,8 +135,8 @@ public class GetDeviceInfo implements RequestStreamHandler {
             response = httpClient.execute(postRequest);
             statusCode = response.getStatusLine().getStatusCode();
             logger.log("Finished with HTTP error code : " + statusCode + "\n" + response.toString());
-            responseEntity = response.getEntity();
-            if (responseEntity != null) logger.log("response body = " + EntityUtils.toString(responseEntity));
+            //responseEntity = response.getEntity();
+            //if (responseEntity != null) logger.log("response body = " + EntityUtils.toString(responseEntity));
         } catch (Exception e) {
             logger.log(e.toString() + "\n");
         }

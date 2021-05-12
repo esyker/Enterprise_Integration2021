@@ -4,14 +4,12 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import ist.meic.ie.utils.DatabaseConfig;
-import org.I0Itec.zkclient.serialize.TcclAwareObjectIputStream;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -39,7 +37,7 @@ public class CancelSubscription implements RequestStreamHandler {
             PreparedStatement stmt, stmt2;
             ResultSet rs;
             int subscriptionId;
-            checkForSubscription(outputStream, logger, customerId, conn);
+            if (checkForSubscription(outputStream, logger, customerId, conn)) return;
             suspendDevicesAssociatedWithCustomer(logger, customerId, conn);
             conn.commit();
         } catch (Exception e) {
@@ -66,6 +64,7 @@ public class CancelSubscription implements RequestStreamHandler {
         stmt = conn.prepareStatement("SELECT * FROM Device WHERE customerId = ?");
         stmt.setInt(1, customerId);
         rs = stmt.executeQuery();
+        logger.log("Suspending SIMCARD!");
         while(rs.next()) {
             JSONObject jsonObject = new JSONObject();
             int SIMCARD = rs.getInt("SIMCARD");
@@ -82,7 +81,7 @@ public class CancelSubscription implements RequestStreamHandler {
         stmt.close();
     }
 
-    private void checkForSubscription(OutputStream outputStream, LambdaLogger logger, int customerId, Connection conn) throws SQLException, IOException {
+    private boolean checkForSubscription(OutputStream outputStream, LambdaLogger logger, int customerId, Connection conn) throws SQLException, IOException {
         PreparedStatement stmt;
         PreparedStatement stmt2;
 
@@ -93,6 +92,7 @@ public class CancelSubscription implements RequestStreamHandler {
         rs = stmt.executeQuery();
         if (!rs.next()) {
                 buildResponse(outputStream, "Customer with id " + customerId + " does not have a subscription!", 500);
+                return true;
             } else {
                 subscriptionId = rs.getInt("subscriptionId");
                 logger.log("Subscription id: " + subscriptionId + "\n");
@@ -100,22 +100,27 @@ public class CancelSubscription implements RequestStreamHandler {
                 stmt2.setInt(1, subscriptionId);
                 stmt2.executeUpdate();
                 stmt2.close();
+                logger.log("1Subscription id: " + subscriptionId + "\n");
 
                 stmt2 = conn.prepareStatement("DELETE FROM CustomerSubscriptions WHERE customerId = ?");
                 stmt2.setInt(1, customerId);
                 stmt2.executeUpdate();
                 stmt2.close();
+                logger.log("2Subscription id: " + subscriptionId + "\n");
 
                 stmt2 = conn.prepareStatement("DELETE FROM Subscription WHERE id = ?");
                 stmt2.setInt(1, subscriptionId);
                 stmt2.executeUpdate();
                 stmt2.close();
                 buildResponse(outputStream, "Subscription canceled for customer with id " + customerId, 200);
-            }
+                logger.log("2Subscription id: " + subscriptionId + "\n");
+
+        }
 
 
         rs.close();
         stmt.close();
+        return false;
     }
 
 

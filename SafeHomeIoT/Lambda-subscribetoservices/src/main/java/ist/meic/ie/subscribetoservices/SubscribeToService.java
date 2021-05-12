@@ -6,22 +6,16 @@ import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import ist.meic.ie.utils.DatabaseConfig;
 import ist.meic.ie.utils.HTTPMessages;
 import ist.meic.ie.utils.LambdaUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
-
-import static ist.meic.ie.utils.Constants.KONG_ENDPOINT;
 
 public class SubscribeToService implements RequestStreamHandler {
 
@@ -62,22 +56,31 @@ public class SubscribeToService implements RequestStreamHandler {
 
             for (Integer sid : servicesIds) {
                 if (!storedServiceIds.contains(sid)) {
-                    responseMsg = "Service wit Id" + sid + "does not exist!";
-                    statusCode = 500;
+                    LambdaUtils.buildResponse(outputStream, "Service wit Id" + sid + "does not exist!", 500);
+                    conn.rollback();
+                    return;
                 }
             }
             subscribeCustomerToServices(logger, conn, customerId, servicesIds, subscriptionNote);
             //activateAllCustomerDevices(logger, conn, customerId);
+            logger.log("1");
 
             conn.commit();
+            logger.log("1");
+
             logger.log("Message: " + responseMsg + "\n");
             logger.log("Status Code:" + statusCode + "\n");
             LambdaUtils.buildResponse(outputStream, responseMsg, statusCode);
         } catch(Exception e) {
             logger.log(e.toString());
-        } finally {
             try {
                 conn.rollback();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+        } finally {
+            try {
                 conn.close();
             } catch (SQLException throwables) {
                 logger.log(throwables.toString());
@@ -145,12 +148,14 @@ public class SubscribeToService implements RequestStreamHandler {
             stmt.executeUpdate();
             stmt.close();
         }
-
+        logger.log("1");
         stmt = conn.prepareStatement("INSERT INTO CustomerSubscriptions (customerId, subscriptionId) VALUES (?,?)");
         stmt.setInt(1, customerId);
         stmt.setInt(2, subId);
         stmt.executeUpdate();
         stmt.close();
+        logger.log("2");
+
     }
 
     private List<Integer> getStoredServicesIds(Connection conn) throws SQLException {

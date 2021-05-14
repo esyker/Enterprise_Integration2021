@@ -56,3 +56,8 @@ CREATE TABLE motionMessage (
 	ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY(ID)
 );
+
+select * from temperatureMessage;
+SELECT 
+	description, COUNT(description) FROM videoMessage WHERE SIMCARD=383864374 GROUP BY description ORDER BY COUNT(description) DESC LIMIT 1;
+SELECT description, COUNT(description) AS value_occurrence FROM videoMessage WHERE SIMCARD=383864374 GROUP BY description ORDER BY value_occurrence ASC LIMIT 1;

@@ -30,18 +30,17 @@ public class Analytics implements RequestStreamHandler {
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException {
         LambdaLogger logger = context.getLogger();
         JSONObject customer = parseInput(inputStream, logger);
-        int customerId = ((Long) customer.get("customerId")).intValue();
-        int SIMCARD = (int)customer.get("SIMCARD");
+        long customerId = (long) customer.get("customerId");
+        long SIMCARD = (long)customer.get("SIMCARD");
+        String deviceType= (String) customer.get("deviceType");
         logger.log("Customer id: " + customerId + "\n");
         logger.log("SIMCARD:"+ SIMCARD+"\n");
+        logger.log("Device Type: "+deviceType+"\n");
 
-        Connection conn1 = new DatabaseConfig(PROVISION_DB, "HLR", PROVISION_DB_USER, PROVISION_DB_PASSWORD).getConnection();
-        Connection conn2 = new DatabaseConfig(MEDIATION_DB, "SafeHomeIoTEvents", MEDIATION_DB_USER, MEDIATION_DB_PASSWORD).getConnection();
+        Connection conn = new DatabaseConfig(COMPANY_EVENTS_DB, "EventReader", COMPANY_EVENTS_DB_USER, COMPANY_EVENTS_PASSWORD).getConnection();
 
         try {
-            String deviceType= getDeviceType(SIMCARD,customerId,conn1,outputStream);
-            logger.log("Devide Type: "+deviceType+"\n");
-            String stats= deviceStatistics(deviceType,SIMCARD, conn2,outputStream);
+            String stats= deviceStatistics(deviceType,SIMCARD, conn,outputStream,logger);
             logger.log("Stats obtained :"+stats+"\n");
         }
         catch (Exception e) {
@@ -65,6 +64,7 @@ public class Analytics implements RequestStreamHandler {
 
             if (event.get("customerId") == null) throw new MissingFormatArgumentException("No customerId defined!");
             if(event.get("SIMCARD") == null) throw new MissingFormatArgumentException("No device defined!");
+            if(event.get("deviceType") == null) throw new MissingFormatArgumentException("No device type defined!");
         } catch (Exception e) {
             logger.log(e.toString());
         }
@@ -86,51 +86,34 @@ public class Analytics implements RequestStreamHandler {
         writer.close();
     }
 
-    private String getDeviceType(int SIMCARD, int customerID, Connection conn , OutputStream outputStream) throws SQLException, IOException {
-        PreparedStatement stmt;
-        ResultSet rs;
-
-        stmt = conn.prepareStatement("SELECT * FROM Device WHERE SIMCARD = ? AND customerId = ?");
-        stmt.setInt(1, SIMCARD);
-        stmt.setInt(2, customerID);
-        rs = stmt.executeQuery();
-        if(!rs.next()){
-            buildResponse(outputStream, "Device with SIMCARD " + SIMCARD + " not found!", 500);
-            return null;
-        }
-        String deviceType = rs.getString("deviceType");
-        conn.close();
-        rs.close();
-        return deviceType;
-    }
-
-    private String deviceStatistics(String deviceType, int SIMCARD, Connection conn, OutputStream outputStream) throws SQLException, IOException {
+    private String deviceStatistics(String deviceType, long SIMCARD, Connection conn, OutputStream outputStream,LambdaLogger logger) throws SQLException, IOException {
         String stats =null;
         switch (deviceType){
-            case("temperature"):getMeasurementStats("temperature",SIMCARD,conn, outputStream); break;
-            case("smoke"):getMeasurementStats("smoke",SIMCARD,conn,outputStream); break;
-            case("image"):getDescriptionStats("image",SIMCARD,conn,outputStream);break;
-            case("motion"):getDescriptionStats("motion",SIMCARD,conn,outputStream);break;
-            case("video"):getDescriptionStats("video",SIMCARD,conn,outputStream);break;
+            case("temperature"):getMeasurementStats("temperature",SIMCARD,conn, outputStream,logger); break;
+            case("smoke"):getMeasurementStats("smoke",SIMCARD,conn,outputStream,logger); break;
+            case("image"):getDescriptionStats("image",SIMCARD,conn,outputStream,logger);break;
+            case("motion"):getDescriptionStats("motion",SIMCARD,conn,outputStream,logger);break;
+            case("video"):getDescriptionStats("video",SIMCARD,conn,outputStream,logger);break;
             default:break;
         }
         return stats;
     }
 
-    private String getMeasurementStats(String deviceType, int SIMCARD, Connection conn, OutputStream outputStream) throws SQLException, IOException {
+    private String getMeasurementStats(String deviceType, long SIMCARD, Connection conn, OutputStream outputStream, LambdaLogger logger) throws SQLException, IOException {
         PreparedStatement stmt;
         ResultSet rs;
-        stmt = conn.prepareStatement("select AVG(measurement),MIN(measurement),MAX(measurement) from " +deviceType+"Message"+" where SIMCARD = ?");
-        stmt.setInt(1, SIMCARD);
-        rs = stmt.executeQuery();
-        String avg = rs.getString("AVG(measurement)");
-        String min = rs.getString("MIN(measurement)");
-        String max = rs.getString("MAX(measurement)");
         String statsString=null;
+        stmt = conn.prepareStatement("select AVG(measurement),MIN(measurement),MAX(measurement) from " +deviceType+"Message"+" where SIMCARD = ?");
+        stmt.setLong(1, SIMCARD);
+        rs = stmt.executeQuery();
         if(!rs.next()){
             buildResponse(outputStream, "Device with SIMCARD " + SIMCARD + " has no measurements!", 500);
         }
         else{
+            String avg = rs.getString("AVG(measurement)");
+            String min = rs.getString("MIN(measurement)");
+            String max = rs.getString("MAX(measurement)");
+
             statsString= "SIMCARD: " + SIMCARD +" deviceType: "+deviceType
                     + " avg: " + avg + " min: " + min + " max: "+ max;
             buildResponse(outputStream,statsString,200);
@@ -140,34 +123,42 @@ public class Analytics implements RequestStreamHandler {
         return statsString;
     }
 
-    private String getDescriptionStats(String deviceType, int SIMCARD, Connection conn, OutputStream outputStream) throws SQLException, IOException {
+    private String getDescriptionStats(String deviceType, long SIMCARD, Connection conn, OutputStream outputStream, LambdaLogger logger) throws SQLException, IOException {
         PreparedStatement stmt;
         ResultSet rs;
-        stmt = conn.prepareStatement("SELECT COUNT(*) FROM "+deviceType+"Message WHERE SIMCARD=? AND measure=\"ALARM\";");
-        stmt.setInt(1,SIMCARD);
+        String deviceTable=deviceType+"Message";
+        stmt = conn.prepareStatement("SELECT COUNT(*) FROM "+deviceTable+" WHERE SIMCARD=? AND description=\"ALARM\";");
+        stmt.setLong(1,SIMCARD);
         rs= stmt.executeQuery();
-        int numbAlarms= rs.getInt("COUNT(*)");
-        stmt = conn.prepareStatement("SELECT measure,COUNT(measure) AS value_occurrence FROM "+deviceType+"Message WHERE SIMCARD=? GROUP BY measure ORDER BY value_occurrence DESC LIMIT 1;");
-        stmt.setInt(1, SIMCARD);
-        rs = stmt.executeQuery();
-        String max = rs.getString("measure");
-        String max_ocurrence = rs.getString("value_ocurrence");
-        stmt = conn.prepareStatement("SELECT measure,COUNT(measure) AS value_occurrence FROM "+deviceType+"Message WHERE SIMCARD=? GROUP BY measure ORDER BY value_occurrence ASC LIMIT 1;");
-        stmt.setInt(1, SIMCARD);
-        rs=stmt.executeQuery();
-        String min = rs.getString("measure");
-        String min_ocurrence = rs.getString("value_ocurrence");
-        String statsString=null;
         if(!rs.next()){
-            buildResponse(outputStream, "Device with SIMCARD " + SIMCARD + " has no measurements!", 500);
+            buildResponse(outputStream, "Device with SIMCARD " + SIMCARD + " has no descriptions!", 500);
+            return null;
         }
-        else{
-            statsString="SIMCARD: " + SIMCARD +" deviceType: "+deviceType
-                    + " max: " + max +" max_ocurrence: "+max_ocurrence+
-                    " min: " + min + " min_ocurrence: "+ min_ocurrence+
-                    " numbAlarms: "+ numbAlarms;
-            buildResponse(outputStream,statsString,200);
+        int numbAlarms= rs.getInt("COUNT(*)");
+        stmt = conn.prepareStatement("SELECT description,COUNT(description) AS value_occurrence FROM "+deviceTable+" WHERE SIMCARD=? GROUP BY description ORDER BY value_occurrence DESC LIMIT 1;");
+        stmt.setLong(1, SIMCARD);
+        rs = stmt.executeQuery();
+        if(!rs.next()){
+            buildResponse(outputStream, "Device with SIMCARD " + SIMCARD + " has no descriptions!", 500);
+            return null;
         }
+        String max = rs.getString("description");
+        long max_occurrence = rs.getLong("value_occurrence");
+        stmt = conn.prepareStatement("SELECT description,COUNT(description) AS value_occurrence FROM "+deviceTable+" WHERE SIMCARD=? GROUP BY description ORDER BY value_occurrence ASC LIMIT 1;");
+        stmt.setLong(1, SIMCARD);
+        rs=stmt.executeQuery();
+        if(!rs.next()){
+            buildResponse(outputStream, "Device with SIMCARD " + SIMCARD + " has no descriptions!", 500);
+            return null;
+        }
+        String min = rs.getString("description");
+        long min_ocurrence = rs.getLong("value_occurrence");
+        String statsString=null;
+        statsString="SIMCARD: " + SIMCARD +" deviceType: "+deviceType
+                + " max: " + max +" max_occurrence: "+max_occurrence+
+                " min: " + min + " min_occurrence: "+ min_ocurrence+
+                " numbAlarms: "+ numbAlarms;
+        buildResponse(outputStream,statsString,200);
         rs.close();
         conn.close();
         return statsString;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_03we029" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_03we029" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.6.0">
   <bpmn:message id="Message_12zwmex" name="signup-message" />
   <bpmn:collaboration id="Collaboration_1vsf60c">
     <bpmn:participant id="Participant_1s99h35" name="BPM IoT" processRef="create-customer" />
@@ -12,7 +12,33 @@
       <bpmn:outgoing>Flow_0t9vvjb</bpmn:outgoing>
       <bpmn:outgoing>Flow_0fiyzvd</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Activity_0so1uaw" name="Create Customer" camunda:type="external" camunda:topic="create-new-user">
+    <bpmn:serviceTask id="Activity_0so1uaw" name="Create Customer">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">http://ec2-54-167-99-174.compute-1.amazonaws.com:8000/</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+                <camunda:entry key="Host">createcustomer.com</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">{
+"firstName": "${firstName}",
+"lastName": "${lastName}",
+"birthDate": "${birthDate}",
+"postalCode": "${postalCode}",
+"street": "${street}",
+"district": "${district}",
+"council": "${council}",
+"parish": "${parish}",
+"doorNumber": ${doorNumber}
+}</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0t9vvjb</bpmn:incoming>
       <bpmn:outgoing>Flow_0w6bfzs</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -43,13 +69,66 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1ovfzlk" sourceRef="Activity_0y71tb6" targetRef="Gateway_13c220h" />
     <bpmn:sequenceFlow id="Flow_0wm8g2o" sourceRef="StartEvent_1" targetRef="Activity_0y71tb6" />
-    <bpmn:serviceTask id="Activity_0y71tb6" name="Data Form Validation" camunda:type="external" camunda:topic="validate-customer-data-form">
+    <bpmn:serviceTask id="Activity_0y71tb6" name="Data Form Validation">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:outputParameter name="Output_01c1s21">
             <camunda:map />
           </camunda:outputParameter>
         </camunda:inputOutput>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="payload">{
+"firstName": "${firstName}",
+"lastName": "${lastName}",
+"birthDate": "${birthDate}",
+"street": "${street}",
+"postalCode": "${postalCode}",
+"doorNumber": ${doorNumber}
+}</camunda:inputParameter>
+            <camunda:inputParameter name="url">http://ec2-54-167-99-174.compute-1.amazonaws.com:8000/</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+                <camunda:entry key="Host">validatecustomerform.com</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="valid">
+              <camunda:script scriptFormat="JavaScript">var requestResponse = connector.getVariable("response");
+var response = S(requestResponse).prop("message").value();
+var message = S(response);
+message.jsonPath("valid").boolValue();
+
+</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="parish">
+              <camunda:script scriptFormat="JavaScript">var requestResponse = connector.getVariable("response");
+var response = S(requestResponse).prop("message").value();
+var message = S(response);
+message.jsonPath("parish").stringValue();
+
+</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="council">
+              <camunda:script scriptFormat="JavaScript">var requestResponse = connector.getVariable("response");
+var response = S(requestResponse).prop("message").value();
+var message = S(response);
+message.jsonPath("council").stringValue();
+
+</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="district">
+              <camunda:script scriptFormat="JavaScript">var requestResponse = connector.getVariable("response");
+var response = S(requestResponse).prop("message").value();
+var message = S(response);
+message.jsonPath("district").stringValue();
+
+</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0wm8g2o</bpmn:incoming>
       <bpmn:outgoing>Flow_1ovfzlk</bpmn:outgoing>

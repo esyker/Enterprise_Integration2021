@@ -36,6 +36,8 @@ public class LambdaUtils {
         responseJson.put("headers", headerJson);
         responseJson.put("body", responseBody.toString());
 
+        System.out.println(responseBody.toJSONString());
+
         OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
         writer.write(responseJson.toString());
         writer.close();

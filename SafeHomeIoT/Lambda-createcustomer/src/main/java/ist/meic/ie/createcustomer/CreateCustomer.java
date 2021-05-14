@@ -26,7 +26,12 @@ public class CreateCustomer implements RequestStreamHandler {
         if (verifyArgs(outputStream, newCustomer)) return;
         String firstName = (String) newCustomer.get("firstName");
         String lastName = (String) newCustomer.get("lastName");
-        String address = (String) newCustomer.get("address");
+        String street = (String) newCustomer.get("street");
+        String postalCode = (String) newCustomer.get("postalCode");
+        String district = (String) newCustomer.get("district");
+        String council = (String) newCustomer.get("council");
+        String parish = (String) newCustomer.get("parish");
+        int doorNumber = ((Long) newCustomer.get("doorNumber")).intValue();
         Date birthDate = null;
         try {
             birthDate = new SimpleDateFormat("yyyy-MM-dd").parse((String) newCustomer.get("birthDate"));
@@ -36,15 +41,20 @@ public class CreateCustomer implements RequestStreamHandler {
         Connection conn = new DatabaseConfig("customerhandler2.cjw7eyupyncl.us-east-1.rds.amazonaws.com", "CustomerHandling","pedro", "123456789").getConnection();
 
         try {
-            PreparedStatement insert = conn.prepareStatement ("INSERT INTO  Customer (firstname, lastname, address, birthdate) VALUES (?,?,?,?)");
+            PreparedStatement insert = conn.prepareStatement ("INSERT INTO  Customer (firstname, lastname, birthdate, street, postalCode, district, council, parish, doorNumber) VALUES (?,?,?,?,?,?,?,?,?)");
             insert.setString(1,firstName);
             insert.setString(2,lastName);
-            insert.setString(3, address);
-            insert.setDate(4, new java.sql.Date(birthDate.getTime()));
+            insert.setDate(3, new java.sql.Date(birthDate.getTime()));
+            insert.setString(4, street);
+            insert.setString(5, postalCode);
+            insert.setString(6, district);
+            insert.setString(7, council);
+            insert.setString(8, parish);
+            insert.setInt(9, doorNumber);
+
             insert.executeUpdate();
             insert.close();
-            logger.log("Inserted user: \n\tFirst Name: " + firstName + "\n\tLast Name: " + lastName + "\n\tAddress: " + address + "\n\tBirth Date: " + birthDate + "\n");
-            // CONVERT TO LAMBDA SERVICE AND ACTIVATE
+            logger.log("Inserted user: \n\tFirst Name: " + firstName + "\n\tLast Name: " + lastName + "\n\tStreet: " + street + "\n\tBirth Date: " + birthDate + "\n\tPostal Code: " + postalCode + "\n");
             LambdaUtils.buildResponse(outputStream, "Inserted user: " + newCustomer.toJSONString(),200);
         } catch (SQLException e) {
             logger.log(e.toString());
@@ -67,13 +77,33 @@ public class CreateCustomer implements RequestStreamHandler {
             return true;
         }
 
-        if (newCustomer.get("address") == null) {
-            LambdaUtils.buildResponse(outputStream, "No address defined!", 500);
+        if (newCustomer.get("birthDate") == null) {
+            LambdaUtils.buildResponse(outputStream, "No birth date defined!", 500);
             return true;
         }
 
-        if (newCustomer.get("birthDate") == null) {
-            LambdaUtils.buildResponse(outputStream, "No birth date defined!", 500);
+        if (newCustomer.get("postalCode") == null) {
+            LambdaUtils.buildResponse(outputStream, "No postal code defined!", 500);
+            return true;
+        }
+
+        if (newCustomer.get("street") == null) {
+            LambdaUtils.buildResponse(outputStream, "No street defined!", 500);
+            return true;
+        }
+
+        if (newCustomer.get("district") == null) {
+            LambdaUtils.buildResponse(outputStream, "No district defined!", 500);
+            return true;
+        }
+
+        if (newCustomer.get("council") == null) {
+            LambdaUtils.buildResponse(outputStream, "No council defined!", 500);
+            return true;
+        }
+
+        if (newCustomer.get("doorNumber") == null) {
+            LambdaUtils.buildResponse(outputStream, "No parish defined!", 500);
             return true;
         }
         return false;

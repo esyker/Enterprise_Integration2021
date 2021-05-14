@@ -17,6 +17,7 @@
         <module name="utils" />
         <module name="Lambda-deletecustomer" />
         <module name="MSISDNdelete" />
+        <module name="Lambda-validateuserform" />
         <module name="statusmediation" />
         <module name="Lambda-addiotdevice" />
         <module name="events" />

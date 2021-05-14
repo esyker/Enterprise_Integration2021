@@ -47,6 +47,7 @@
         <module>Lambda-alarm</module>
         <module>Lambda-suspendall</module>
         <module>Lambda-catalogue</module>
+        <module>Lambda-validateuserform</module>
     </modules>
 
 </project>

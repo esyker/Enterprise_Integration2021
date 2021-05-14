@@ -15,4 +15,5 @@ public class Constants {
     public static final String CUSTOMER_HANDLING_DB_USER = "pedro";
     public static final String CUSTOMER_HANDLING_DB_PASSWORD = "123456789";
 
+    public static final String CTT_ENDPOINT = "https://www.ctt.pt/pdcp/xml_pdcp";
 }

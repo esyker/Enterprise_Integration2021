@@ -17,8 +17,13 @@ CREATE TABLE Customer (
     id INT AUTO_INCREMENT,
     firstName VARCHAR(30),
     lastName VARCHAR(30),
-    address VARCHAR(100),
     birthDate TIMESTAMP,
+    postalCode VARCHAR(100),
+    street VARCHAR(100),
+    district VARCHAR(100),
+    council VARCHAR(100),
+    parish VARCHAR(100),
+    doorNumber INT,
     PRIMARY KEY(ID)
 );
 

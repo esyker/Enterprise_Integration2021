@@ -3,6 +3,7 @@ package ist.meic.ie.utils;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -13,6 +14,7 @@ import org.json.simple.parser.JSONParser;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import static ist.meic.ie.utils.Constants.CTT_ENDPOINT;
 import static ist.meic.ie.utils.Constants.KONG_ENDPOINT;
 
 public class HTTPMessages {
@@ -118,5 +120,27 @@ public class HTTPMessages {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String getXmlMsg(String contentType, String postalCode) {
+        int statusCode = 0;
+        String responseBody = "";
+        try {
+            HttpGet getRequest = new HttpGet(CTT_ENDPOINT + "?incodpos=" + postalCode);
+            getRequest.addHeader("content-type", contentType);
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            StringEntity Entity = null;
+            //Entity = new StringEntity(jsonObject.toJSONString());
+            HttpResponse response = null;
+            response = httpClient.execute(getRequest);
+            statusCode = response.getStatusLine().getStatusCode();
+            System.out.println("Finished with HTTP error code : " + statusCode + "\n" + response.toString());
+            HttpEntity responseEntity = response.getEntity();
+            responseBody = EntityUtils.toString(responseEntity);
+            if (responseEntity != null) System.out.println("response body = " + responseBody);
+        } catch (Exception e) {
+            System.out.println(e.toString() + "\n");
+        }
+        return responseBody;
     }
 }

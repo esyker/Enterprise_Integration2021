@@ -91,29 +91,29 @@ public class CancelSubscription implements RequestStreamHandler {
         stmt.setInt(1, customerId);
         rs = stmt.executeQuery();
         if (!rs.next()) {
-                buildResponse(outputStream, "Customer with id " + customerId + " does not have a subscription!", 500);
+                buildResponse(outputStream, "Customer with id " + customerId + " does not have a subscription!", 200);
                 return true;
-            } else {
-                subscriptionId = rs.getInt("subscriptionId");
-                logger.log("Subscription id: " + subscriptionId + "\n");
-                stmt2 = conn.prepareStatement("DELETE FROM SubscriptionServices WHERE subscriptionId = ?");
-                stmt2.setInt(1, subscriptionId);
-                stmt2.executeUpdate();
-                stmt2.close();
-                logger.log("1Subscription id: " + subscriptionId + "\n");
+        } else {
+            subscriptionId = rs.getInt("subscriptionId");
+            logger.log("Subscription id: " + subscriptionId + "\n");
+            stmt2 = conn.prepareStatement("DELETE FROM SubscriptionServices WHERE subscriptionId = ?");
+            stmt2.setInt(1, subscriptionId);
+            stmt2.executeUpdate();
+            stmt2.close();
+            logger.log("Subscription id: " + subscriptionId + "\n");
 
-                stmt2 = conn.prepareStatement("DELETE FROM CustomerSubscriptions WHERE customerId = ?");
-                stmt2.setInt(1, customerId);
-                stmt2.executeUpdate();
-                stmt2.close();
-                logger.log("2Subscription id: " + subscriptionId + "\n");
+            stmt2 = conn.prepareStatement("DELETE FROM CustomerSubscriptions WHERE customerId = ?");
+            stmt2.setInt(1, customerId);
+            stmt2.executeUpdate();
+            stmt2.close();
+            logger.log("Subscription id: " + subscriptionId + "\n");
 
-                stmt2 = conn.prepareStatement("DELETE FROM Subscription WHERE id = ?");
-                stmt2.setInt(1, subscriptionId);
-                stmt2.executeUpdate();
-                stmt2.close();
-                buildResponse(outputStream, "Subscription canceled for customer with id " + customerId, 200);
-                logger.log("2Subscription id: " + subscriptionId + "\n");
+            stmt2 = conn.prepareStatement("DELETE FROM Subscription WHERE id = ?");
+            stmt2.setInt(1, subscriptionId);
+            stmt2.executeUpdate();
+            stmt2.close();
+            buildResponse(outputStream, "Subscription canceled for customer with id " + customerId, 200);
+            logger.log("Subscription id: " + subscriptionId + "\n");
 
         }
 

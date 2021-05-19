@@ -8,8 +8,10 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Lambda-catalogue" />
         <module name="Lambda-alarm" />
+        <module name="Lambda-getcustomerbysimcard" />
         <module name="MSISDNsuspend" />
         <module name="Lambda-paysubscription" />
+        <module name="Lambda-raisealarm" />
         <module name="Lambda-cancelsubscription" />
         <module name="Lambda-deleteiotdevice" />
         <module name="Lambda-createcustomer" />

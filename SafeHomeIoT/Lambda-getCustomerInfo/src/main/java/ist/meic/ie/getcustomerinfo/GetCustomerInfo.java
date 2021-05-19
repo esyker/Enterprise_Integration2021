@@ -48,8 +48,16 @@ public class GetCustomerInfo implements RequestStreamHandler {
 
             String firstName = rs.getString("firstName");
             String lastName = rs.getString("lastName");
-            String address = rs.getString("address");
+            String street = rs.getString("street");
+            String postalCode = rs.getString("postalCode");
+            String district = rs.getString("district");
+            String council = rs.getString("council");
+            String parish = rs.getString("parish");
+            String doorNumber = rs.getString("doorNumber");
             Date birthDate = rs.getDate("birthDate");
+
+
+
             rs.close();
             stmt.close();
 
@@ -88,7 +96,12 @@ public class GetCustomerInfo implements RequestStreamHandler {
             JSONObject response = new JSONObject();
             response.put("firstName", firstName);
             response.put("lastName", lastName);
-            response.put("address", address);
+            response.put("street", street);
+            response.put("postalCode", postalCode);
+            response.put("district", district);
+            response.put("council", council);
+            response.put("parish", parish);
+            response.put("doorNumber", doorNumber);
             response.put("birthDate", birthDate);
             response.put("devices", devices);
             response.put("services", services);

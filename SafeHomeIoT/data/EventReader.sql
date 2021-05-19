@@ -1,4 +1,5 @@
 ###########SENSORS#################
+DROP DATABASE  IF EXISTS EventReader;
 CREATE DATABASE IF NOT EXISTS EventReader;
 USE EventReader;
 
@@ -55,6 +56,17 @@ CREATE TABLE motionMessage (
 	type VARCHAR(30),
 	ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY(ID)
+);
+
+USE EventReader;
+DROP TABLE IF EXISTS Alarm;
+CREATE TABLE Alarm (
+    ID INT AUTO_INCREMENT,
+    SIMCARD INT,
+    type VARCHAR(30),
+    customerId INT,
+    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (ID)
 );
 
 select * from temperatureMessage;

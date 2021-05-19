@@ -117,7 +117,7 @@ public class GetDeviceInfo implements RequestStreamHandler {
         return false;
     }
 
-    public static HttpResponse postMsg(JSONObject jsonObject, String contentType, String host, LambdaLogger logger) throws IOException, ParseException {
+    private static HttpResponse postMsg(JSONObject jsonObject, String contentType, String host, LambdaLogger logger) throws IOException, ParseException {
         int statusCode = 0;
         JSONParser jsonParser = new JSONParser();
         HttpEntity responseEntity = null;

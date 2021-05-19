@@ -1,7 +1,7 @@
 package ist.meic.ie.utils;
 
 public class Constants {
-    public static final String KONG_ENDPOINT = "http://ec2-54-167-99-174.compute-1.amazonaws.com:8000";
+    public static final String KONG_ENDPOINT = "http://3.90.103.29:8000";
 
     public static final String PROVISION_DB = "safehomeiot-provisioning.chtz2szhizbk.us-east-1.rds.amazonaws.com";
     public static final String PROVISION_DB_USER = "pedro";

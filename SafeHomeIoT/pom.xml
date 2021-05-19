@@ -48,6 +48,8 @@
         <module>Lambda-suspendall</module>
         <module>Lambda-catalogue</module>
         <module>Lambda-validateuserform</module>
+        <module>Lambda-raisealarm</module>
+        <module>Lambda-getcustomerbysimcard</module>
     </modules>
 
 </project>

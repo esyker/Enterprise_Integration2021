@@ -10,10 +10,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,6 +28,8 @@ public class CreateCustomer implements RequestStreamHandler {
         String district = (String) newCustomer.get("district");
         String council = (String) newCustomer.get("council");
         String parish = (String) newCustomer.get("parish");
+        String email = (String) newCustomer.get("email");
+        String password = (String) newCustomer.get("password");
         int doorNumber = ((Long) newCustomer.get("doorNumber")).intValue();
         Date birthDate = null;
         try {
@@ -41,7 +40,7 @@ public class CreateCustomer implements RequestStreamHandler {
         Connection conn = new DatabaseConfig("customerhandler2.cjw7eyupyncl.us-east-1.rds.amazonaws.com", "CustomerHandling","pedro", "123456789").getConnection();
 
         try {
-            PreparedStatement insert = conn.prepareStatement ("INSERT INTO  Customer (firstname, lastname, birthdate, street, postalCode, district, council, parish, doorNumber) VALUES (?,?,?,?,?,?,?,?,?)");
+            PreparedStatement insert = conn.prepareStatement ("INSERT INTO  Customer (firstname, lastname, birthdate, street, postalCode, district, council, parish, email, password, doorNumber) VALUES (?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             insert.setString(1,firstName);
             insert.setString(2,lastName);
             insert.setDate(3, new java.sql.Date(birthDate.getTime()));
@@ -50,12 +49,18 @@ public class CreateCustomer implements RequestStreamHandler {
             insert.setString(6, district);
             insert.setString(7, council);
             insert.setString(8, parish);
-            insert.setInt(9, doorNumber);
+            insert.setString(9, email);
+            insert.setString(10, password);
+            insert.setInt(11, doorNumber);
 
             insert.executeUpdate();
+            ResultSet rs = insert.getGeneratedKeys();
+            if(rs.next()) {
+                newCustomer.put("customerId", rs.getInt(1));
+            }
             insert.close();
-            logger.log("Inserted user: \n\tFirst Name: " + firstName + "\n\tLast Name: " + lastName + "\n\tStreet: " + street + "\n\tBirth Date: " + birthDate + "\n\tPostal Code: " + postalCode + "\n");
-            LambdaUtils.buildResponse(outputStream, "Inserted user: " + newCustomer.toJSONString(),200);
+            logger.log(newCustomer.toJSONString());
+            LambdaUtils.buildResponse(outputStream, newCustomer.toJSONString(),200);
         } catch (SQLException e) {
             logger.log(e.toString());
         } finally {

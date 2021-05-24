@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.util.Date;
 
 public class TemperatureEvent extends Event {
-    private float measurement;
 
     public TemperatureEvent (JSONObject event) throws InvalidEventTypeException {
         super(event);

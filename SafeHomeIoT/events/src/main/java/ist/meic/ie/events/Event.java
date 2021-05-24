@@ -12,7 +12,8 @@ public abstract class Event {
     private int MSISDN;
     private int SIMCARD;
     private Date timestamp;
-
+    protected float measurement;
+    protected String description;
 
     public Event(JSONObject event) throws InvalidEventTypeException {
         if(event.get("type") == null || event.get("MSISDN") == null || event.get("SIMCARD") == null)
@@ -66,4 +67,12 @@ public abstract class Event {
     public abstract void insertToDb(DatabaseConfig config);
 
     public abstract String toString();
+
+    public String getDescription() {
+        return description;
+    }
+
+    public float getMeasurement() {
+        return measurement;
+    }
 }

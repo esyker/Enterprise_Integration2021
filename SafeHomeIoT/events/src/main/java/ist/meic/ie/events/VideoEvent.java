@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.util.Date;
 
 public class VideoEvent extends Event{
-    private String description;
 
     public VideoEvent(JSONObject event) throws InvalidEventTypeException {
         super(event);

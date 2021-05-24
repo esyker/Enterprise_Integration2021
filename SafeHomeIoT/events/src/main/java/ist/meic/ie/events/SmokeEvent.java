@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.util.Date;
 
 public class SmokeEvent extends Event{
-    private float measurement;
 
     public SmokeEvent(JSONObject event) throws InvalidEventTypeException {
         super(event);

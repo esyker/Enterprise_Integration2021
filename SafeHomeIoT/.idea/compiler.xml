@@ -23,9 +23,11 @@
         <module name="statusmediation" />
         <module name="Lambda-addiotdevice" />
         <module name="events" />
+        <module name="eventsReaderKafka" />
         <module name="subscribetoservices" />
         <module name="simulator" />
         <module name="Lambda-getCustomerInfo" />
+        <module name="kafkaStreamAlarm" />
         <module name="customerhandling" />
         <module name="MSISDNactivate" />
         <module name="MSISDNgetStatus" />
@@ -41,6 +43,7 @@
       <module name="activateMSISDN" target="8" />
       <module name="cancelsubscription" target="1.8" />
       <module name="constants" target="8" />
+      <module name="eventsAlarmKafkaStream" target="8" />
       <module name="IoTaaSSimulator" target="1.8" />
       <module name="LambaServices" target="8" />
       <module name="Lambda-subscribetoservices" target="1.8" />

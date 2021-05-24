@@ -10,8 +10,6 @@ import java.util.Date;
 
 public class ImageEvent extends Event{
 
-    private String description;
-
     public ImageEvent(JSONObject event) throws InvalidEventTypeException {
         super(event);
         if(event.get("description") == null)

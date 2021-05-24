@@ -52,6 +52,7 @@
         <module>Lambda-getcustomerbysimcard</module>
         <module>eventsReaderKafka</module>
         <module>kafkaStreamAlarm</module>
+        <module>alarmsReader</module>
     </modules>
 
 </project>

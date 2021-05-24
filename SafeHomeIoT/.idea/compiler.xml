@@ -29,14 +29,20 @@
         <module name="Lambda-getCustomerInfo" />
         <module name="kafkaStreamAlarm" />
         <module name="customerhandling" />
+        <module name="alarmsReader" />
         <module name="MSISDNactivate" />
         <module name="MSISDNgetStatus" />
         <module name="Lambda-analytics" />
         <module name="eventmediation" />
         <module name="eventservice" />
         <module name="eventmediationpre" />
-        <module name="eventsReader" />
         <module name="Lambda-suspendall" />
+      </profile>
+      <profile name="Annotation profile for SafeHomeIoT" enabled="true">
+        <sourceOutputDir name="../alarmsReader/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../alarmsReader/target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="eventsReader" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

@@ -8,6 +8,7 @@ public class AlarmsReaderService {
 
     public static void main(String args[]){
         CommandLine cmd = parseArgs(args);
+        System.out.println(cmd.getOptionValue("kafkaip"));
         AlarmReader eventsService = new AlarmReader(cmd.getOptionValue("kafkaip"));
         eventsService.receiveEvents();
     }

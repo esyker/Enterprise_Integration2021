@@ -10,6 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>eventsReaderKafka</artifactId>
+    <packaging>jar</packaging>
+    <version>0.0.1-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -74,6 +76,11 @@
             <artifactId>commons-cli</artifactId>
             <version>1.4</version>
         </dependency>
+        <dependency>
+            <groupId>ist.meic.ie.utils</groupId>
+            <artifactId>utils</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -90,7 +97,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>ist.meic.ie.eventsreader.EventsReaderKafkaService</mainClass>
+                    <mainClass>ist.meic.ie.eventsreaderkafka.EventsReaderKafkaService</mainClass>
                 </configuration>
             </plugin>
             <plugin>

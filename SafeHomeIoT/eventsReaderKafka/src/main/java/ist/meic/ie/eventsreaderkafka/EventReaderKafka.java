@@ -30,7 +30,7 @@ public class EventReaderKafka {
     private String kafkaIP;
 
     public EventReaderKafka(String kafkaIP) {
-        kafkaIP=kafkaIP;
+        this.kafkaIP=kafkaIP;
     }
 
     public Connection getNewConnection(){

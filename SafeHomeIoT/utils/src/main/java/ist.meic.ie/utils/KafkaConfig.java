@@ -5,8 +5,11 @@ import kafka.admin.RackAwareMode;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.ZkConnection;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.StreamsBuilder;
 
 import java.util.List;
 import java.util.Properties;
@@ -38,6 +41,7 @@ public class KafkaConfig {
 
     public static KafkaConsumer<String, String> createKafkaConsumer(String bootstrapServers, String groupId, List<String> topicsToSubscribe) {
         Properties consumerProperties = new Properties();
+        System.out.println("KafkaConsumer "+consumerProperties+" "+bootstrapServers+" "+groupId+" "+topicsToSubscribe);
         consumerProperties.put("bootstrap.servers", bootstrapServers);
         consumerProperties.put("group.id", groupId);
         consumerProperties.put("key.deserializer", KEY_DESERIALIZER);
@@ -53,6 +57,15 @@ public class KafkaConfig {
         producerProperties.put("key.serializer", KEY_SERIALIZER);
         producerProperties.put("value.serializer",VALUE_SERIALIZER);
         return new KafkaProducer<>(producerProperties);
+    }
+
+    public static Properties createKafkaStreamProps(String bootstrapServers, String appID) {
+        Properties streamProperties = new Properties();
+        streamProperties.put("application.id", appID);
+        streamProperties.put("bootstrap.servers", bootstrapServers);
+        // setting offset reset to earliest
+        streamProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        return streamProperties;
     }
 
 }

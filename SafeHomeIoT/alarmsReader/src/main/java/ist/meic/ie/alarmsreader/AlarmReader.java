@@ -33,8 +33,8 @@ public class AlarmReader {
 
     public AlarmReader(String kafkaIP)
     {
-        kafkaIP=kafkaIP;
-        List<String> topic = new ArrayList<>(Arrays.asList("alarm-topic"));
+        this.kafkaIP=kafkaIP;
+        topic = new ArrayList<>(Arrays.asList("alarm-topic"));
     }
 
     public void receiveEvents(){
@@ -50,7 +50,8 @@ public class AlarmReader {
                     if (event.get("type") == null)
                         throw new InvalidEventTypeException(event.toJSONString());
                     //Call Kong endpoint here that redirects to Camunda
-                    HTTPMessages.postMsg(event,"application/json","camunda-alarm.com");
+                    //HTTPMessages.postMsg(event,"application/json","camunda-alarm.com");
+                    System.out.println(event);
                 } catch (InvalidEventTypeException | org.json.simple.parser.ParseException e) {
                     e.printStackTrace();
                 }

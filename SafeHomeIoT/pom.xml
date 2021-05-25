@@ -53,6 +53,7 @@
         <module>eventsReaderKafka</module>
         <module>kafkaStreamAlarm</module>
         <module>alarmsReader</module>
+        <module>Lambda-Email</module>
     </modules>
 
 </project>

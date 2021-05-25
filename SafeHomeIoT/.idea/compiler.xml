@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="Lambda-Email" />
         <module name="Lambda-catalogue" />
         <module name="Lambda-alarm" />
         <module name="Lambda-getcustomerbysimcard" />
@@ -36,13 +37,8 @@
         <module name="eventmediation" />
         <module name="eventservice" />
         <module name="eventmediationpre" />
-        <module name="Lambda-suspendall" />
-      </profile>
-      <profile name="Annotation profile for SafeHomeIoT" enabled="true">
-        <sourceOutputDir name="../alarmsReader/target/generated-sources/annotations" />
-        <sourceTestOutputDir name="../alarmsReader/target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
         <module name="eventsReader" />
+        <module name="Lambda-suspendall" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

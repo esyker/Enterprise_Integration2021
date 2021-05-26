@@ -3,6 +3,7 @@ package ist.meic.ie.createcustomer;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import ist.meic.ie.utils.Constants;
 import ist.meic.ie.utils.DatabaseConfig;
 import ist.meic.ie.utils.LambdaUtils;
 import org.json.simple.JSONArray;
@@ -21,6 +22,7 @@ public class CreateCustomer implements RequestStreamHandler {
         LambdaLogger logger = context.getLogger();
         JSONObject newCustomer = LambdaUtils.parseInput(inputStream, logger);
         if (verifyArgs(outputStream, newCustomer)) return;
+        int customerId = ((Long) newCustomer.get("customerId")).intValue();
         String firstName = (String) newCustomer.get("firstName");
         String lastName = (String) newCustomer.get("lastName");
         String street = (String) newCustomer.get("street");
@@ -37,10 +39,12 @@ public class CreateCustomer implements RequestStreamHandler {
         } catch (ParseException e) {
             logger.log(e.toString());
         }
-        Connection conn = new DatabaseConfig("customerhandler2.cjw7eyupyncl.us-east-1.rds.amazonaws.com", "CustomerHandling","pedro", "123456789").getConnection();
+        Connection conn = new DatabaseConfig(Constants.CUSTOMER_HANDLING_DB, "CustomerHandling", Constants.CUSTOMER_HANDLING_DB_USER, Constants.CUSTOMER_HANDLING_DB_PASSWORD).getConnection();
 
         try {
-            PreparedStatement insert = conn.prepareStatement ("INSERT INTO  Customer (firstname, lastname, birthdate, street, postalCode, district, council, parish, email, password, doorNumber) VALUES (?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement insert = conn.prepareStatement ("UPDATE Customer SET firstName = ?, lastName = ?, birthDate = ?," +
+                                                                    "street = ?, postalCode = ?, district = ?, council = ?, parish = ?," +
+                                                                    "email = ?, password = ?, doorNumber = ? WHERE id = ?");
             insert.setString(1,firstName);
             insert.setString(2,lastName);
             insert.setDate(3, new java.sql.Date(birthDate.getTime()));
@@ -52,12 +56,9 @@ public class CreateCustomer implements RequestStreamHandler {
             insert.setString(9, email);
             insert.setString(10, password);
             insert.setInt(11, doorNumber);
+            insert.setInt(12, customerId);
 
             insert.executeUpdate();
-            ResultSet rs = insert.getGeneratedKeys();
-            if(rs.next()) {
-                newCustomer.put("customerId", rs.getInt(1));
-            }
             insert.close();
             logger.log(newCustomer.toJSONString());
             LambdaUtils.buildResponse(outputStream, newCustomer.toJSONString(),200);
@@ -73,6 +74,10 @@ public class CreateCustomer implements RequestStreamHandler {
     }
 
     private boolean verifyArgs(OutputStream outputStream, JSONObject newCustomer) throws IOException {
+        if (newCustomer.get("customerId") == null) {
+            LambdaUtils.buildResponse(outputStream, "No customer Id defined!", 500);
+            return true;
+        }
         if (newCustomer.get("firstName") == null) {
             LambdaUtils.buildResponse(outputStream, "No first name defined!", 500);
             return true;

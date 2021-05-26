@@ -11,7 +11,7 @@ public class Constants {
     public static final String MEDIATION_DB_USER = "pedro";
     public static final String MEDIATION_DB_PASSWORD = "123456789";
 
-    public static final String CUSTOMER_HANDLING_DB = "customerhandler2.cjw7eyupyncl.us-east-1.rds.amazonaws.com";
+    public static final String CUSTOMER_HANDLING_DB = "safehomeiot-customerhandling.chtz2szhizbk.us-east-1.rds.amazonaws.com";
     public static final String CUSTOMER_HANDLING_DB_USER = "pedro";
     public static final String CUSTOMER_HANDLING_DB_PASSWORD = "123456789";
 

@@ -3,6 +3,7 @@ package ist.meic.ie.subscribetoservices;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import ist.meic.ie.utils.Constants;
 import ist.meic.ie.utils.DatabaseConfig;
 import ist.meic.ie.utils.HTTPMessages;
 import ist.meic.ie.utils.LambdaUtils;
@@ -28,7 +29,7 @@ public class SubscribeToService implements RequestStreamHandler {
 
         if (verifyArgs(outputStream, event)) return;
 
-        Connection conn = new DatabaseConfig("customerhandler2.cjw7eyupyncl.us-east-1.rds.amazonaws.com", "CustomerHandling","pedro", "123456789").getConnection();
+        Connection conn = new DatabaseConfig(Constants.CUSTOMER_HANDLING_DB, "CustomerHandling","pedro", "123456789").getConnection();
 
         try {
             conn.setAutoCommit(false);

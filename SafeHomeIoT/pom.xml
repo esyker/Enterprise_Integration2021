@@ -49,9 +49,14 @@
         <module>Lambda-validateuserform</module>
         <module>Lambda-raisealarm</module>
         <module>Lambda-getcustomerbysimcard</module>
+<<<<<<< HEAD
+        <module>testconsumer</module>
+        <module>Lambda-createemptycustomer</module>
+=======
         <module>eventsReaderKafka</module>
         <module>kafkaStreamAlarm</module>
         <module>alarmsReader</module>
+>>>>>>> dafa9185fa0654e58cfe11bad4ce94fb02af0139
     </modules>
 
 </project>

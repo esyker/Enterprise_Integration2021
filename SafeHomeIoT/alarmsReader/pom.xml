@@ -8,10 +8,10 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>ist.meic.ie</groupId>
 
+    <packaging>jar</packaging>
     <artifactId>alarmsReader</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -92,7 +92,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>ist.meic.ie.eventsreader.AlarmsReaderService</mainClass>
+                    <mainClass>ist.meic.ie.alarmsreader.AlarmsReaderService</mainClass>
                 </configuration>
             </plugin>
             <plugin>

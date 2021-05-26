@@ -11,8 +11,6 @@ import java.util.Date;
 
 public class MotionEvent extends Event {
 
-    private String description;
-
     public MotionEvent(JSONObject event) throws InvalidEventTypeException {
         super(event);
         if(event.get("description") == null)

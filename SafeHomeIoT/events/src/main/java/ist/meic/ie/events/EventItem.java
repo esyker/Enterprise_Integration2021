@@ -50,4 +50,10 @@ public class EventItem {
     public Event getEvent() {
         return event;
     }
+
+    public String getType() { return event.getType();}
+
+    public String getDescription() {return event.getDescription();}
+
+    public float getMeasurement() {return event.getMeasurement();}
 }

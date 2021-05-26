@@ -47,7 +47,6 @@
       <module name="eventsAlarmKafkaStream" target="8" />
       <module name="IoTaaSSimulator" target="1.8" />
       <module name="LambaServices" target="8" />
-      <module name="Lambda-Email" target="8" />
       <module name="Lambda-Email-Old" target="8" />
       <module name="Lambda-subscribetoservices" target="1.8" />
       <module name="provisioning" target="1.8" />

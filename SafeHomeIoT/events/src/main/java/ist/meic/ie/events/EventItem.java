@@ -26,12 +26,13 @@ public class EventItem {
     }
 
     public EventItem(String type, int SIMCARD, int MSISDN) throws InvalidEventTypeException {
+        String[] txtMsgs = {"not intrusion", "intrusion"};
         switch (type) {
             case "temperature" : this.event = new TemperatureEvent(-50 + new Random().nextFloat() * (500 - (-50)), SIMCARD, MSISDN); break;
-            case "image" : this.event = new ImageEvent("some image" + SIMCARD, SIMCARD, MSISDN); break;
-            case "video" : this.event = new VideoEvent("some video" + SIMCARD, SIMCARD, MSISDN); break;
+            case "image" : this.event = new ImageEvent(txtMsgs[0 + (int)(Math.random() * ((1 - 0) + 1))], SIMCARD, MSISDN); break;
+            case "video" : this.event = new VideoEvent(txtMsgs[0 + (int)(Math.random() * ((1 - 0) + 1))], SIMCARD, MSISDN); break;
             case "smoke" : this.event = new SmokeEvent(-50 + new Random().nextFloat() * (500 - (-50)), SIMCARD, MSISDN); break;
-            case "motion" : this.event = new MotionEvent("some movement" + SIMCARD, SIMCARD, MSISDN); break;
+            case "motion" : this.event = new MotionEvent(txtMsgs[0 + (int)(Math.random() * ((1 - 0) + 1))] , SIMCARD, MSISDN); break;
             default: throw new InvalidEventTypeException("Invalid event type");
         }
     }

@@ -1,5 +1,6 @@
 package ist.meic.ie.customer.handling;
 
+import ist.meic.ie.utils.Constants;
 import ist.meic.ie.utils.DatabaseConfig;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -76,7 +77,7 @@ public class CustomerHandling {
         client.subscribe("create-new-user")
                 .lockDuration(10) // the default lock duration is 20 seconds, but you can override this
                 .handler((externalTask, externalTaskService) -> {
-                    DatabaseConfig config = new DatabaseConfig("customerhandler2.cjw7eyupyncl.us-east-1.rds.amazonaws.com", "CustomerHandling","pedro", "123456789");
+                    DatabaseConfig config = new DatabaseConfig(Constants.CUSTOMER_HANDLING_DB, "CustomerHandling","pedro", "123456789");
                     String firstName = (String) externalTask.getVariable("firstName");
                     String lastName = (String) externalTask.getVariable("lastName");
                     String address = (String) externalTask.getVariable("address");
@@ -120,7 +121,7 @@ public class CustomerHandling {
                     String deviceType = (String) externalTask.getVariable("deviceType");
                     PreparedStatement stmt;
                     ResultSet rs, rs2;
-                    Connection conn = new DatabaseConfig("customerhandler2.cjw7eyupyncl.us-east-1.rds.amazonaws.com", "CustomerHandling","pedro", "123456789").getConnection();
+                    Connection conn = new DatabaseConfig(Constants.CUSTOMER_HANDLING_DB, "CustomerHandling","pedro", "123456789").getConnection();
                     try {
                         conn.setAutoCommit(false);
                         stmt = conn.prepareStatement ("select * from Customer WHERE id = ?");

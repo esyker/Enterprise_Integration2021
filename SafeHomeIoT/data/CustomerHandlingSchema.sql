@@ -23,6 +23,8 @@ CREATE TABLE Customer (
     district VARCHAR(100),
     council VARCHAR(100),
     parish VARCHAR(100),
+    email VARCHAR(50),
+    password VARCHAR(30),
     doorNumber INT,
     PRIMARY KEY(ID)
 );

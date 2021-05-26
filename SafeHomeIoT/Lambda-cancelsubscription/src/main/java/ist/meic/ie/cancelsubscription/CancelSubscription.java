@@ -3,6 +3,7 @@ package ist.meic.ie.cancelsubscription;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import ist.meic.ie.utils.Constants;
 import ist.meic.ie.utils.DatabaseConfig;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -31,7 +32,7 @@ public class CancelSubscription implements RequestStreamHandler {
         int customerId = ((Long) customer.get("customerId")).intValue();
         logger.log("Customer id: " + customerId + "\n");
 
-        Connection conn = new DatabaseConfig("customerhandler2.cjw7eyupyncl.us-east-1.rds.amazonaws.com", "CustomerHandling","pedro", "123456789").getConnection();
+        Connection conn = new DatabaseConfig(Constants.CUSTOMER_HANDLING_DB, "CustomerHandling","pedro", "123456789").getConnection();
         try {
             conn.setAutoCommit(false);
             PreparedStatement stmt, stmt2;

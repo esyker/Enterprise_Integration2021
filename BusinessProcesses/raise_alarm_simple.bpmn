@@ -89,7 +89,7 @@
     "SIMCARD": ${SIMCARD},
     "type": "${type}"
 }</camunda:inputParameter>
-            <camunda:inputParameter name="url">http://ec2-3-90-103-29.compute-1.amazonaws.com:8000/</camunda:inputParameter>
+            <camunda:inputParameter name="url">http://18.209.57.158:8000/</camunda:inputParameter>
             <camunda:inputParameter name="method">POST</camunda:inputParameter>
             <camunda:inputParameter name="headers">
               <camunda:map>
@@ -140,25 +140,45 @@ message.jsonPath("customerId").numberValue();</camunda:script>
       <bpmndi:BPMNShape id="Participant_0x2u10e_di" bpmnElement="Participant_0x2u10e" isHorizontal="true">
         <dc:Bounds x="190" y="440" width="1120" height="370" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_1845yu1_di" bpmnElement="Flow_1845yu1">
-        <di:waypoint x="278" y="620" />
-        <di:waypoint x="345" y="620" />
+      <bpmndi:BPMNEdge id="Flow_0diwsld_di" bpmnElement="Flow_0diwsld">
+        <di:waypoint x="860" y="540" />
+        <di:waypoint x="942" y="540" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0qeetf2_di" bpmnElement="Flow_0qeetf2">
-        <di:waypoint x="370" y="645" />
-        <di:waypoint x="370" y="750" />
-        <di:waypoint x="460" y="750" />
+      <bpmndi:BPMNEdge id="Flow_0vfjx6p_di" bpmnElement="Flow_0vfjx6p">
+        <di:waypoint x="860" y="700" />
+        <di:waypoint x="902" y="700" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1unbf00_di" bpmnElement="Flow_1unbf00">
-        <di:waypoint x="370" y="595" />
-        <di:waypoint x="370" y="500" />
-        <di:waypoint x="460" y="500" />
+      <bpmndi:BPMNEdge id="Flow_1nd1306_di" bpmnElement="Flow_1nd1306">
+        <di:waypoint x="720" y="645" />
+        <di:waypoint x="720" y="700" />
+        <di:waypoint x="760" y="700" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1tz66si_di" bpmnElement="Flow_1tz66si">
-        <di:waypoint x="560" y="750" />
-        <di:waypoint x="630" y="750" />
-        <di:waypoint x="630" y="620" />
+      <bpmndi:BPMNEdge id="Flow_1n0m6ql_di" bpmnElement="Flow_1n0m6ql">
+        <di:waypoint x="720" y="595" />
+        <di:waypoint x="720" y="540" />
+        <di:waypoint x="760" y="540" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yv2gat_di" bpmnElement="Flow_0yv2gat">
+        <di:waypoint x="938" y="700" />
+        <di:waypoint x="1080" y="700" />
+        <di:waypoint x="1080" y="645" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xfgi79_di" bpmnElement="Flow_0xfgi79">
+        <di:waypoint x="978" y="540" />
+        <di:waypoint x="1080" y="540" />
+        <di:waypoint x="1080" y="595" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ciuuz3_di" bpmnElement="Flow_0ciuuz3">
+        <di:waypoint x="560" y="620" />
         <di:waypoint x="695" y="620" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ookoix_di" bpmnElement="Flow_0ookoix">
+        <di:waypoint x="395" y="620" />
+        <di:waypoint x="460" y="620" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1oismgg_di" bpmnElement="Flow_1oismgg">
+        <di:waypoint x="1105" y="620" />
+        <di:waypoint x="1202" y="620" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0m5uxrg_di" bpmnElement="Flow_0m5uxrg">
         <di:waypoint x="560" y="500" />
@@ -166,45 +186,25 @@ message.jsonPath("customerId").numberValue();</camunda:script>
         <di:waypoint x="628" y="620" />
         <di:waypoint x="695" y="620" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1oismgg_di" bpmnElement="Flow_1oismgg">
-        <di:waypoint x="1105" y="620" />
-        <di:waypoint x="1202" y="620" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ookoix_di" bpmnElement="Flow_0ookoix">
-        <di:waypoint x="395" y="620" />
-        <di:waypoint x="460" y="620" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ciuuz3_di" bpmnElement="Flow_0ciuuz3">
-        <di:waypoint x="560" y="620" />
+      <bpmndi:BPMNEdge id="Flow_1tz66si_di" bpmnElement="Flow_1tz66si">
+        <di:waypoint x="560" y="750" />
+        <di:waypoint x="630" y="750" />
+        <di:waypoint x="630" y="620" />
         <di:waypoint x="695" y="620" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0xfgi79_di" bpmnElement="Flow_0xfgi79">
-        <di:waypoint x="978" y="540" />
-        <di:waypoint x="1080" y="540" />
-        <di:waypoint x="1080" y="595" />
+      <bpmndi:BPMNEdge id="Flow_1unbf00_di" bpmnElement="Flow_1unbf00">
+        <di:waypoint x="370" y="595" />
+        <di:waypoint x="370" y="500" />
+        <di:waypoint x="460" y="500" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0yv2gat_di" bpmnElement="Flow_0yv2gat">
-        <di:waypoint x="938" y="700" />
-        <di:waypoint x="1080" y="700" />
-        <di:waypoint x="1080" y="645" />
+      <bpmndi:BPMNEdge id="Flow_0qeetf2_di" bpmnElement="Flow_0qeetf2">
+        <di:waypoint x="370" y="645" />
+        <di:waypoint x="370" y="750" />
+        <di:waypoint x="460" y="750" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1n0m6ql_di" bpmnElement="Flow_1n0m6ql">
-        <di:waypoint x="720" y="595" />
-        <di:waypoint x="720" y="540" />
-        <di:waypoint x="760" y="540" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1nd1306_di" bpmnElement="Flow_1nd1306">
-        <di:waypoint x="720" y="645" />
-        <di:waypoint x="720" y="700" />
-        <di:waypoint x="760" y="700" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0vfjx6p_di" bpmnElement="Flow_0vfjx6p">
-        <di:waypoint x="860" y="700" />
-        <di:waypoint x="902" y="700" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0diwsld_di" bpmnElement="Flow_0diwsld">
-        <di:waypoint x="860" y="540" />
-        <di:waypoint x="942" y="540" />
+      <bpmndi:BPMNEdge id="Flow_1845yu1_di" bpmnElement="Flow_1845yu1">
+        <di:waypoint x="278" y="620" />
+        <di:waypoint x="345" y="620" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Gateway_09r9lao_di" bpmnElement="Gateway_09r9lao" isMarkerVisible="true">
         <dc:Bounds x="695" y="595" width="50" height="50" />
@@ -251,13 +251,13 @@ message.jsonPath("customerId").numberValue();</camunda:script>
       <bpmndi:BPMNShape id="Participant_0lpbps5_di" bpmnElement="Participant_0lpbps5" isHorizontal="true">
         <dc:Bounds x="850" y="80" width="548" height="250" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_09dnxq4_di" bpmnElement="Flow_09dnxq4">
-        <di:waypoint x="968" y="200" />
-        <di:waypoint x="1070" y="200" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0x9m41c_di" bpmnElement="Flow_0x9m41c">
         <di:waypoint x="1170" y="200" />
         <di:waypoint x="1262" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09dnxq4_di" bpmnElement="Flow_09dnxq4">
+        <di:waypoint x="968" y="200" />
+        <di:waypoint x="1070" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1umvo8h_di" bpmnElement="Event_1vbdh31">
         <dc:Bounds x="932" y="182" width="36" height="36" />

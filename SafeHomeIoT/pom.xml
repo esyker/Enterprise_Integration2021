@@ -50,6 +50,8 @@
         <module>Lambda-validateuserform</module>
         <module>Lambda-raisealarm</module>
         <module>Lambda-getcustomerbysimcard</module>
+        <module>testconsumer</module>
+        <module>Lambda-createemptycustomer</module>
     </modules>
 
 </project>

@@ -3,6 +3,7 @@ package ist.meic.ie.addiotdevice;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import ist.meic.ie.utils.Constants;
 import ist.meic.ie.utils.DatabaseConfig;
 import ist.meic.ie.utils.HTTPMessages;
 import ist.meic.ie.utils.LambdaUtils;
@@ -26,25 +27,31 @@ public class DeleteIoTDevice implements RequestStreamHandler {
         int customerId = ((Long) obj.get("customerId")).intValue();
         int SIMCARD = ((Long) obj.get("SIMCARD")).intValue();
 
-        Connection conn = new DatabaseConfig("customerhandler2.cjw7eyupyncl.us-east-1.rds.amazonaws.com", "CustomerHandling","pedro", "123456789").getConnection();
+        logger.log("1");
+        Connection conn = new DatabaseConfig(Constants.CUSTOMER_HANDLING_DB, "CustomerHandling", Constants.CUSTOMER_HANDLING_DB_USER, Constants.CUSTOMER_HANDLING_DB_PASSWORD).getConnection();
+        logger.log("1.1");
 
         try {
             conn.setAutoCommit(false);
             if (checkCustomer(outputStream, customerId, conn)) return;
             if (checkDevice(outputStream, SIMCARD, conn)) return;
             if (checkCustomerDevice(outputStream, customerId, SIMCARD, conn)) return;
+            logger.log("2");
 
             deleteDevice(SIMCARD, conn);
             JSONObject simcardToDelete = new JSONObject();
             simcardToDelete.put("SIMCARD", SIMCARD);
+            logger.log("3");
 
             if (HTTPMessages.postMsg(simcardToDelete, "application/json", "deletesimcard.com", logger) != 200) {
                 conn.rollback();
                 conn.close();
                 return;
             }
+            logger.log("5");
 
             LambdaUtils.buildResponse(outputStream, "IoT Device with SIMCARD " + SIMCARD + " deleted!", 200);
+            logger.log("6");
 
             conn.commit();
         } catch (Exception e) {

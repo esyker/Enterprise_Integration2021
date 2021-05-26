@@ -1,4 +1,5 @@
 ###########SENSORS#################
+DROP DATABASE SafeHomeIoTEvents;
 CREATE DATABASE IF NOT EXISTS SafeHomeIoTEvents;
 USE SafeHomeIoTEvents;
 

@@ -20,4 +20,7 @@ public class Constants {
     public static final String COMPANY_EVENTS_DB_USER="pedro";
     public static final String COMPANY_EVENTS_PASSWORD="123456789";
 
+    public static final String ENTERPRISE_EMAIL = "enterpriseintegration2021@gmail.com";
+    public static final String ENTERPRISE_EMAIL_PASSWORD = "pedrodiogo2021";
+
 }

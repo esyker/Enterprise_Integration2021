@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/IoTaaSSimulator-main/IoTaaSSimulator-main.iml" filepath="$PROJECT_DIR$/IoTaaSSimulator-main/IoTaaSSimulator-main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Lambda-alarm/Lambda-Email.iml" filepath="$PROJECT_DIR$/Lambda-alarm/Lambda-Email.iml" />
     </modules>
   </component>
 </project>

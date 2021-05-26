@@ -20,13 +20,13 @@ public class EmailService implements RequestStreamHandler {
         JSONObject obj = LambdaUtils.parseInput(inputStream, logger);
 
         String email = (String) obj.get("email");
-        String message = (String) obj.get("email");
+        String message = (String) obj.get("message");
         if (email == null) {
-            LambdaUtils.buildResponse(outputStream, "No SIMCARD provided!", 500);
+            LambdaUtils.buildResponse(outputStream, "No email provided!", 500);
             return;
         }
         if (message == null) {
-            LambdaUtils.buildResponse(outputStream, "No SIMCARD provided!", 500);
+            LambdaUtils.buildResponse(outputStream, "No email message provided!", 500);
             return;
         }
 

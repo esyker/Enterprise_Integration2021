@@ -1,11 +1,14 @@
-package ist.meic.ie.utils;
+package ist.meic.ie.mailer;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
+import ist.meic.ie.utils.Constants;
+
 import javax.mail.*;
-import javax.mail.internet.*;
-import javax.activation.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import java.io.IOException;
+import java.util.Properties;
 
 public class SendEmail {
 

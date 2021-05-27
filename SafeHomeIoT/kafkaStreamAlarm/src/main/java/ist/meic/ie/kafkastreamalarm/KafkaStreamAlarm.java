@@ -39,7 +39,7 @@ public class KafkaStreamAlarm {
             super(new JsonSerializer<EventItem>(), new JsonDeserializer<EventItem>(EventItem.class));
         }
     }
-
+    /*
     public static void main(String[] args) throws ParseException, InvalidEventTypeException, InterruptedException {
         CommandLine cmd = parseArgs(args);
         //input stream
@@ -64,6 +64,8 @@ public class KafkaStreamAlarm {
         }));
 
     }
+    */
+
 
     private static CommandLine parseArgs(String[] args) {
         Options options = new Options();

@@ -8,8 +8,8 @@ import org.I0Itec.zkclient.ZkConnection;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.StreamsBuilder;
+/*import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.StreamsBuilder;*/
 
 import java.util.List;
 import java.util.Properties;
@@ -58,7 +58,7 @@ public class KafkaConfig {
         producerProperties.put("value.serializer",VALUE_SERIALIZER);
         return new KafkaProducer<>(producerProperties);
     }
-
+    /*
     public static Properties createKafkaStreamProps(String bootstrapServers, String appID) {
         Properties streamProperties = new Properties();
         streamProperties.put("application.id", appID);
@@ -67,5 +67,6 @@ public class KafkaConfig {
         streamProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         return streamProperties;
     }
+    */
 
 }

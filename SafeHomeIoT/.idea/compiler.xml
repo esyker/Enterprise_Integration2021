@@ -32,6 +32,8 @@
         <module name="testconsumer" />
         <module name="alarmsReader" />
         <module name="MSISDNactivate" />
+        <module name="Lambda-email" />
+        <module name="mailer" />
         <module name="MSISDNgetStatus" />
         <module name="Lambda-analytics" />
         <module name="eventmediation" />

@@ -24,6 +24,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static ist.meic.ie.utils.Constants.API_KEY;
 import static ist.meic.ie.utils.Constants.KONG_ENDPOINT;
 
 public class GetDeviceInfo implements RequestStreamHandler {
@@ -127,6 +128,7 @@ public class GetDeviceInfo implements RequestStreamHandler {
             HttpPost postRequest = new HttpPost(KONG_ENDPOINT);
             postRequest.addHeader("content-type", contentType);
             postRequest.addHeader("Host", host);
+            postRequest.addHeader("apikey",API_KEY);
             DefaultHttpClient httpClient = new DefaultHttpClient();
             StringEntity Entity = null;
             Entity = new StringEntity(jsonObject.toJSONString());

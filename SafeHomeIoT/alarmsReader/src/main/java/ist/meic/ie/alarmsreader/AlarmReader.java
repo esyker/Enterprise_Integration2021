@@ -34,7 +34,7 @@ public class AlarmReader {
     public AlarmReader(String kafkaIP)
     {
         this.kafkaIP=kafkaIP;
-        topic = new ArrayList<>(Arrays.asList("alarm-topic"));
+        topic = new ArrayList<>(Arrays.asList("alarmTopic"));
     }
 
     public void receiveEvents(){
@@ -49,9 +49,9 @@ public class AlarmReader {
                     JSONObject event = (JSONObject) parser.parse(record.value());
                     if (event.get("type") == null)
                         throw new InvalidEventTypeException(event.toJSONString());
-                    //Call Kong endpoint here that redirects to Camunda
+                    //Call Camunda Alarm Business process endpoint
                     //HTTPMessages.postMsg(event,"application/json","camunda-alarm.com");
-                    System.out.println(event);
+                    System.out.println(record.value());
                 } catch (InvalidEventTypeException | org.json.simple.parser.ParseException e) {
                     e.printStackTrace();
                 }

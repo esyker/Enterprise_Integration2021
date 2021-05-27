@@ -35,6 +35,11 @@ public class SuspendAll implements RequestStreamHandler {
             stmt.executeUpdate();
             stmt.close();
 
+            stmt = conn.prepareStatement("UPDATE Device SET status = ?");
+            stmt.setString(1, "SUSPENDED");
+            stmt.executeUpdate();
+            stmt.close();
+
             stmt = conn.prepareStatement("SELECT * FROM Device");
             rs = stmt.executeQuery();
             logger.log("Suspending simcards");

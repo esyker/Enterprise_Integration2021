@@ -95,6 +95,7 @@
               <camunda:map>
                 <camunda:entry key="Content-Type">application/json</camunda:entry>
                 <camunda:entry key="Host">raisealarm.com</camunda:entry>
+                <camunda:entry key="apikey">EI2021</camunda:entry>
               </camunda:map>
             </camunda:inputParameter>
             <camunda:outputParameter name="customerId">

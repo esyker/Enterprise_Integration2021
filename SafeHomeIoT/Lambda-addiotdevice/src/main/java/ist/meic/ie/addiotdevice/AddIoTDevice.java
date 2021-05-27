@@ -46,10 +46,12 @@ public class AddIoTDevice implements RequestStreamHandler {
             deviceJson.put("deviceType", deviceType);
             HTTPMessages.postMsg(deviceJson, "application/json", "activatesimcard.com", logger);
 
-            if (suspendIoTDevice(outputStream, logger, customerId, SIMCARD, subId, subState, conn)) return;
-
             // Insert Device
             insertDevice(customerId, SIMCARD, MSISDN, conn, deviceTypeId);
+
+            if (suspendIoTDevice(outputStream, logger, customerId, SIMCARD, subId, subState, conn)) return;
+
+
             LambdaUtils.buildResponse(outputStream, "New Device Inserted: " + newDevice.toJSONString(), 200);
             conn.commit();
         } catch (SQLException throwables) {
@@ -94,10 +96,19 @@ public class AddIoTDevice implements RequestStreamHandler {
             JSONObject simcardObj = new JSONObject();
             simcardObj.put("SIMCARD", SIMCARD);
             if(HTTPMessages.postMsg(simcardObj, "application/json", "suspendsimcard.com", logger) != 200) {
-                LambdaUtils.buildResponse(outputStream, "Could not suspend SIMCARD " + SIMCARD, 500);
+                LambdaUtils.buildResponse(outputStream, "Could not suspend SIMCARD " + SIMCARD, 200);
+                stmt = conn.prepareStatement("UPDATE Device SET status = ? WHERE SIMCARD = ?");
+                stmt.setString(1, "SUSPENDED");
+                stmt.setInt(2, SIMCARD);
+                stmt.executeUpdate();
+                stmt.close();
                 return true;
             }
         }
+
+
+
+
         return false;
     }
 
@@ -143,12 +154,14 @@ public class AddIoTDevice implements RequestStreamHandler {
 
     private void insertDevice(int customerId, int SIMCARD, int MSISDN, Connection conn, int deviceTypeId) throws SQLException {
         PreparedStatement stmt;
-        stmt = conn.prepareStatement("INSERT INTO Device (SIMCARD, MSISDN, customerId, deviceTypeId) VALUES (?,?,?,?)");
+        stmt = conn.prepareStatement("INSERT INTO Device (SIMCARD, MSISDN, customerId, deviceTypeId, status) VALUES (?,?,?,?,?)");
         stmt.setInt(1, SIMCARD);
         stmt.setInt(2, MSISDN);
         stmt.setInt(3, customerId);
         stmt.setInt(4, deviceTypeId);
+        stmt.setString(5, "ACTIVE");
         stmt.executeUpdate();
+        stmt.close();
     }
 
     private boolean verifyDevice(OutputStream outputStream, LambdaLogger logger, int SIMCARD, Connection conn) throws SQLException, IOException {

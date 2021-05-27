@@ -44,7 +44,7 @@ public class PaySubscription implements RequestStreamHandler {
         int customerId = ((Long) obj.get("customerId")).intValue();
 
         Connection conn = new DatabaseConfig(Constants.CUSTOMER_HANDLING_DB, "CustomerHandling",Constants.CUSTOMER_HANDLING_DB_USER, Constants.CUSTOMER_HANDLING_DB_PASSWORD).getConnection();
-        PreparedStatement stmt;
+        PreparedStatement stmt, stmt2;
         ResultSet rs;
         try {
             if (checkCustomer(outputStream, customerId, conn)) return;
@@ -54,10 +54,17 @@ public class PaySubscription implements RequestStreamHandler {
             rs = stmt.executeQuery();
             while(rs.next()) {
                 JSONObject simcardObj = new JSONObject();
-                simcardObj.put("SIMCARD", rs.getInt("SIMCARD"));
+                int SIMCARD = rs.getInt("SIMCARD");
+                simcardObj.put("SIMCARD", SIMCARD);
                 simcardObj.put("MSISDN", 0);
                 simcardObj.put("deviceType", "");
                 HTTPMessages.postMsg(simcardObj, "application/json", "activatesimcard.com", logger);
+
+                stmt2 = conn.prepareStatement("UPDATE Device SET status = ? WHERE SIMCARD = ?");
+                stmt2.setString(1, "ACTIVE");
+                stmt2.setInt(2, SIMCARD);
+                stmt2.executeUpdate();
+                stmt2.close();
             }
             rs.close();
             stmt.close();

@@ -23,4 +23,6 @@ public class Constants {
     public static final String ENTERPRISE_EMAIL = "enterpriseintegration2021@gmail.com";
     public static final String ENTERPRISE_EMAIL_PASSWORD = "pedrodiogo2021";
 
+    public static final String API_KEY ="EI2021";
+
 }

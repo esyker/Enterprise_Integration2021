@@ -14,8 +14,7 @@ import org.json.simple.parser.JSONParser;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import static ist.meic.ie.utils.Constants.CTT_ENDPOINT;
-import static ist.meic.ie.utils.Constants.KONG_ENDPOINT;
+import static ist.meic.ie.utils.Constants.*;
 
 public class HTTPMessages {
     private static JSONParser jsonParser = new JSONParser();
@@ -26,6 +25,7 @@ public class HTTPMessages {
             HttpPost postRequest = new HttpPost(KONG_ENDPOINT);
             postRequest.addHeader("content-type", contentType);
             postRequest.addHeader("Host", host);
+            postRequest.addHeader("apikey",API_KEY);
             DefaultHttpClient httpClient = new DefaultHttpClient();
             StringEntity Entity = null;
             Entity = new StringEntity(jsonObject.toJSONString());
@@ -49,6 +49,7 @@ public class HTTPMessages {
             HttpPost postRequest = new HttpPost(KONG_ENDPOINT);
             postRequest.addHeader("content-type", contentType);
             postRequest.addHeader("Host", host);
+            postRequest.addHeader("apikey",API_KEY);
             DefaultHttpClient httpClient = new DefaultHttpClient();
             StringEntity Entity = null;
             Entity = new StringEntity(jsonObject.toJSONString());
@@ -72,6 +73,7 @@ public class HTTPMessages {
             HttpPost postRequest = new HttpPost(KONG_ENDPOINT);
             postRequest.addHeader("content-type", contentType);
             postRequest.addHeader("Host", host);
+            postRequest.addHeader("apikey",API_KEY);
             DefaultHttpClient httpClient = new DefaultHttpClient();
             StringEntity Entity = null;
             Entity = new StringEntity(jsonObject.toJSONString());
@@ -100,6 +102,7 @@ public class HTTPMessages {
             HttpPost postRequest = new HttpPost(KONG_ENDPOINT);
             postRequest.addHeader("content-type", contentType);
             postRequest.addHeader("Host", host);
+            postRequest.addHeader("apikey",API_KEY);
             DefaultHttpClient httpClient = new DefaultHttpClient();
             StringEntity Entity = null;
             Entity = new StringEntity(jsonObject.toJSONString());
@@ -128,6 +131,7 @@ public class HTTPMessages {
         try {
             HttpGet getRequest = new HttpGet(CTT_ENDPOINT + "?incodpos=" + postalCode);
             getRequest.addHeader("content-type", contentType);
+            getRequest.addHeader("apikey",API_KEY);
             DefaultHttpClient httpClient = new DefaultHttpClient();
             StringEntity Entity = null;
             //Entity = new StringEntity(jsonObject.toJSONString());

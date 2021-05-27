@@ -27,9 +27,18 @@ import ist.meic.ie.utils.KafkaConfig.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import serde.JsonSerializer;
+import serde.JsonDeserializer;
+import serde.WrapperSerde;
 
 
 public class KafkaStreamAlarm {
+
+    static public final class EventItemSerde extends WrapperSerde<EventItem> {
+        public EventItemSerde() {
+            super(new JsonSerializer<EventItem>(), new JsonDeserializer<EventItem>(EventItem.class));
+        }
+    }
 
     public static void main(String[] args) throws ParseException, InvalidEventTypeException, InterruptedException {
         CommandLine cmd = parseArgs(args);

@@ -1,28 +1,33 @@
 package serde;
 
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Serializer;
 
-import java.nio.charset.Charset;
 import java.util.Map;
 
 public class JsonSerializer<T> implements Serializer<T> {
 
-    private Gson gson = new Gson();
-
-    @Override
-    public void configure(Map<String, ?> map, boolean b) {
-
-    }
-
-    @Override
-    public byte[] serialize(String topic, T t) {
-        return gson.toJson(t).getBytes(Charset.forName("UTF-8"));
-    }
+    private ObjectMapper om = new ObjectMapper();
 
     @Override
     public void close() {
+        // TODO Auto-generated method stub
 
     }
+
+    @Override
+    public byte[] serialize(String topic, T data) {
+        byte[] retval = null;
+        try {
+            System.out.println(data.getClass());
+            retval = om.writeValueAsString(data).getBytes();
+        } catch (JsonProcessingException e) {
+            throw new SerializationException();
+        }
+        return retval;
+    }
+
 }

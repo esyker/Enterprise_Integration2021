@@ -30,5 +30,6 @@ public class EmailService implements RequestStreamHandler {
         }
 
         SendEmail.send(email, "New Alarm!", message);
+        LambdaUtils.buildResponse(outputStream, "Email sent!", 200);
     }
 }

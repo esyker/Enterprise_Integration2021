@@ -46,7 +46,7 @@ The jar files of the modules that run on virtual machines should run with the fo
 5. eventmediation
    2nd Layer Mediation
    Ubuntu Virtual machine with a kafka Consumer that reads messages from the several topics. 
-   There is one topic for each client, so events are consumed from several topics each for a different client.
+   There is one topic for each device type, so events are consumed from several topics, each for a different device type.
    The events are written to a database and are also available to an upper layer to be consumed through a function called getNextEvent().
    Run the command: ```mvn clean compile exec:java -Dexec.args="-kafkaip  \{KAFKA\_BROKER\_IP\}:9092""```
  

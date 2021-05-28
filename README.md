@@ -1,6 +1,6 @@
 # Modules
 
-Our project enterprise integration system is divided into 5 modules, which can be found in the SafeHomeIoT project folder:
+Our project enterprise integration system is divided into several modules, the following modules implement the Telecommunications Provider and Network activity:
 
 1. simulator
 2. provisioning
@@ -36,7 +36,8 @@ The jar files of the modules that run on virtual machines should run with the fo
 3. eventmediationpre
    1st Layer Mediation
    Ubuntu Virtual machine with a kafka Consumer and a Producer that consume messages from the EventsTopic provisioned by the simulator and write to
-   several different topics, based on the client that each IoT device is associated to the events are written to a different topic for each client.
+   several different topics, based on the type of IoT device that the message is associated to.
+   Therefore there are 5 different topics on the kafka cluster, "image-events", "video-events", "motion-events", "smoke-events", "temperature-events".
    Command: ```mvn exec:java -Dexec.args="-kafkaip \{KAFKA\_BROKER\_IP\}:9092 -topics safehomeiot-events"```
 
 4. events
@@ -54,20 +55,20 @@ The jar files of the modules that run on virtual machines should run with the fo
 This module simulates the IoT device network activity. 
 The type of messages simulated are:
 
-1. temperatureMessage:{ "userID":10, "deviceID":3, measurement:28.3, type:"temperature", ts:"2021-01-19 03:14:07"}
+1. temperatureMessage:{ "deviceID":3, measurement:28.3, type:"temperature", ts:"2021-01-19 03:14:07"}
 
-2. imageMessage:{ "userID":10, "deviceID":3, description:"cat", type:"image", ts:"2021-01-19 03:14:07"}
+2. imageMessage:{ "deviceID":3, description:"cat", type:"image", ts:"2021-01-19 03:14:07"}
 
-3. videoMessage:{ "userID":10, "deviceID":3, description:"cat moving", type:"video", ts:"2021-01-19 03:14:07"}
+3. videoMessage:{ "deviceID":3, description:"cat moving", type:"video", ts:"2021-01-19 03:14:07"}
 
-4. smokeMessage:{ "userID":10, "deviceID":3, measurement:0.7, type:"smoke", ts:"2021-01-19 03:14:07"}
+4. smokeMessage:{ "deviceID":3, measurement:0.7, type:"smoke", ts:"2021-01-19 03:14:07"}
  
-5. motionMessage:{ "userID":10, "deviceID":3, measurement:1 , type:"smoke", ts:"2021-01-19 03:14:07"}
+5. motionMessage:{ "deviceID":3, measurement:1 , type:"smoke", ts:"2021-01-19 03:14:07"}
 
 These messages are generated according to the IoT devices registered in a database that is defined in provisioning. The IoT devices are defined in that database that is
 manipulated by the provisioning. The messages are generated according to the data in this database.
 
-##p rovisioning module
+##provisioning module
 This module activates the devices present in the radio network simulator. 
 A database with two is created with the schema described by the following code:
 
@@ -80,11 +81,11 @@ CREATE TABLE HLR.suspendedSubscriber (SIMCARD VARCHAR(22), MSISDN VARCHAR(15), s
 Devices are simulated in the radio network for the devices with the SIMCARD and MSISDN defined in the activeSubscriber table.
 There are four operations defined in provisioning:
 
-1. activate(SIMCARD,MSISDN,userID)
-The device identified by SIMCARD and MSISDN is added to the activeSusbcriber table together with the userID and (if needed) removed from the suspendedSubscriber table.
+1. activate(SIMCARD,MSISDN)
+The device identified by SIMCARD and MSISDN is added to the activeSusbcriber table and (if needed) removed from the suspendedSubscriber table.
 
-2. suspend(SIMCARD,MSISDN,userID)
-The device identified by SIMCARD and MSISDN is removed from the activeSubscriber table and added to the suspendedSubscriber table together with the userID of the owner. 
+2. suspend(SIMCARD,MSISDN)
+The device identified by SIMCARD and MSISDN is removed from the activeSubscriber table and added to the suspendedSubscriber table. 
 
 3. delete(SIMCARD,MSISDN)
 The device identified by SIMCARD and MSISDN is removed both from the activeSubscriber and suspendedSubscribe tables.
@@ -95,18 +96,16 @@ The current status of the device identified by SIMCARD and MSISDN is returned fr
 ### eventmediationpre module
 This module contains the 1st level mediation layer. 
 It consumes the messages from the EventsTopic, that is served by the simulator.
-Then a new topic is chosen to which the messages are produced, based on the client that is the owner of the device, as there is a topic for each different client.
-For example, for a message with the following signature { "ID":10, "deviceID":3, measurement:1 , type:"smoke", ts:"2021-01-19 03:14:07"}, the message would be consumed
-and then the same message would be produced to a new topic in the kafka broker with the name usertopic-10.
+Then a new topic is chosen to which the messages are produced, based on the type of the IoT device, as there is a topic for each different type of IoT device.
+For example, for a message with the following signature { "deviceID":3, measurement:1 , type:"smoke", ts:"2021-01-19 03:14:07"}, the message would be consumed
+and then the same message would be produced to a new topic in the kafka broker with the name "smoke-events".
 
 
 ### eventmediation module
 This module contains the 2nd level mediation layer. 
-It consumes the messages from the clients topics and saves them to a database. 
-It also makes the data available through an API to an upper layer, which will be developed in the next sprint.
+It consumes the messages from the IoT devices types topics and saves them to a database. 
 
-### eventmservice module
+### eventservice module
 
 AWS lambda function that implements getNextEvent() by accessing the Event-Database. It receives JSON as input
-with userId, typeEvent and lastReceivedId. It returns the events of the given type, belonging to the given user
-whose id is greater than lastReceivedId.
+with typeEvent and lastReceivedId. It returns the events of the given type, whose id is greater than lastReceivedId.

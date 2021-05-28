@@ -3,7 +3,6 @@ package ist.meic.ie.emailservice;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
-import ist.meic.ie.mailer.SendEmail;
 import ist.meic.ie.utils.LambdaUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

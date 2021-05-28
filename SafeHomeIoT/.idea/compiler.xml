@@ -43,8 +43,5 @@
         <module name="Lambda-suspendall" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="Lambda-Email" target="8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
